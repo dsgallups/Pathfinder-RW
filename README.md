@@ -23,5 +23,6 @@ sudo apt install postgresql postgresql-contrib
 
 ## In PostGRES GUI via `sudo -u postgres psql`
 ```
+ALTER USER postgres PASSWORD 'postgres';
 CREATE DATABASE diesel_demo
 ```
