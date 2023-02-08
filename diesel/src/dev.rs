@@ -108,12 +108,13 @@ fn push_classes(classes: Vec<(&str, i32)>) {
         .execute(conn)
         .unwrap();
 
-    let hi = class::credits.eq(3);
+    let hi = vec![class::credits.eq(3)];
+    /*
     let query = classes
         .into_iter()
         .map(|v| (class::title.eq(v.0), class::credits.eq(v.1)))
         .collect();
-    
+    */
     
     
 }
