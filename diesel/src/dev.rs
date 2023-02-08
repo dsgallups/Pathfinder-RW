@@ -103,18 +103,10 @@ fn push_classes(classes: Vec<(&str, i32)>) {
 
     let conn = &mut establish_connection();
 
-    insert_into(class::table)
-        .values(class::credits.eq(3))
+    for row in classes {
+        insert_into(class::table)
+        .values((class::title.eq(row.0), class::credits.eq(row.1)))
         .execute(conn)
         .unwrap();
-
-    let hi = vec![class::credits.eq(3)];
-    /*
-    let query = classes
-        .into_iter()
-        .map(|v| (class::title.eq(v.0), class::credits.eq(v.1)))
-        .collect();
-    */
-    
-    
+    }
 }
