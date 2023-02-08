@@ -1,7 +1,7 @@
 use Pathfinder_RW::*;
 use std::io::{stdin, Read};
 
-#[cfg(not(windolws))]
+#[cfg(not(windows))]
 const EOF: &str = "CTRL+D";
 
 #[cfg(windows)]
