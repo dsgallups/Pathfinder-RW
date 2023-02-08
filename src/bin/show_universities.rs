@@ -16,7 +16,7 @@ fn main() {
     for u in results {
         println!("{}", u.name);
         println!("------------\n");
-        println!("{}", u.id);
+        println!("{}", u.description.unwrap_or("No Description".to_string()));
     }
 
 }

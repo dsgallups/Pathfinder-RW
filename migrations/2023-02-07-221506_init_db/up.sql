@@ -1,6 +1,7 @@
 CREATE TABLE university (
     id SERIAL PRIMARY KEY,
-    name CHARACTER VARYING (50) NOT NULL
+    name CHARACTER VARYING (50) NOT NULL,
+    description TEXT
 );
 
 CREATE TABLE subdivision (
