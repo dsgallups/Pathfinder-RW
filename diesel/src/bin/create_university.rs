@@ -1,6 +1,7 @@
 use pf_diesel::*;
 use std::io::{stdin, Read};
 use pf_diesel::crud::*;
+use pf_diesel::dev::establish_connection;
 
 #[cfg(not(windows))]
 const EOF: &str = "CTRL+D";

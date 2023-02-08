@@ -1,1 +1,3 @@
 - Identify and define functions to be used
+
+- Build the Catalog First (Utilize existing catalog from old pathfinder code)

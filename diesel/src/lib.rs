@@ -6,7 +6,8 @@ use std::env;
 pub mod models;
 pub mod schema;
 pub mod crud;
-
+pub mod dev;
+/*
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
@@ -15,3 +16,4 @@ pub fn establish_connection() -> PgConnection {
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
+*/

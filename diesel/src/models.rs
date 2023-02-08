@@ -1,4 +1,4 @@
-use diesel::{prelude::*, sql_types::ops::Sub};
+use diesel::prelude::*;
 use crate::schema::university;
 
 #[derive(Queryable)]

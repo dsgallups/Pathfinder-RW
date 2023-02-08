@@ -2,6 +2,7 @@ use diesel::prelude::*;
 use pf_diesel::*;
 use pf_diesel::schema::university::dsl::*;
 use pf_diesel::models::{University};
+use pf_diesel::dev::establish_connection;
 fn main() {
 
 
