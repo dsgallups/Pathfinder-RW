@@ -1,4 +1,4 @@
-use Pathfinder_RW::*;
+use pf_diesel::*;
 use std::io::{stdin, Read};
 
 #[cfg(not(windows))]

@@ -1,6 +1,6 @@
 use self::models::*;
 use diesel::prelude::*;
-use Pathfinder_RW::*;
+use pf_diesel::*;
 
 fn main() {
     use self::schema::university::dsl::*;
