@@ -17,7 +17,7 @@ CREATE TABLE class (
     type CHARACTER VARYING (50) DEFAULT 'class' NOT NULL,
     title CHARACTER VARYING (50),
     description TEXT,
-    options JSON 
+    options JSON
 );
 
 CREATE TABLE component (
