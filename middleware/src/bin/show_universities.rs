@@ -1,9 +1,9 @@
-use self::models::*;
 use diesel::prelude::*;
 use pf_diesel::*;
-
+use pf_diesel::schema::university::dsl::*;
+use pf_diesel::models::{University};
 fn main() {
-    use self::schema::university::dsl::*;
+
 
     let conn = &mut establish_connection();
     let results = university
