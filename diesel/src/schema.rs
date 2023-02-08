@@ -6,8 +6,7 @@ diesel::table! {
         subject -> Nullable<Varchar>,
         course_no -> Nullable<Varchar>,
         credits -> Nullable<Int4>,
-        #[sql_name = "type"]
-        type_ -> Varchar,
+        pftype -> Varchar,
         title -> Nullable<Varchar>,
         description -> Nullable<Text>,
         options -> Nullable<Json>,
@@ -19,8 +18,7 @@ diesel::table! {
         id -> Int4,
         title -> Varchar,
         description -> Nullable<Text>,
-        #[sql_name = "type"]
-        type_ -> Varchar,
+        pftype -> Varchar,
         class -> Nullable<Int4>,
         options -> Nullable<Json>,
     }
@@ -29,21 +27,27 @@ diesel::table! {
 diesel::table! {
     component_to_component (id) {
         id -> Int4,
-        parent_id -> Nullable<Int4>,
-        child_id -> Nullable<Int4>,
+        parent_id -> Int4,
+        child_id -> Int4,
     }
 }
 
 diesel::table! {
-    degrees (id) {
+    degree (id) {
         id -> Int4,
         name -> Varchar,
-        #[sql_name = "type"]
-        type_ -> Varchar,
+        pftype -> Varchar,
         code -> Varchar,
         description -> Nullable<Text>,
-        subdivision_id -> Int4,
-        components -> Nullable<Array<Nullable<Int4>>>,
+        subdivision -> Nullable<Int4>,
+    }
+}
+
+diesel::table! {
+    degree_to_component (id) {
+        id -> Int4,
+        degree -> Int4,
+        component -> Int4,
     }
 }
 
@@ -64,14 +68,15 @@ diesel::table! {
 }
 
 diesel::joinable!(component -> class (class));
-diesel::joinable!(degrees -> subdivision (subdivision_id));
+diesel::joinable!(degree -> subdivision (subdivision));
 diesel::joinable!(subdivision -> university (university));
 
 diesel::allow_tables_to_appear_in_same_query!(
     class,
     component,
     component_to_component,
-    degrees,
+    degree,
+    degree_to_component,
     subdivision,
     university,
 );

@@ -15,7 +15,7 @@ CREATE TABLE class (
     subject CHARACTER VARYING (50),
     course_no CHARACTER VARYING (50),
     credits INTEGER,
-    type CHARACTER VARYING (50) DEFAULT 'class' NOT NULL,
+    pftype CHARACTER VARYING (50) DEFAULT 'class' NOT NULL,
     title CHARACTER VARYING (50),
     description TEXT,
     options JSON
@@ -25,23 +25,28 @@ CREATE TABLE component (
     id SERIAL PRIMARY KEY,
     title CHARACTER VARYING (50) NOT NULL,
     description TEXT,
-    type CHARACTER VARYING (10) NOT NULL,
+    pftype CHARACTER VARYING (10) NOT NULL,
     class INTEGER REFERENCES class(id),
     options JSON
 );
 
 CREATE TABLE component_to_component (
     id SERIAL PRIMARY KEY,
-    parent_id INTEGER REFERENCES component(id),
-    child_id INTEGER REFERENCES component(id)
+    parent_id INTEGER REFERENCES component(id) NOT NULL,
+    child_id INTEGER REFERENCES component(id) NOT NULL
 );
 
-CREATE TABLE degrees (
+CREATE TABLE degree (
     id SERIAL PRIMARY KEY,
     name CHARACTER VARYING (50) NOT NULL,
-    type CHARACTER VARYING (50) NOT NULL,
+    pftype CHARACTER VARYING (50) NOT NULL,
     code CHARACTER VARYING (50) NOT NULL,
     description TEXT,
-    subdivision_id INTEGER REFERENCES subdivision(id) NOT NULL,
-    components INTEGER[]
+    subdivision INTEGER REFERENCES subdivision(id)
+);
+
+CREATE TABLE degree_to_component (
+    id SERIAL PRIMARY KEY,
+    degree INTEGER REFERENCES component(id) NOT NULL,
+    component INTEGER REFERENCES component(id) NOT NULL
 );

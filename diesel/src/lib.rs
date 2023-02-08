@@ -7,8 +7,6 @@ pub mod models;
 pub mod schema;
 pub mod crud;
 
-use self::models::{NewUniversity, University};
-
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
