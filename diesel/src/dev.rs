@@ -2,7 +2,7 @@
 use std::process::{Command, Output};
 use std::str;
 use diesel::pg::PgConnection;
-use diesel::prelude::*;
+use diesel::{prelude::*, insert_into};
 use dotenvy::dotenv;
 use std::env;
 //resets the DB tables (Drops and recreates)
@@ -101,14 +101,19 @@ pub fn insert_catalog() -> Result<String, String> {
 
 fn push_classes(classes: Vec<(&str, i32)>) {
 
-    /*
+    let conn = &mut establish_connection();
+
+    insert_into(class::table)
+        .values(class::credits.eq(3))
+        .execute(conn)
+        .unwrap();
+
+    let hi = class::credits.eq(3);
     let query = classes
         .into_iter()
-        .map(|v| {
-            let newv = (class::title.eq("test"));
-
-            v;
-        });
-
-    */
+        .map(|v| (class::title.eq(v.0), class::credits.eq(v.1)))
+        .collect();
+    
+    
+    
 }

@@ -1,5 +1,6 @@
 use diesel::prelude::*;
 use crate::schema::university;
+use crate::schema::class;
 
 #[derive(Queryable)]
 pub struct University {
@@ -69,4 +70,11 @@ pub struct DegreeToComponent {
 pub struct NewUniversity<'a> {
     pub name: &'a str,
     pub description: &'a str
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = class)]
+pub struct NewClass<'a> {
+    pub title: &'a str,
+    pub credits: &'a i32
 }
