@@ -1,6 +1,9 @@
 # Information
 Run on `Ubuntu 20.04`
 
+# Purpose
+This file defines the functions that directly manipulate the DB. Any manipulations, or otherwise, can be found in middleware.
+
 # For installing `diesel_cli`
 ```
 sudo apt install sqlite3

@@ -5,5 +5,5 @@
 #
 # already existing elements were commented out
 
-#/target
+/diesel/target
 /Cargo.lock
