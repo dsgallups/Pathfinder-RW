@@ -24,7 +24,7 @@ CREATE TABLE class (
 
 CREATE TABLE component (
     id SERIAL PRIMARY KEY,
-    title CHARACTER VARYING (50) NOT NULL,
+    name CHARACTER VARYING (50) NOT NULL,
     description TEXT,
     pftype CHARACTER VARYING (10) NOT NULL,
     class INTEGER REFERENCES class(id),

@@ -16,7 +16,7 @@ diesel::table! {
 diesel::table! {
     component (id) {
         id -> Int4,
-        title -> Varchar,
+        name -> Varchar,
         description -> Nullable<Text>,
         pftype -> Varchar,
         class -> Nullable<Int4>,
