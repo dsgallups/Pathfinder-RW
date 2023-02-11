@@ -24,13 +24,19 @@ CREATE TABLE class (
 
 CREATE TABLE component (
     id SERIAL PRIMARY KEY,
+    name CHARACTER VARYING (50),
+    class INTEGER REFERENCES class(id)
+);
+/*
+CREATE TABLE component (
+    id SERIAL PRIMARY KEY,
     name CHARACTER VARYING (50) NOT NULL,
     description TEXT,
     pftype CHARACTER VARYING (10) NOT NULL,
     class INTEGER REFERENCES class(id),
     options TEXT
 );
-
+*/
 CREATE TABLE component_to_component (
     id SERIAL PRIMARY KEY,
     parent_id INTEGER REFERENCES component(id) NOT NULL,

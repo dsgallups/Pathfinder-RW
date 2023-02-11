@@ -30,6 +30,7 @@ pub fn reset_all_tables() -> Output {
         .output()
         .expect("Failed to reset tables. (diesel/src/dev.rs)")
 }
+
 pub fn insert_catalog() -> Result<String, String> {
 
     let conn = &mut establish_connection();
@@ -58,6 +59,22 @@ fn create_class(conn: &mut PgConnection, name: &str, credits: i32) -> Class {
         .expect("error saving new class")
     
 }
+
+fn create_class_component(conn: &mut PgConnection, class: Class) -> Component {
+    use crate::schema::component;
+
+
+    let new_class_comp = NewClassComponent { 
+        name: &class.name,
+        class: &class.id
+    };
+
+    diesel::insert_into(component::table)
+        .values(&new_class_comp)
+        .get_result(conn)
+        .expect("Error creating class component")
+}
+
 fn push_classes(conn: &mut PgConnection, comp_classes: &mut Vec<Component>) {
 
     let classes = vec![("CNIT 15501", 3),
@@ -123,10 +140,7 @@ fn push_classes(conn: &mut PgConnection, comp_classes: &mut Vec<Component>) {
 
     for class in classes {
 
-        //we need to make a component to hold the class
-
-
-        //then we make the classes in the class table
+        //we make the classes in the class table
         let db_class = create_class(conn, class.0, class.1);
 
         //Then take this class and make a new component
@@ -157,6 +171,8 @@ fn push_components(conn: &mut PgConnection, components: &mut Vec<Component>) {
         "SAAD SELECTIVES"
     ];
 
+    /*
+
     for component in component_strs {
         insert_into(component::table)
             .values((component::name.eq(component), component::pftype.eq("logical")))
@@ -164,8 +180,7 @@ fn push_components(conn: &mut PgConnection, components: &mut Vec<Component>) {
             .unwrap();
     }
 
-}
-
-fn create_class_component(conn: &mut PgConnection, class: Class) -> Component {
+    */
 
 }
+

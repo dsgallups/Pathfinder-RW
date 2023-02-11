@@ -6,6 +6,7 @@ use crate::schema::{
 };
 
 #[derive(Queryable)]
+#[diesel(table_name = university)]
 pub struct University {
     pub id: i32,
     pub name: String,
@@ -30,7 +31,15 @@ pub struct Class {
     pub course_no: Option<String>,
     pub options: Option<String>
 }
+#[derive(Queryable, Associations)]
+#[belongs_to(Class, )]
+pub struct Component {
+    pub id: i32,
+    pub name: Option<String>,
+    pub class: Option<Class>
+}
 
+/*
 #[derive(Queryable)]
 pub struct Component {
     pub id: i32,
@@ -40,6 +49,7 @@ pub struct Component {
     pub class: Option<Class>,
     pub options: Option<String>
 }
+*/
 
 #[derive(Queryable)]
 pub struct ComponentToComponent {
@@ -85,6 +95,5 @@ pub struct NewClass<'a> {
 #[diesel(table_name = component)]
 pub struct NewClassComponent<'a> {
     pub name: &'a str,
-    pub pftype: &'a str,
     pub class: &'a i32
 }
