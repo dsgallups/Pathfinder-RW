@@ -1,4 +1,5 @@
 use crate::schema::universities;
+use diesel::PgConnection;
 
 #[derive(Queryable, Serialize, Deserialize)]
 pub struct University {
@@ -8,32 +9,37 @@ pub struct University {
 }
 
 impl University {
-    pub fn find(id: &i32) -> Result<University, diesel::result::Error> {
+    pub fn find(id: &i32, conn: &mut PgConnection) -> Result<University, diesel::result::Error> {
         use diesel::QueryDsl;
         use diesel::RunQueryDsl;
-        use crate::db_connection::establish_connection;
 
-        let mut conn = establish_connection();
-
-        universities::table.find(id).first(&mut conn)
+        universities::table.find(id).first(conn)
     }
 
-    pub fn destroy(id: &i32) -> Result<(), diesel::result::Error> {
+    pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
         use diesel::QueryDsl;
         use diesel::RunQueryDsl;
-        use crate::schema::universities::dsl;
-        use crate::db_connection::establish_connection;
-
-        let mut conn = establish_connection();
 
         diesel::delete(universities::table.find(id))
-            .execute(&mut conn)?;
+            .execute(conn)?;
 
         Ok(())
     }
+
+    pub fn update(id: &i32, new_university: &NewUniversity, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
+        use diesel::QueryDsl;
+        use diesel::RunQueryDsl;
+
+        diesel::update(universities::table.find(id))
+            .set(new_university)
+            .execute(conn)?;
+        Ok(())
+    }
+
+
 }
 
-#[derive(Insertable, Deserialize)]
+#[derive(Insertable, Deserialize, AsChangeset)]
 #[table_name="universities"]
 pub struct NewUniversity {
     pub name: Option<String>,
@@ -42,15 +48,12 @@ pub struct NewUniversity {
 
 
 impl NewUniversity {
-    pub fn create(&self) -> Result<University, diesel::result::Error> {
+    pub fn create(&self, conn: &mut PgConnection) -> Result<University, diesel::result::Error> {
         use diesel::RunQueryDsl;
-        use crate::db_connection::establish_connection;
-
-        let mut conn = establish_connection();
 
         diesel::insert_into(universities::table)
             .values(self)
-            .get_result(&mut conn)
+            .get_result(conn)
     }
 }
 
@@ -58,18 +61,15 @@ impl NewUniversity {
 pub struct UniversityList(pub Vec<University>);
 
 impl UniversityList {
-    pub fn list() -> Self {
+    pub fn list(conn: &mut PgConnection) -> Self {
         use diesel::RunQueryDsl;
         use diesel::QueryDsl;
         use crate::schema::universities::dsl::*;
-        use crate::db_connection::establish_connection;
-
-        let mut conn = establish_connection();
 
         let result =
             universities
                 .limit(10)
-                .load::<University>(&mut conn)
+                .load::<University>(conn)
                 .expect("Error loading universities");
 
         UniversityList(result)

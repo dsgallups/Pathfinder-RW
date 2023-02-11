@@ -11,7 +11,8 @@ extern crate serde_json;
 #[macro_use] 
 extern crate serde_derive;
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, post, web::{self, Data}, App, HttpResponse, HttpServer, Responder};
+use db_connection::establish_connection;
 
 
 #[get("/")]
@@ -30,14 +31,20 @@ async fn manual_hello() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    std::env::set_var("RUST_LOG", "debug");
+
+    env_logger::init();
+
     HttpServer::new(|| {
         App::new()
+            .app_data(Data::new(establish_connection()))
             .service(hello)
             .service(echo)
             .route("/universities", web::get().to(handlers::universities::index))
             .route("/universities", web::post().to(handlers::universities::create))
             .route("/universities/{id}", web::get().to(handlers::universities::show))
             .route("/universities/{id}", web::delete().to(handlers::universities::destroy))
+            .route("/universities/{id}", web::patch().to(handlers::universities::update))
     })
     .bind(("127.0.0.1", 8080))?
     .run()
