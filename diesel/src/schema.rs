@@ -9,7 +9,7 @@ diesel::table! {
         pftype -> Varchar,
         title -> Nullable<Varchar>,
         description -> Nullable<Text>,
-        options -> Nullable<Json>,
+        options -> Nullable<Text>,
     }
 }
 
@@ -20,7 +20,7 @@ diesel::table! {
         description -> Nullable<Text>,
         pftype -> Varchar,
         class -> Nullable<Int4>,
-        options -> Nullable<Json>,
+        options -> Nullable<Text>,
     }
 }
 

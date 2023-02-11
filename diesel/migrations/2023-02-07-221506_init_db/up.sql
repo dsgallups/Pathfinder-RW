@@ -18,7 +18,8 @@ CREATE TABLE class (
     pftype CHARACTER VARYING (50) DEFAULT 'class' NOT NULL,
     title CHARACTER VARYING (50),
     description TEXT,
-    options JSON
+    options TEXT
+    -- options JSON
 );
 
 CREATE TABLE component (
@@ -27,7 +28,7 @@ CREATE TABLE component (
     description TEXT,
     pftype CHARACTER VARYING (10) NOT NULL,
     class INTEGER REFERENCES class(id),
-    options JSON
+    options TEXT
 );
 
 CREATE TABLE component_to_component (

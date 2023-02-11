@@ -22,9 +22,9 @@ pub struct Class {
     pub subject: Option<String>,
     pub course_no: Option<String>,
     pub credits: Option<i32>,
-    pub pftype: String,
+    pub pftype: Option<String>,
     pub title: Option<String>,
-    pub description: String,
+    pub description: Option<String>,
     //This will need to be a json in the future
     pub options: Option<String>
 }
@@ -76,5 +76,6 @@ pub struct NewUniversity<'a> {
 #[diesel(table_name = class)]
 pub struct NewClass<'a> {
     pub title: &'a str,
+    pub pftype: &'a str,
     pub credits: &'a i32
 }
