@@ -12,14 +12,14 @@ CREATE TABLE subdivision (
 
 CREATE TABLE class (
     id SERIAL PRIMARY KEY,
-    subject CHARACTER VARYING (50),
-    course_no CHARACTER VARYING (50),
+    name CHARACTER VARYING (50) NOT NULL,
+    description TEXT,
     credits INTEGER,
     pftype CHARACTER VARYING (50) DEFAULT 'class' NOT NULL,
-    title CHARACTER VARYING (50),
-    description TEXT,
+    subject CHARACTER VARYING (50),
+    course_no CHARACTER VARYING (50),
     options TEXT
-    -- options JSON
+    --options JSON
 );
 
 CREATE TABLE component (

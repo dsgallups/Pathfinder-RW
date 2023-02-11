@@ -19,13 +19,12 @@ pub struct Subdivision {
 #[derive(Queryable)]
 pub struct Class {
     pub id: i32,
+    pub name: String,
+    pub description: Option<String>,
+    pub credits: Option<i32>,
+    pub pftype: String,
     pub subject: Option<String>,
     pub course_no: Option<String>,
-    pub credits: Option<i32>,
-    pub pftype: Option<String>,
-    pub title: Option<String>,
-    pub description: Option<String>,
-    //This will need to be a json in the future
     pub options: Option<String>
 }
 
@@ -75,7 +74,6 @@ pub struct NewUniversity<'a> {
 #[derive(Insertable)]
 #[diesel(table_name = class)]
 pub struct NewClass<'a> {
-    pub title: &'a str,
-    pub pftype: &'a str,
+    pub name: &'a str,
     pub credits: &'a i32
 }

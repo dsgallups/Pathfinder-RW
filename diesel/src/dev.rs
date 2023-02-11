@@ -124,7 +124,7 @@ pub fn insert_catalog() -> Result<String, String> {
     Ok("Nice".to_string())
 }
 
-fn create_class(conn: &mut PgConnection, title: &str, credits: i32) -> University {
+fn create_class(conn: &mut PgConnection, name: &str, credits: i32) -> Class {
     
     use crate::schema::class;
 
@@ -132,22 +132,13 @@ fn create_class(conn: &mut PgConnection, title: &str, credits: i32) -> Universit
     
 
 
-    let new_class = NewClass { title: title, pftype: "logic", credits: &credits };
+    let new_class = NewClass { name, credits: &credits };
 
-    let class: Class = diesel::insert_into(class::table)
+    diesel::insert_into(class::table)
         .values(&new_class)
         .get_result(conn)
-        .expect("error saving new class");
+        .expect("error saving new class")
     
-    
-    let new_univ = NewUniversity { name: "Test", description: "Test" };
-
-    let universities: University = diesel::insert_into(university::table)
-        .values(&new_univ)
-        .get_result(conn)
-        .expect("Error in saving new university");
-
-    return universities;
 }
 fn push_classes(classes: Vec<(&str, i32)>, conn: &mut PgConnection) {
     //we need to make a component to hold the class
@@ -155,7 +146,7 @@ fn push_classes(classes: Vec<(&str, i32)>, conn: &mut PgConnection) {
 
     //then we make the classes in the class table
     for class in classes {
-        let created_class = create_class(conn, class.0, class.1);
+        let db_class = create_class(conn, class.0, class.1);
     }
 
     //after that, we link those classes to the components.

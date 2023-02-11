@@ -3,12 +3,12 @@
 diesel::table! {
     class (id) {
         id -> Int4,
-        subject -> Nullable<Varchar>,
-        course_no -> Nullable<Varchar>,
+        name -> Varchar,
+        description -> Nullable<Text>,
         credits -> Nullable<Int4>,
         pftype -> Varchar,
-        title -> Nullable<Varchar>,
-        description -> Nullable<Text>,
+        subject -> Nullable<Varchar>,
+        course_no -> Nullable<Varchar>,
         options -> Nullable<Text>,
     }
 }
