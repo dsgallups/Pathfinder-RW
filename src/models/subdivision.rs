@@ -1,27 +1,15 @@
 use crate::schema::subdivisions;
 use diesel::PgConnection;
+use crate::models::university::University;
 
-#[derive(Debug, Queryable, Insertable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Insertable, Serialize, Deserialize, Associations)]
+#[belongs_to(University)]
 #[table_name = "subdivisions"]
 pub struct Subdivision {
     pub id: i32,
     pub name: String,
-    pub university: Option<i32>
+    pub university_id: Option<i32>
 }
-/*
-    impl Subdivision {
-        
-        pub fn create(&self, conn: &mut PgConnection) -> Result<Subdivision, diesel::result::Error> {
-            use diesel::RunQueryDsl;
-
-            diesel::insert_into(subdivisions::table)
-                .values(self)
-                .get_result(conn)
-
-        }
-        
-    }
-*/
 
 #[derive(Serialize, Deserialize)]
 pub struct SubdivisionList (pub Vec<Subdivision>);

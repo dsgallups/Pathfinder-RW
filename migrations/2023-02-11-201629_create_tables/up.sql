@@ -26,7 +26,8 @@ CREATE TABLE classes (
     subject CHARACTER VARYING (50),
     course_no CHARACTER VARYING (50),
     options TEXT,
-    component_id INTEGER REFERENCES components(id)
+    component_id INTEGER REFERENCES components(id),
+    UNIQUE (component_id)
     --options JSON
 );
 /*
