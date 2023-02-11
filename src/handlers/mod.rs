@@ -1,5 +1,6 @@
 pub mod universities;
 pub mod subdivisions;
+pub mod components;
 
 use actix_web::{web, HttpResponse};
 use crate::db_connection::{ PgPool, PgPooledConnection };

@@ -13,7 +13,7 @@ CREATE TABLE subdivisions (
 
 CREATE TABLE components (
     id SERIAL PRIMARY KEY,
-    name CHARACTER VARYING (50),
+    name CHARACTER VARYING (50) NOT NULL,
     pftype CHARACTER VARYING (10) NOT NULL
 );
 
