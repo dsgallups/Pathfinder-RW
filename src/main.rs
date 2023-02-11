@@ -35,6 +35,9 @@ async fn main() -> std::io::Result<()> {
             .service(hello)
             .service(echo)
             .route("/universities", web::get().to(handlers::universities::index))
+            .route("/universities", web::post().to(handlers::universities::create))
+            .route("/universities/{id}", web::get().to(handlers::universities::show))
+            .route("/universities/{id}", web::delete().to(handlers::universities::destroy))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

@@ -7,11 +7,51 @@ pub struct University {
     pub description: Option<String>
 }
 
+impl University {
+    pub fn find(id: &i32) -> Result<University, diesel::result::Error> {
+        use diesel::QueryDsl;
+        use diesel::RunQueryDsl;
+        use crate::db_connection::establish_connection;
+
+        let mut conn = establish_connection();
+
+        universities::table.find(id).first(&mut conn)
+    }
+
+    pub fn destroy(id: &i32) -> Result<(), diesel::result::Error> {
+        use diesel::QueryDsl;
+        use diesel::RunQueryDsl;
+        use crate::schema::universities::dsl;
+        use crate::db_connection::establish_connection;
+
+        let mut conn = establish_connection();
+
+        diesel::delete(universities::table.find(id))
+            .execute(&mut conn)?;
+
+        Ok(())
+    }
+}
+
 #[derive(Insertable, Deserialize)]
 #[table_name="universities"]
 pub struct NewUniversity {
     pub name: Option<String>,
     pub description: Option<String>
+}
+
+
+impl NewUniversity {
+    pub fn create(&self) -> Result<University, diesel::result::Error> {
+        use diesel::RunQueryDsl;
+        use crate::db_connection::establish_connection;
+
+        let mut conn = establish_connection();
+
+        diesel::insert_into(universities::table)
+            .values(self)
+            .get_result(&mut conn)
+    }
 }
 
 #[derive(Serialize, Deserialize)]
