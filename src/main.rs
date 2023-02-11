@@ -49,6 +49,8 @@ async fn main() -> std::io::Result<()> {
             .route("/universities/{id}", web::patch().to(handlers::universities::update))
             .route("/subdivisions", web::post().to(handlers::subdivisions::create))
             .route("/subdivisions", web::get().to(handlers::universities::index))
+            .route("/components", web::get().to(handlers::components::index))
+            .route("/reset_and_pop_db", web::get().to(handlers::dev::reset_and_pop_db))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

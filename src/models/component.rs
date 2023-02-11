@@ -55,6 +55,16 @@ impl NewComponent {
             .values(self)
             .get_result(conn)
     }
+    pub fn create_class_component(&self, conn: &mut PgConnection) -> Result<Component, diesel::result::Error> {
+        use diesel::RunQueryDsl;
+
+        diesel::insert_into(components::table)
+            .values(NewComponent {
+                name: self.name.to_owned(),
+                pftype: Some("class".to_string())
+            })
+            .get_result(conn)
+    }
 }
 
 #[derive(Serialize, Deserialize)]
