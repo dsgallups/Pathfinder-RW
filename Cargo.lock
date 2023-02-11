@@ -3,10 +3,11 @@
 version = 3
 
 [[package]]
-name = "api"
+name = "Pathfinder-RW"
 version = "0.1.0"
 dependencies = [
- "middleware",
+ "diesel",
+ "dotenvy",
 ]
 
 [[package]]
@@ -57,23 +58,6 @@ name = "itoa"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fad582f4b9e86b6caa621cabeb0963332d92eea04729ab12892c2533951e6440"
-
-[[package]]
-name = "middleware"
-version = "0.1.0"
-dependencies = [
- "diesel",
- "dotenvy",
- "pf_diesel",
-]
-
-[[package]]
-name = "pf_diesel"
-version = "0.1.0"
-dependencies = [
- "diesel",
- "dotenvy",
-]
 
 [[package]]
 name = "pq-sys"
