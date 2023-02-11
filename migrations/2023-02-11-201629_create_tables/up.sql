@@ -7,7 +7,14 @@ CREATE TABLE universities (
 CREATE TABLE subdivisions (
     id SERIAL PRIMARY KEY,
     name CHARACTER VARYING (50) NOT NULL,
-    university INTEGER REFERENCES universities(id)
+    university_id INTEGER REFERENCES universities(id)
+);
+
+
+CREATE TABLE components (
+    id SERIAL PRIMARY KEY,
+    name CHARACTER VARYING (50),
+    pftype CHARACTER VARYING (10) NOT NULL
 );
 
 CREATE TABLE classes (
@@ -18,14 +25,9 @@ CREATE TABLE classes (
     pftype CHARACTER VARYING (50) DEFAULT 'class' NOT NULL,
     subject CHARACTER VARYING (50),
     course_no CHARACTER VARYING (50),
-    options TEXT
+    options TEXT,
+    component_id INTEGER REFERENCES components(id)
     --options JSON
-);
-
-CREATE TABLE components (
-    id SERIAL PRIMARY KEY,
-    name CHARACTER VARYING (50),
-    class INTEGER REFERENCES classes(id)
 );
 /*
 CREATE TABLE component (

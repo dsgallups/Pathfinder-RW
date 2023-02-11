@@ -10,6 +10,7 @@ diesel::table! {
         subject -> Nullable<Varchar>,
         course_no -> Nullable<Varchar>,
         options -> Nullable<Text>,
+        component_id -> Nullable<Int4>,
     }
 }
 
@@ -17,7 +18,7 @@ diesel::table! {
     components (id) {
         id -> Int4,
         name -> Nullable<Varchar>,
-        class -> Nullable<Int4>,
+        pftype -> Varchar,
     }
 }
 
@@ -52,7 +53,7 @@ diesel::table! {
     subdivisions (id) {
         id -> Int4,
         name -> Varchar,
-        university -> Nullable<Int4>,
+        university_id -> Nullable<Int4>,
     }
 }
 
@@ -64,9 +65,9 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(components -> classes (class));
+diesel::joinable!(classes -> components (component_id));
 diesel::joinable!(degrees -> subdivisions (subdivision));
-diesel::joinable!(subdivisions -> universities (university));
+diesel::joinable!(subdivisions -> universities (university_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     classes,
