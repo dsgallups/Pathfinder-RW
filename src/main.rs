@@ -1,13 +1,17 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+pub mod schema;
+pub mod db_connection;
+pub mod models;
+pub mod handlers;
 
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
+extern crate serde;
+extern crate serde_json;
+#[macro_use] 
+extern crate serde_derive;
 
-pub mod schema;
-pub mod models;
-pub mod db_connection;
-
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 
 
 #[get("/")]
@@ -30,7 +34,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(hello)
             .service(echo)
-            .route("/hey", web::get().to(manual_hello))
+            .route("/universities", web::get().to(handlers::universities::index))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

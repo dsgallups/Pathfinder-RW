@@ -1,1 +1,1 @@
-pub mod universities;
+pub mod university;
