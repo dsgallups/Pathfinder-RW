@@ -3,7 +3,6 @@ use actix_web::{
     HttpRequest, 
     HttpResponse 
 };
-use diesel::pg;
 
 use crate::models::university::{
     University,
@@ -11,15 +10,8 @@ use crate::models::university::{
     UniversityList
 };
 
-use crate::db_connection::{ PgPool, PgPooledConnection };
-
-fn pg_pool_handler(pool: web::Data<PgPool>) -> Result<PgPooledConnection, HttpResponse> {
-    pool
-        .get()
-        .map_err(|e| {
-            HttpResponse::InternalServerError().json(e.to_string())
-        })
-}
+use crate::db_connection::{ PgPool };
+use crate::handlers::pg_pool_handler;
 
 // This is calling the list method on ProductList and 
 // serializing it to a json response
