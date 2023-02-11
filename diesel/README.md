@@ -13,6 +13,8 @@ sudo apt-get install libpq5=12.12-0ubuntu0.20.04.1 && sudo apt-get install libpq
 sudo apt-get install libsqlite3-dev
 sudo apt install mysql-client
 sudo apt-get install default-libmysqlclient-dev
+
+cargo install diesel_cli
 ```
 
 # Installing and configuring PostGRES
@@ -27,5 +29,5 @@ sudo apt install postgresql postgresql-contrib
 ## In PostGRES GUI via `sudo -u postgres psql`
 ```
 ALTER USER postgres PASSWORD 'postgres';
-CREATE DATABASE diesel_demo
+CREATE DATABASE pathfinder
 ```

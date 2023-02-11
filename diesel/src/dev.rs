@@ -8,7 +8,6 @@ use std::env;
 //resets the DB tables (Drops and recreates)
 
 
-
 use crate::schema::university;
     use crate::models::{University, NewUniversity};
 
