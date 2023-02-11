@@ -1,5 +1,5 @@
 [package]
-name = "Pathfinder-RW"
+name = "pathfinder_rw"
 version = "0.1.0"
 edition = "2021"
 

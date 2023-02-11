@@ -3,8 +3,8 @@ use diesel::PgConnection;
 use crate::models::university::University;
 
 #[derive(Debug, Queryable, Insertable, Serialize, Deserialize, Associations)]
-#[belongs_to(University)]
-#[table_name = "subdivisions"]
+#[diesel(belongs_to(University))]
+#[diesel(table_name = subdivisions)]
 pub struct Subdivision {
     pub id: i32,
     pub name: String,
@@ -30,7 +30,7 @@ impl SubdivisionList {
 }
 
 #[derive(Insertable, Deserialize, AsChangeset)]
-#[table_name="subdivisions"]
+#[diesel(table_name= subdivisions)]
 pub struct NewSubdivision {
     pub name: String
 }

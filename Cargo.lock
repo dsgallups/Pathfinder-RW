@@ -3,20 +3,6 @@
 version = 3
 
 [[package]]
-name = "Pathfinder-RW"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "diesel",
- "dotenv",
- "dotenvy",
- "env_logger",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "actix-codec"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -823,6 +809,20 @@ name = "paste"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d01a5bd0424d00070b0098dd17ebca6f961a959dead1dbcbbbc1d1cd8d3deeba"
+
+[[package]]
+name = "pathfinder_rw"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "diesel",
+ "dotenv",
+ "dotenvy",
+ "env_logger",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
 
 [[package]]
 name = "percent-encoding"

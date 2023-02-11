@@ -40,7 +40,7 @@ impl University {
 }
 
 #[derive(Insertable, Deserialize, AsChangeset)]
-#[table_name="universities"]
+#[diesel(table_name = universities)]
 pub struct NewUniversity {
     pub name: Option<String>,
     pub description: Option<String>
