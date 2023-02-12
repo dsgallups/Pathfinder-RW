@@ -18,7 +18,7 @@ use crate::{models::{
         },
         class::{
             Class,
-            NewClass,
+            SimpleClass,
             ClassList
         }
 }, db_connection::PgPooledConnection};
@@ -126,18 +126,42 @@ fn push_classes(conn: &mut PgConnection, class_components: &mut Vec<Component>) 
     ];
 
     for class in classes {
-        
+        //Make the components first
+        let class_component = create_class_component(conn, class.0, class.1);
         //make the classes in the class table
-        let db_class = create_class(conn, class.0, class.1);
 
-
+        let db_class = create_class_from_component(conn, &class_component, class);
+        class_components.push(class_component);
     }
-
 
 
 }
 
-fn create_class(conn: &mut PgConnection, name: &str, credits: i32) -> Class {
+fn create_class_component (conn: &mut PgConnection, name: &str, credits: i32) -> Component {
+    let new_component = NewComponent {
+        name: Some(name.to_string()),
+        pftype: Some("class".to_string())
+    };
+
+    match new_component.create_class_component(conn) {
+        Ok(comp) => {return comp}
+        Err(e) => {panic!("Error creating class component: {}", e)}
+    }
+}
+
+fn create_class_from_component(conn: &mut PgConnection, component: &Component, class: (&str, i32)) -> Class {
+
+    let new_simple_class = SimpleClass {
+        name: Some(class.0.to_string()),
+        credits: Some(class.1),
+        component_id: Some(component.id)
+    };
+
+    match new_simple_class.create(conn) {
+        Ok(class) => {return class}
+        Err(e) => {panic!("Error creating class: {}", e)}
+    }
+
 
 }
 

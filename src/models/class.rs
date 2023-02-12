@@ -1,7 +1,10 @@
 use crate::schema::classes;
 use diesel::PgConnection;
+use crate::models::component::Component;
 
-#[derive(Queryable, Serialize, Deserialize)]
+#[derive(Queryable, Serialize, Deserialize, Associations)]
+#[diesel(belongs_to(Component))]
+#[diesel(table_name = classes)]
 pub struct Class {
     pub id: i32,
     pub name: String,
@@ -60,6 +63,25 @@ pub struct NewClass {
 
 
 impl NewClass {
+    pub fn create(&self, conn: &mut PgConnection) -> Result<Class, diesel::result::Error> {
+        use diesel::RunQueryDsl;
+
+        diesel::insert_into(classes::table)
+            .values(self)
+            .get_result(conn)
+    }
+}
+
+#[derive(Insertable, Deserialize, Associations)]
+#[diesel(belongs_to(Component))]
+#[diesel(table_name = classes)]
+pub struct SimpleClass {
+    pub name: Option<String>,
+    pub credits: Option<i32>,
+    pub component_id: Option<i32>
+}
+
+impl SimpleClass {
     pub fn create(&self, conn: &mut PgConnection) -> Result<Class, diesel::result::Error> {
         use diesel::RunQueryDsl;
 
