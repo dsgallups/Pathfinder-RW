@@ -1,6 +1,4 @@
 use crate::schema::{
-    components,
-    classes,
     components_to_components
 };
 
@@ -12,7 +10,7 @@ use crate::models::{
 use diesel::PgConnection;
 
 #[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
-#[belongs_to(Component, foreign_key="child_id")]
+#[diesel(belongs_to(Component, foreign_key=child_id))]
 #[diesel(table_name=components_to_components)]
 pub struct ComponentToComponent {
     pub id: i32,

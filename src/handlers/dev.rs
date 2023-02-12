@@ -6,23 +6,15 @@ use actix_web::{
 use serde_json::json;
 
 use crate::{models::{
-        university::{
-            University,
-            NewUniversity,
-            UniversityList
-        },
         component::{
             Component,
-            NewComponent,
-            ComponentList
+            NewComponent
         },
         class::{
             Class,
-            SimpleClass,
-            ClassList
+            SimpleClass
         },
         associations::{
-            ComponentToComponent,
             NewComponentAssoc
         }
 }, db_connection::PgPooledConnection};
@@ -53,18 +45,15 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
     let reset_output = reset_all_tables();
     println!("-------------------------------------\nTables Reset! Output:\n\n{}\n-------------------------------------", str::from_utf8(&reset_output.stdout).unwrap());
 
-
-    let mut classes: Vec<Component> = Vec::new();
     let mut components: Vec<Component> = Vec::new();
 
-    push_classes(&mut pg_pool, &mut classes);
+    push_classes(&mut pg_pool, &mut components);
     push_components(&mut pg_pool, &mut components);
 
     //populate our logical components
     form_component_groups(
         &mut pg_pool,
-        &mut components, 
-        &mut classes, 
+        &mut components,
         vec![
         ("CNIT CORE", AND(vec![
             "CNIT 18000",
@@ -216,7 +205,7 @@ fn push_classes(conn: &mut PgConnection, class_components: &mut Vec<Component>) 
         let class_component = create_class_component(conn, class.0);
         //make the classes in the class table
 
-        let db_class = create_class_from_component(conn, &class_component, class);
+        let _db_class = create_class_from_component(conn, &class_component, class);
         class_components.push(class_component);
     }
 
@@ -293,8 +282,7 @@ fn push_components(conn: &mut PgPooledConnection, components: &mut Vec<Component
 
 fn form_component_groups(
     conn: &mut PgConnection,
-    components: &mut Vec<Component>, 
-    classes: &mut Vec<Component>,
+    components: &mut Vec<Component>,
     values: Vec<(&str, LogicalType)>
 ) {
 
@@ -314,12 +302,12 @@ fn form_component_groups(
 
                 for child_component_str in sub_components {
 
-                    let child_i = classes
+                    let child_i = components
                         .iter()
                         .position(|v| v.name.eq(child_component_str))
                         .unwrap();
                     
-                    let child_component = &classes[child_i];
+                    let child_component = &components[child_i];
 
                     let new_component_assoc = NewComponentAssoc {
                         parent_id: comp.id,
@@ -338,7 +326,28 @@ fn form_component_groups(
 
             }
             LogicalType::OR(sub_components) => {
+                for child_component_str in sub_components {
 
+                    let child_i = components
+                        .iter()
+                        .position(|v| v.name.eq(child_component_str))
+                        .unwrap();
+                    
+                    let child_component = &components[child_i];
+
+                    let new_component_assoc = NewComponentAssoc {
+                        parent_id: comp.id,
+                        child_id: child_component.id,
+                        relationship_type: "OR".to_string()
+                    };
+                    match new_component_assoc.create(conn) {
+                        Ok(new_assoc) => {
+                            println!("Created Component Association: {:?}", new_assoc);
+
+                        }
+                        Err(e) => {panic!("Error Creating Component Association: {}", e)}
+                    }
+                }
             }
         }
 
