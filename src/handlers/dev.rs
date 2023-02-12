@@ -20,6 +20,10 @@ use crate::{models::{
             Class,
             SimpleClass,
             ClassList
+        },
+        associations::{
+            ComponentToComponent,
+            NewComponentAssoc
         }
 }, db_connection::PgPooledConnection};
 
@@ -57,7 +61,11 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
     push_components(&mut pg_pool, &mut components);
 
     //populate our logical components
-    form_component_groups(&mut components, &mut classes, vec![
+    form_component_groups(
+        &mut pg_pool,
+        &mut components, 
+        &mut classes, 
+        vec![
         ("CNIT CORE", AND(vec![
             "CNIT 18000",
             "CNIT 15501",
@@ -284,6 +292,7 @@ fn push_components(conn: &mut PgPooledConnection, components: &mut Vec<Component
 
 
 fn form_component_groups(
+    conn: &mut PgConnection,
     components: &mut Vec<Component>, 
     classes: &mut Vec<Component>,
     values: Vec<(&str, LogicalType)>
@@ -302,7 +311,31 @@ fn form_component_groups(
 
         match values {
             LogicalType::AND(sub_components) => {
-                
+
+                for child_component_str in sub_components {
+
+                    let child_i = classes
+                        .iter()
+                        .position(|v| v.name.eq(child_component_str))
+                        .unwrap();
+                    
+                    let child_component = &classes[child_i];
+
+                    let new_component_assoc = NewComponentAssoc {
+                        parent_id: comp.id,
+                        child_id: child_component.id,
+                        relationship_type: "AND".to_string()
+                    };
+                    match new_component_assoc.create(conn) {
+                        Ok(new_assoc) => {
+                            println!("Created Component Association: {:?}", new_assoc);
+
+                        }
+                        Err(e) => {panic!("Error Creating Component Association: {}", e)}
+                    }
+                }
+
+
             }
             LogicalType::OR(sub_components) => {
 
