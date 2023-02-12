@@ -15,6 +15,11 @@ use crate::{models::{
             Component,
             NewComponent,
             ComponentList
+        },
+        class::{
+            Class,
+            NewClass,
+            ClassList
         }
 }, db_connection::PgPooledConnection};
 
@@ -124,9 +129,15 @@ fn push_classes(conn: &mut PgConnection, class_components: &mut Vec<Component>) 
         
         //make the classes in the class table
         let db_class = create_class(conn, class.0, class.1);
+
+
     }
 
 
+
+}
+
+fn create_class(conn: &mut PgConnection, name: &str, credits: i32) -> Class {
 
 }
 
