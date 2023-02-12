@@ -1,3 +1,4 @@
-- Identify and define functions to be used
+- Implement Components, so that writing out this catalogue becomes A TON easier
+- Remove the helper struct in dev.rs
 
-- Build the Catalog First (Utilize existing catalog from old pathfinder code)
+- consider whether or not to translate code all to component

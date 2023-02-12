@@ -26,6 +26,26 @@ use std::str;
 
 use std::process::{Command, Output};
 
+struct CatalogMaker<'a> {
+    conn: &'a mut PgConnection
+}
+
+impl CatalogMaker<'_> {
+
+    pub fn new(conn: &mut PgConnection) -> Self {
+        
+        Self { conn }
+    }
+    pub fn reg(&self, name: &str) -> Component {
+        
+        //so check if it exists, if not, make it.
+        match Component::find()
+    }
+    pub fn class(name: &str, credits: i32) {
+
+    }
+}
+
 enum LogicalType <'a> {
     AND(Vec<&'a str>),
     OR(Vec<&'a str>)
@@ -49,6 +69,48 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
 
     push_classes(&mut pg_pool, &mut components);
     push_components(&mut pg_pool, &mut components);
+
+    let c = CatalogMaker::new(&mut pg_pool);
+    create_components(
+        vec![
+            (
+                c::reg("CNIT CORE"),
+                AND(vec![
+                    c::class("CNIT 18000", 3),
+                    c::class("CNIT 15501", 3),
+                    c::class("CNIT 17600", 3),
+                    c::class("CNIT 24200", 3)
+                ]),
+                "requirement"
+            )
+        ]
+    )
+    /*
+    create_components(
+        &mut pg_pool,
+        vec![
+            (
+                c::reg("CNIT CORE"), 
+                AND(vec![
+                    c::class("CNIT 18000", 3),
+                    c::class("CNIT 15501", 3),
+                    c::class("CNIT 17600", 3),
+                    c::class("CNIT 24200", 3),
+                ]),
+                "requirement"
+            )
+            (
+                c::reg("CNIT 18000"),
+                AND(vec![
+                    c::reg("CNIT 15501"),
+                    c::class("CNIT 24500", 3)
+                ]),
+                "requisite"
+            )
+        ]
+    )
+    
+    */
 
     //populate our logical components
     parse_component_associations(
