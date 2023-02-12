@@ -51,9 +51,10 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
     push_components(&mut pg_pool, &mut components);
 
     //populate our logical components
-    form_component_groups(
+    parse_component_associations(
         &mut pg_pool,
         &mut components,
+        "requirement",
         vec![
         ("CNIT CORE", AND(vec![
             "CNIT 18000",
@@ -125,6 +126,76 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
     ]);
 
 
+    parse_component_associations(
+        &mut pg_pool,
+        &mut components,
+        "requisite",
+        vec![
+            ("CNIT 27000", AND(vec![
+                "CNIT 17600",
+                "CNIT 15501"
+            ])),
+            ("CNIT 27200", AND(vec![
+                "CNIT 15501",
+                "CNIT 18000"
+            ])),
+            ("CNIT 28000", AND(vec![
+                "CNIT 18000"
+            ])),
+            ("CNIT 25501", AND(vec![
+                "CNIT 15501"
+            ])),
+            ("CNIT 24200", AND(vec![
+                "CNIT 17600"
+            ])),
+            ("CNIT 34010", AND(vec![
+                "CNIT 24200"
+            ])),
+            ("CNIT 34400", AND(vec![
+                "CNIT 24200",
+                "CNIT 27000"
+            ])),
+            ("CNIT 32000", AND(vec![
+                "TECH 12000"
+            ])),
+            ("CNIT 37000", AND(vec![
+                "CNIT 24200",
+                "CNIT 27000"
+            ])),
+            ("CNIT 32200", AND(vec![
+                "CNIT 27000"
+            ])),
+            ("CNIT 31500", AND(vec![
+                "CNIT 25501"
+            ])),
+            ("CNIT 34220", OR(vec![
+                "CNIT 34000",
+                "CNIT 34010"
+            ])),
+            ("CNIT 47000", AND(vec![
+                "CNIT 45500",
+                "CNIT 32000"
+            ])),
+            ("CNIT 48000", AND(vec![
+                "CNIT 28000"
+            ])),
+            ("CNIT 47100", AND(vec![
+                "CNIT 45500",
+                "CNIT 37000"
+            ])),
+            ("CNIT 34000", AND(vec![
+                "CNIT 24200"
+            ])),
+            ("CNIT 34500", AND(vec![
+                "CNIT 24200",
+                "CNIT 24000"
+            ])),
+            ("CNIT 34600", AND(vec![
+                "CNIT 24000",
+                "CNIT 24200"
+            ]))
+        ]
+    );
 
     return HttpResponse::Ok().json(json!({"name": "hi"}));
 }
@@ -280,9 +351,10 @@ fn push_components(conn: &mut PgPooledConnection, components: &mut Vec<Component
 }
 
 
-fn form_component_groups(
+fn parse_component_associations(
     conn: &mut PgConnection,
     components: &mut Vec<Component>,
+    assoc_type: &str,
     values: Vec<(&str, LogicalType)>
 ) {
 
@@ -299,7 +371,7 @@ fn form_component_groups(
                     parent_str, 
                     sub_components, 
                     "AND", 
-                    "requirement"
+                    assoc_type
                 );
             }
             LogicalType::OR(sub_components) => {
@@ -309,7 +381,7 @@ fn form_component_groups(
                     parent_str,
                     sub_components,
                     "OR",
-                    "requirement"
+                    assoc_type
                 );
             }
         }
