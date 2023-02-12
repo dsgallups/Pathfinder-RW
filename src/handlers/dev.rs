@@ -12,7 +12,7 @@ use crate::{models::{
         },
         associations::{
             NewComponentAssoc
-        }
+        }, class::NewClass
 }};
 
 use crate::db_connection::{ PgPool };
@@ -26,11 +26,13 @@ enum LogicalType<'a> {
     AND(Vec<InstatiationType<'a>>),
     OR(Vec<InstatiationType<'a>>)
 }
+
 enum ParsedLogicType {
     AND(Vec<usize>),
     OR(Vec<usize>)
 }
 
+#[allow(dead_code)]
 enum InstatiationType<'a> {
    SimpleClass(&'a str),
    Class((&'a str, i32)),
@@ -83,6 +85,7 @@ impl CatalogMaker {
 
         match new_component.create(&mut self.conn) {
             Ok(component) => {
+                println!("Created Component: {:?}", &component);
                 self.components.push(component);
                 return self.components.len() - 1;
             }
@@ -108,15 +111,33 @@ impl CatalogMaker {
             pftype: Some("class".to_string())
         };
 
-        match new_component.create_class_component(&mut self.conn) {
+        let comp = match new_component.create_class_component(&mut self.conn) {
             Ok(comp) => {
                 println!("Created Class Component: {:?}", comp);
                 self.components.push(comp);
                 index = self.components.len() - 1;
+                &self.components[index]
             }
             Err(e) => {panic!("Error creating class components: {}", e)}
-        }
+        };
 
+        let new_class = NewClass {
+            name: Some(name.to_string()),
+            description: None,
+            credits: Some(credits),
+            pftype: None,
+            subject: None,
+            course_no:None,
+            options: None,
+            component_id: Some(comp.id)
+        };
+
+        match new_class.create(&mut self.conn) {
+            Ok(class) => {
+                println!("Created Class: {:?}", class)
+            }
+            Err(e) => {panic!("Error creating class: {}", e)}
+        }
         index
 
     }
@@ -162,15 +183,8 @@ impl CatalogMaker {
 
     }
 
-    fn comp_list(&mut self, logic_type: LogicalType) -> Vec<usize> {
-        let mut ret: Vec<usize> = Vec::new();
 
-        ret
-
-    }
-
-
-    fn get_catalog(&mut self) {
+    pub fn gen_catalog(&mut self) {
         //first we get parse self.cs
         let catalog = vec![
             (
@@ -436,7 +450,7 @@ impl CatalogMaker {
 
 pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
 
-    let mut pg_pool = match pg_pool_handler(pool) {
+    let pg_pool = match pg_pool_handler(pool) {
         Ok(p) => {p}
         Err(e) => {
             return e;
@@ -446,10 +460,9 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
     let reset_output = reset_all_tables();
     println!("-------------------------------------\nTables Reset! Output:\n\n{}\n-------------------------------------", str::from_utf8(&reset_output.stdout).unwrap());
 
-    let mut components: Vec<Component> = Vec::new();
-
     let mut c = CatalogMaker::new(pg_pool);
     
+    c.gen_catalog();
 
     return HttpResponse::Ok().json(json!({"name": "hi"}));
 }

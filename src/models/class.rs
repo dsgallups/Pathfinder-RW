@@ -1,6 +1,7 @@
 use crate::schema::classes;
 use diesel::PgConnection;
 use crate::models::component::Component;
+use diesel::prelude::*;
 
 #[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
 #[diesel(belongs_to(Component))]
@@ -19,15 +20,11 @@ pub struct Class {
 
 impl Class {
     pub fn find(id: &i32, conn: &mut PgConnection) -> Result<Class, diesel::result::Error> {
-        use diesel::QueryDsl;
-        use diesel::RunQueryDsl;
 
         classes::table.find(id).first(conn)
     }
 
     pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
-        use diesel::QueryDsl;
-        use diesel::RunQueryDsl;
 
         diesel::delete(classes::table.find(id))
             .execute(conn)?;
@@ -36,8 +33,6 @@ impl Class {
     }
 
     pub fn update(id: &i32, new_university: &NewClass, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
-        use diesel::QueryDsl;
-        use diesel::RunQueryDsl;
 
         diesel::update(classes::table.find(id))
             .set(new_university)
@@ -64,10 +59,26 @@ pub struct NewClass {
 
 impl NewClass {
     pub fn create(&self, conn: &mut PgConnection) -> Result<Class, diesel::result::Error> {
-        use diesel::RunQueryDsl;
 
         diesel::insert_into(classes::table)
             .values(self)
+            .get_result(conn)
+    }
+
+    pub fn new_simple_class(&self, conn: &mut PgConnection, passed_name: String, passed_credits: i32, passed_component_id: i32) -> Result<Class, diesel::result::Error> {
+        use crate::schema::classes::dsl::*;
+
+        diesel::insert_into(classes)
+            .values(NewClass {
+                name: Some(passed_name),
+                description: None,
+                credits: Some(passed_credits),
+                pftype: None,
+                subject: None,
+                course_no:None,
+                options: None,
+                component_id: Some(passed_component_id)
+            })
             .get_result(conn)
     }
 }
@@ -83,7 +94,6 @@ pub struct SimpleClass {
 
 impl SimpleClass {
     pub fn create(&self, conn: &mut PgConnection) -> Result<Class, diesel::result::Error> {
-        use diesel::RunQueryDsl;
 
         diesel::insert_into(classes::table)
             .values(self)
@@ -96,8 +106,7 @@ pub struct ClassList(pub Vec<Class>);
 
 impl ClassList {
     pub fn list(conn: &mut PgConnection) -> Self {
-        use diesel::RunQueryDsl;
-        use diesel::QueryDsl;
+
         use crate::schema::classes::dsl::*;
 
         let result =
