@@ -30,6 +30,13 @@ use std::str;
 
 use std::process::{Command, Output};
 
+enum LogicalType <'a> {
+    AND(Vec<&'a str>),
+    OR(Vec<&'a str>)
+}
+
+use LogicalType::{AND, OR};
+
 pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
 
     let mut pg_pool = match pg_pool_handler(pool) {
@@ -48,6 +55,77 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
 
     push_classes(&mut pg_pool, &mut classes);
     push_components(&mut pg_pool, &mut components);
+
+    //populate our logical components
+    form_component_groups(&mut components, &mut classes, vec![
+        ("CNIT CORE", AND(vec![
+            "CNIT 18000",
+            "CNIT 15501",
+            "CNIT 17600",
+            "CNIT 24200",
+            "CNIT 25501",
+            "CNIT 27000",
+            "CNIT 27200",
+            "CNIT 28000",
+            "CNIT 32000",
+            "CNIT 48000"
+        ])),
+        ("CNIT DB PROGRAMMING", OR(vec![
+            "CNIT 37200",
+            "CNIT 39200"
+        ])),
+        ("CNIT SYS/APP DEV", OR(vec![
+            "CNIT 31500",
+            "CNIT 32500"
+        ])),
+        ("GENERAL BUSINESS SELECTIVE", OR(vec![
+            "IET 10400",
+            "IT 10400",
+            "TLI 11100",
+            "TLI 15200"
+        ])),
+        ("UNIV CORE", AND(vec![
+            "SCLA 10100",
+            "SCLA 10200",
+            "TECH 12000",
+            "MA 16010",
+            "MA 16020",
+            "OLS 25200",
+            "TLI 11200",
+            "PHIL 15000",
+            "COMSEL 00000",
+            "ECONSEL 00000",
+            "SCISEL 00000",
+            "LABSCISEL 00000",
+            "ACCSEL 00000",
+            "STATSEL 00000",
+            "SPEAKSEL 00000",
+            "WRITINGSEL 00000",
+            "HUMSEL 00000",
+            "BEHAVSCISEL 00000",
+            "FOUNDSEL 00000"
+        ])),
+        ("CNIT/SAAD INTERDISC", AND(vec![
+            "INTERDISC 00000",
+            "INTERDISC 00000"
+        ])),
+        ("CSEC INTERDISC", AND(vec![
+            "INTERDISC 00000",
+            "INTERDISC 00000"
+        ])),
+        ("NENT INTERDISC", AND(vec![
+            "INTERDISC 00000",
+            "INTERDISC 00000"
+        ])),
+        ("CNIT IT SELECTIVES", AND(vec![
+            "ITSEL 00000",
+            "ITSEL 00000"
+        ])),
+        ("NENT IT SELECTIVES", AND(vec![
+            "ITSEL 00000",
+            "ITSEL 00000"
+        ]))
+    ]);
 
 
 
@@ -200,6 +278,39 @@ fn push_components(conn: &mut PgPooledConnection, components: &mut Vec<Component
             }
             Err(e) => {panic!("Error creating component: {}", e)}
         }
+    }
+
+}
+
+
+fn form_component_groups(
+    components: &mut Vec<Component>, 
+    classes: &mut Vec<Component>,
+    values: Vec<(&str, LogicalType)>
+) {
+
+    for val in values {
+        //we make component to component deals
+        let log_comp_name = val.0;
+        let values = val.1;
+
+        let comp_i = components
+            .iter()
+            .position(|v| v.name.eq(log_comp_name))
+            .unwrap();
+        let comp = &components[comp_i];
+
+        match values {
+            LogicalType::AND(sub_components) => {
+                
+            }
+            LogicalType::OR(sub_components) => {
+
+            }
+        }
+
+        
+
     }
 
 }

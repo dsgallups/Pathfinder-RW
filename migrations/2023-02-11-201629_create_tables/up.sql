@@ -43,7 +43,8 @@ CREATE TABLE component (
 CREATE TABLE components_to_components (
     id SERIAL PRIMARY KEY,
     parent_id INTEGER REFERENCES components(id) NOT NULL,
-    child_id INTEGER REFERENCES components(id) NOT NULL
+    child_id INTEGER REFERENCES components(id) NOT NULL,
+    relationship_type CHARACTER VARYING(3) NOT NULL
 );
 
 CREATE TABLE degrees (
