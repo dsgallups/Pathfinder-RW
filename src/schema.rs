@@ -59,7 +59,7 @@ diesel::table! {
         id -> Int4,
         parent_id -> Int4,
         child_id -> Int4,
-        relationship_type -> Varchar,
+        association_type -> Varchar,
         logic_type -> Varchar,
     }
 }

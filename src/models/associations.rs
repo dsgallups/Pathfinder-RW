@@ -17,7 +17,7 @@ pub struct ComponentToComponent {
     pub parent_id: i32,
     pub child_id: i32,
     pub logic_type: String,
-    pub relationship_type: String
+    pub association_type: String
 }
 
 #[derive(Debug, Insertable, Serialize, Deserialize)]
@@ -25,7 +25,7 @@ pub struct ComponentToComponent {
 pub struct NewComponentAssoc {
     pub parent_id: i32,
     pub child_id: i32,
-    pub relationship_type: String,
+    pub association_type: String,
     pub logic_type: String
 }
 impl NewComponentAssoc {
