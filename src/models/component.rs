@@ -1,7 +1,7 @@
 use crate::schema::components;
 use diesel::PgConnection;
 
-#[derive(Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Component {
     pub id: i32,
     pub name: String,
@@ -39,7 +39,7 @@ impl Component {
 
 }
 
-#[derive(Insertable, Deserialize, AsChangeset)]
+#[derive(Debug, Insertable, Deserialize, AsChangeset)]
 #[diesel(table_name = components)]
 pub struct NewComponent {
     pub name: Option<String>,

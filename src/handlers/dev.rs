@@ -127,7 +127,7 @@ fn push_classes(conn: &mut PgConnection, class_components: &mut Vec<Component>) 
 
     for class in classes {
         //Make the components first
-        let class_component = create_class_component(conn, class.0, class.1);
+        let class_component = create_class_component(conn, class.0);
         //make the classes in the class table
 
         let db_class = create_class_from_component(conn, &class_component, class);
@@ -137,14 +137,17 @@ fn push_classes(conn: &mut PgConnection, class_components: &mut Vec<Component>) 
 
 }
 
-fn create_class_component (conn: &mut PgConnection, name: &str, credits: i32) -> Component {
+fn create_class_component (conn: &mut PgConnection, name: &str) -> Component {
     let new_component = NewComponent {
         name: Some(name.to_string()),
         pftype: Some("class".to_string())
     };
 
     match new_component.create_class_component(conn) {
-        Ok(comp) => {return comp}
+        Ok(comp) => {
+            println!("Created Class Component: {:?}", comp);
+            return comp;
+        }
         Err(e) => {panic!("Error creating class component: {}", e)}
     }
 }
@@ -158,7 +161,10 @@ fn create_class_from_component(conn: &mut PgConnection, component: &Component, c
     };
 
     match new_simple_class.create(conn) {
-        Ok(class) => {return class}
+        Ok(class) => {
+            println!("Created Class: {:?}", &class);
+            return class;
+        }
         Err(e) => {panic!("Error creating class: {}", e)}
     }
 
@@ -166,5 +172,34 @@ fn create_class_from_component(conn: &mut PgConnection, component: &Component, c
 }
 
 fn push_components(conn: &mut PgPooledConnection, components: &mut Vec<Component>) {
+    let component_strs = vec![
+        "CNIT CORE",
+        "CNIT DB PROGRAMMING",
+        "CNIT SYS/APP DEV",
+        "GENERAL BUSINESS SELECTIVE",
+        "UNIV CORE",
+        "CNIT/SAAD INTERDISC",
+        "CSEC INTERDISC",
+        "NENT INTERDISC",
+        "CNIT IT SELECTIVES",
+        "NENT IT SELECTIVES",
+        "SAAD IT SELECTIVES",
+        "CSEC SELECTIVES",
+        "SAAD SELECTIVES"
+    ];
+
+    for comp in component_strs {
+        let new_component = NewComponent {
+            name: Some(comp.to_string()),
+            pftype: Some("logical".to_string())
+        };
+        match new_component.create(conn) {
+            Ok(comp) => {
+                println!("Created {:?}", &comp);
+                components.push(comp);
+            }
+            Err(e) => {panic!("Error creating component: {}", e)}
+        }
+    }
 
 }

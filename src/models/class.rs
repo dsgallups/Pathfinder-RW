@@ -2,7 +2,7 @@ use crate::schema::classes;
 use diesel::PgConnection;
 use crate::models::component::Component;
 
-#[derive(Queryable, Serialize, Deserialize, Associations)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
 #[diesel(belongs_to(Component))]
 #[diesel(table_name = classes)]
 pub struct Class {
@@ -72,7 +72,7 @@ impl NewClass {
     }
 }
 
-#[derive(Insertable, Deserialize, Associations)]
+#[derive(Debug, Insertable, Deserialize, Associations)]
 #[diesel(belongs_to(Component))]
 #[diesel(table_name = classes)]
 pub struct SimpleClass {
