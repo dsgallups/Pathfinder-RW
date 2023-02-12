@@ -288,66 +288,29 @@ fn form_component_groups(
 
     for val in values {
         //we make component to component deals
-        let log_comp_name = val.0;
-        let values = val.1;
+        let parent_str = val.0;
+        let children = val.1;
 
-        let comp_i = components
-            .iter()
-            .position(|v| v.name.eq(log_comp_name))
-            .unwrap();
-        let comp = &components[comp_i];
-
-        match values {
+        match children {
             LogicalType::AND(sub_components) => {
-
-                for child_component_str in sub_components {
-
-                    let child_i = components
-                        .iter()
-                        .position(|v| v.name.eq(child_component_str))
-                        .unwrap();
-                    
-                    let child_component = &components[child_i];
-
-                    let new_component_assoc = NewComponentAssoc {
-                        parent_id: comp.id,
-                        child_id: child_component.id,
-                        relationship_type: "AND".to_string()
-                    };
-                    match new_component_assoc.create(conn) {
-                        Ok(new_assoc) => {
-                            println!("Created Component Association: {:?}", new_assoc);
-
-                        }
-                        Err(e) => {panic!("Error Creating Component Association: {}", e)}
-                    }
-                }
-
-
+                create_component_assoc(
+                    conn,
+                    components,
+                    parent_str, 
+                    sub_components, 
+                    "AND", 
+                    "requirement"
+                );
             }
             LogicalType::OR(sub_components) => {
-                for child_component_str in sub_components {
-
-                    let child_i = components
-                        .iter()
-                        .position(|v| v.name.eq(child_component_str))
-                        .unwrap();
-                    
-                    let child_component = &components[child_i];
-
-                    let new_component_assoc = NewComponentAssoc {
-                        parent_id: comp.id,
-                        child_id: child_component.id,
-                        relationship_type: "OR".to_string()
-                    };
-                    match new_component_assoc.create(conn) {
-                        Ok(new_assoc) => {
-                            println!("Created Component Association: {:?}", new_assoc);
-
-                        }
-                        Err(e) => {panic!("Error Creating Component Association: {}", e)}
-                    }
-                }
+                create_component_assoc(
+                    conn,
+                    components,
+                    parent_str,
+                    sub_components,
+                    "OR",
+                    "requirement"
+                );
             }
         }
 
@@ -355,4 +318,45 @@ fn form_component_groups(
 
     }
 
+}
+
+fn create_component_assoc(
+    conn: &mut PgConnection,
+    components: &Vec<Component>,
+    parent_str: &str, 
+    children_strs: Vec<&str>, 
+    logic_type: &str,
+    assoc_type: &str
+) {
+
+    let parent_i = components
+    .iter()
+    .position(|v| v.name.eq(parent_str))
+    .unwrap();
+
+    let comp = &components[parent_i];
+
+    for child_str in children_strs {
+
+        let child_i = components
+            .iter()
+            .position(|v| v.name.eq(child_str))
+            .unwrap();
+        
+        let child_component = &components[child_i];
+
+        let new_component_assoc = NewComponentAssoc {
+            parent_id: comp.id,
+            child_id: child_component.id,
+            relationship_type: assoc_type.to_string(),
+            logic_type: logic_type.to_string()
+        };
+        match new_component_assoc.create(conn) {
+            Ok(new_assoc) => {
+                println!("Created Component Association: {:?}", new_assoc);
+
+            }
+            Err(e) => {panic!("Error Creating Component Association: {}", e)}
+        }
+    }
 }
