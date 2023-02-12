@@ -16,7 +16,7 @@ use crate::{models::{
 }};
 
 use crate::db_connection::{ PgPool };
-use diesel::{PgConnection, r2d2::{PooledConnection, ConnectionManager}};
+use diesel::{PgConnection, r2d2::{PooledConnection, ConnectionManager}, helper_types::Or};
 use crate::handlers::pg_pool_handler;
 use std::str;
 
@@ -235,8 +235,8 @@ impl CatalogMaker {
                     SimpleClass("SCLA 10100"),
                     SimpleClass("SCLA 10200"),
                     SimpleClass("TECH 12000"),
-                    SimpleClass("MA 16010"),
-                    SimpleClass("MA 16020"),
+                    Class(("MA 16010", 5)),
+                    Class(("MA 16020", 5)),
                     SimpleClass("OLS 25200"),
                     SimpleClass("TLI 11200"),
                     SimpleClass("PHIL 15000"),
@@ -291,7 +291,7 @@ impl CatalogMaker {
                 "requisite"
             ),
             (
-                SimpleClass("CNIT 34010"),
+                Class(("CNIT 34010", 1)),
                 AND(vec![
                     SimpleClass("CNIT 24200")
                 ]),
@@ -338,7 +338,7 @@ impl CatalogMaker {
                 SimpleClass("CNIT 34220"),
                 OR(vec![
                     SimpleClass("CNIT 34000"),
-                    SimpleClass("CNIT 34010")
+                    Class(("CNIT 34010", 1))
                 ]),
                 "requisite"
             ),
@@ -387,6 +387,29 @@ impl CatalogMaker {
                 ]),
                 "requisite"
             ),
+            (
+                Reg("NETWORK ENGR GROUPED 455 PREREQ"),
+                OR(vec![
+                    SimpleClass("CNIT 34500"),
+                    SimpleClass("CNIT 34400")
+                ]),
+                "requirement"
+            ),
+            (
+                SimpleClass("CNIT 45500"),
+                AND(vec![
+                    SimpleClass("CNIT 34220"),
+                    Reg("NETWORK ENGR GROUPED 455 PREREQ")
+                ]),
+                "requisite"
+            ),
+            (
+                Class(("MA 16020", 5)),
+                OR(vec![
+                    Class(("MA 16010", 5))
+                ]),
+                "requisite"
+            )
         ];
 
         let mut parsed_assocs: Vec<(usize, ParsedLogicType, &str)> = Vec::new();

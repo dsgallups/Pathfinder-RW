@@ -3,3 +3,4 @@ pub mod subdivision;
 pub mod component;
 pub mod class;
 pub mod associations;
+pub mod degree;

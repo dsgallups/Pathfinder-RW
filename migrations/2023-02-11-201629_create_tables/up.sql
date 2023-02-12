@@ -59,6 +59,6 @@ CREATE TABLE degrees (
 
 CREATE TABLE degrees_to_components (
     id SERIAL PRIMARY KEY,
-    degree INTEGER REFERENCES components(id) NOT NULL,
-    component INTEGER REFERENCES components(id) NOT NULL
+    degree_id INTEGER REFERENCES degrees(id) NOT NULL,
+    component_id INTEGER REFERENCES components(id) NOT NULL
 );

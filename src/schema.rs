@@ -46,8 +46,8 @@ diesel::table! {
 diesel::table! {
     degrees_to_components (id) {
         id -> Int4,
-        degree -> Int4,
-        component -> Int4,
+        degree_id -> Int4,
+        component_id -> Int4,
     }
 }
 
@@ -69,6 +69,8 @@ diesel::table! {
 
 diesel::joinable!(classes -> components (component_id));
 diesel::joinable!(degrees -> subdivisions (subdivision));
+diesel::joinable!(degrees_to_components -> components (component_id));
+diesel::joinable!(degrees_to_components -> degrees (degree_id));
 diesel::joinable!(subdivisions -> universities (university_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
