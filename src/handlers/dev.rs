@@ -1,7 +1,7 @@
 use actix_web::{
     web, 
     HttpRequest, 
-    HttpResponse 
+    HttpResponse,
 };
 use serde_json::json;
 
@@ -10,37 +10,45 @@ use crate::{models::{
             Component,
             NewComponent
         },
-        class::{
-            Class,
-            SimpleClass
-        },
         associations::{
             NewComponentAssoc
         }
-}, db_connection::PgPooledConnection};
+}};
 
 use crate::db_connection::{ PgPool };
-use diesel::PgConnection;
+use diesel::{PgConnection, r2d2::{PooledConnection, ConnectionManager}};
 use crate::handlers::pg_pool_handler;
 use std::str;
 
 use std::process::{Command, Output};
 
-enum LogicalType {
+enum LogicalType<'a> {
+    AND(Vec<InstatiationType<'a>>),
+    OR(Vec<InstatiationType<'a>>)
+}
+enum ParsedLogicType {
     AND(Vec<usize>),
     OR(Vec<usize>)
 }
 
-use LogicalType::{AND, OR};
+enum InstatiationType<'a> {
+   SimpleClass(&'a str),
+   Class((&'a str, i32)),
+   Reg(&'a str),
+   
+}
 
-struct CatalogMaker<'a> {
-    conn: &'a mut PgConnection,
+use LogicalType::{AND, OR};
+use InstatiationType::{SimpleClass, Class, Reg};
+
+struct CatalogMaker {
+    conn: PooledConnection<ConnectionManager<PgConnection>>,
     components: Vec<Component>
 }
 
-impl CatalogMaker<'_> {
+impl CatalogMaker {
 
-    pub fn new(conn: &mut PgConnection) -> Self {
+    pub fn new(conn: PooledConnection<ConnectionManager<PgConnection>>) -> Self {
         
         Self { conn, components: Vec::new() }
     }
@@ -55,7 +63,7 @@ impl CatalogMaker<'_> {
         }
 
         //so check if it exists, if not, make it.
-        if let Ok(component) = Component::find_by_name(name, self.conn) {
+        if let Ok(component) = Component::find_by_name(name, &mut self.conn) {
             self.components.push(component);
             return Some(self.components.len() - 1);
         };
@@ -73,7 +81,7 @@ impl CatalogMaker<'_> {
             pftype: Some("logical".to_string())
         };
 
-        match new_component.create(self.conn) {
+        match new_component.create(&mut self.conn) {
             Ok(component) => {
                 self.components.push(component);
                 return self.components.len() - 1;
@@ -100,7 +108,7 @@ impl CatalogMaker<'_> {
             pftype: Some("class".to_string())
         };
 
-        match new_component.create_class_component(self.conn) {
+        match new_component.create_class_component(&mut self.conn) {
             Ok(comp) => {
                 println!("Created Class Component: {:?}", comp);
                 self.components.push(comp);
@@ -109,74 +117,317 @@ impl CatalogMaker<'_> {
             Err(e) => {panic!("Error creating class components: {}", e)}
         }
 
-        //create the class now
-        let new_simple_class = SimpleClass {
-            name: Some(name.to_string()),
-            credits: Some(credits),
-            component_id: Some(self.components[index].id)
-        };
-
-        match new_simple_class.create(self.conn) {
-            Ok(class) => {
-                println!("Created Class: {:?}", &class);
-                return index
-            }
-            Err(e) => {panic!("Error creating class: {}", e)}
-        }
+        index
 
     }
 
-    pub fn parse_assocs(&self, assocs: Vec<(usize, LogicalType, &str)>) {
-        for assoc in assocs {
-            let parent_index = assoc.0;
-            let logic_type = assoc.1;
-            let association_type = assoc.2;
-
-            let parent = &self.components[parent_index];
-
-            match logic_type {
-                AND(children) => {
-                    self.create_component_assoc(
-                        parent,
-                        children,
-                        "AND",
-                        association_type
-                    )
-                },
-                OR(children) => {
-                    self.create_component_assoc(
-                        parent,
-                        children,
-                        "OR",
-                        association_type
-                    )
-                }
-            }            
-        }
-    }
     fn create_component_assoc(
-        &self, 
-        parent: &Component, 
-        children: Vec<usize>,
-        logic_type: &str,
+        &mut self, 
+        parent_indice: usize, 
+        parsed_children: ParsedLogicType,
         association_type: &str
     ) {
-        for child_i in children {
-            let child = self.components[child_i];
+        let parent = &self.components[parent_indice];
 
-            let new_component_assoc = NewComponentAssoc {
-                parent_id: parent.id,
-                child_id: child.id,
-                association_type: association_type.to_string(),
-                logic_type: logic_type.to_string()
-            };
-            match new_component_assoc.create(self.conn) {
-                Ok(new_assoc) => {
-                    println!("Created Component Association: {:?}", new_assoc);
+        let logic_type = match parsed_children {
+            ParsedLogicType::AND(_) => {
+                "AND"
+            },
+            ParsedLogicType::OR(_) => {
+                "OR"
+            }
+        };
+
+        match parsed_children {
+            ParsedLogicType::AND(children_indices) | 
+            ParsedLogicType::OR(children_indices) => {
+                for child_i in children_indices {
+                    let child = &self.components[child_i];
+        
+                    let new_component_assoc = NewComponentAssoc {
+                        parent_id: parent.id,
+                        child_id: child.id,
+                        association_type: association_type.to_string(),
+                        logic_type: logic_type.to_string()
+                    };
+                    match new_component_assoc.create(&mut self.conn) {
+                        Ok(new_assoc) => {
+                            println!("Created Component Association: {:?}", new_assoc);
+                        }
+                        Err(e) => {panic!("Error Creating Component Association: {}", e)}
+                    }
                 }
-                Err(e) => {panic!("Error Creating Component Association: {}", e)}
             }
         }
+
+    }
+
+    fn comp_list(&mut self, logic_type: LogicalType) -> Vec<usize> {
+        let mut ret: Vec<usize> = Vec::new();
+
+        ret
+
+    }
+
+
+    fn get_catalog(&mut self) {
+        //first we get parse self.cs
+        let catalog = vec![
+            (
+                Reg("CNIT CORE"),
+                AND(vec![
+                    SimpleClass("CNIT 18000"),
+                    SimpleClass("CNIT 15501"),
+                    SimpleClass("CNIT 17600"),
+                    SimpleClass("CNIT 24200"),
+                    SimpleClass("CNIT 25501"),
+                    SimpleClass("CNIT 27000"),
+                    SimpleClass("CNIT 27200"),
+                    SimpleClass("CNIT 28000"),
+                    SimpleClass("CNIT 32000"),
+                    SimpleClass("CNIT 48000")
+                ]),
+                "requirement"
+            ),
+            (
+                Reg("CNIT DB PROGRAMMING"),
+                OR(vec![
+                    SimpleClass("CNIT 37200"),
+                    SimpleClass("CNIT 39200")
+                ]),
+                "requirement"
+            ),
+            (
+                Reg("CNIT SYS/APP DEV"),
+                OR(vec![
+                    SimpleClass("CNIT 31500"),
+                    SimpleClass("CNIT 32500")
+                ]),
+                "requirement"
+            ),
+            (
+                Reg("GENERAL BUSINESS SELECTIVE"),
+                OR(vec![
+                    SimpleClass("IET 10400"),
+                    SimpleClass("IT 10400"),
+                    SimpleClass("TLI 11100"),
+                    SimpleClass("TLI 15200")
+                ]),
+                "requirement"
+            ),
+            (
+                Reg("UNIV CORE"),
+                AND(vec![
+                    SimpleClass("SCLA 10100"),
+                    SimpleClass("SCLA 10200"),
+                    SimpleClass("TECH 12000"),
+                    SimpleClass("MA 16010"),
+                    SimpleClass("MA 16020"),
+                    SimpleClass("OLS 25200"),
+                    SimpleClass("TLI 11200"),
+                    SimpleClass("PHIL 15000"),
+                    SimpleClass("COMSEL 00000"),
+                    SimpleClass("ECONSEL 00000"),
+                    SimpleClass("SCISEL 00000"),
+                    SimpleClass("LABSCISEL 00000"),
+                    SimpleClass("ACCSEL 00000"),
+                    SimpleClass("STATSEL 00000"),
+                    SimpleClass("SPEAKSEL 00000"),
+                    SimpleClass("WRITINGSEL 00000"),
+                    SimpleClass("HUMSEL 00000"),
+                    SimpleClass("BEHAVSCISEL 00000"),
+                    SimpleClass("FOUNDSEL 00000")
+                ]),
+                "requirement"
+            ),
+            (
+                Reg("CNIT/SAAD INTERDISC"), 
+                AND(vec![
+                    SimpleClass("INTERDISC 00000")
+                ]),
+                "requirement"
+            ),
+            (
+                SimpleClass("CNIT 27000"),
+                AND(vec![
+                    SimpleClass("CNIT 17600"),
+                    SimpleClass("CNIT 15501")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 28000"),
+                AND(vec![
+                    SimpleClass("CNIT 18000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 25501"),
+                AND(vec![
+                    SimpleClass("CNIT 15501")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 24200"),
+                AND(vec![
+                    SimpleClass("CNIT 17600")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 34010"),
+                AND(vec![
+                    SimpleClass("CNIT 24200")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 34400"),
+                AND(vec![
+                    SimpleClass("CNIT 24200"),
+                    SimpleClass("CNIT 27000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 32000"),
+                AND(vec![
+                    SimpleClass("TECH 12000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 37000"),
+                AND(vec![
+                    SimpleClass("CNIT 24200"),
+                    SimpleClass("CNIT 27000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 32200"),
+                AND(vec![
+                    SimpleClass("CNIT 27000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 31500"),
+                AND(vec![
+                    SimpleClass("CNIT 25501")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 34220"),
+                OR(vec![
+                    SimpleClass("CNIT 34000"),
+                    SimpleClass("CNIT 34010")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 47000"),
+                AND(vec![
+                    SimpleClass("CNIT 32000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 48000"),
+                AND(vec![
+                    SimpleClass("CNIT 28000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 47100"),
+                AND(vec![
+                    SimpleClass("CNIT 45500"),
+                    SimpleClass("CNIT 37000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 34000"),
+                AND(vec![
+                    SimpleClass("CNIT 24200")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 34500"),
+                AND(vec![
+                    SimpleClass("CNIT 24200"),
+                    SimpleClass("CNIT 24000")
+                ]),
+                "requisite"
+            ),
+            (
+                SimpleClass("CNIT 34600"),
+                AND(vec![
+                    SimpleClass("CNIT 24000"),
+                    SimpleClass("CNIT 24200")
+                ]),
+                "requisite"
+            ),
+        ];
+
+        let mut parsed_assocs: Vec<(usize, ParsedLogicType, &str)> = Vec::new();
+
+        for item in catalog {
+            let parent_component = item.0;
+            let logical_type = item.1;
+            let association_type = item.2;
+
+            //so first we will parse the logicaltype into parsed type
+            let mut indices: Vec<usize> = Vec::new();
+            match &logical_type {
+                AND(components) | OR(components) => {
+                    for comp in components {
+                        match comp {
+                            SimpleClass(c) => {
+                                indices.push(self.c(c));
+                            }
+                            Class(c) => {
+                                indices.push(self.class(c.0, c.1));
+                            }
+                            Reg(c) => {
+                                indices.push(self.reg(c));
+                            }
+                    
+                        }
+                    }
+                }
+            }
+
+            let parsed_logical_type = match &logical_type {
+                AND(_) => {ParsedLogicType::AND(indices)}
+                OR(_) => {ParsedLogicType::OR(indices)}
+            };
+
+            //now we can pass this (hopefully) to parse_assocs
+            let parent_component_indice = match &parent_component {
+                SimpleClass(c) => {
+                    self.c(c)
+                }
+                Class(c) => {
+                    self.class(c.0, c.1)
+                }
+                Reg(c) => {
+                    self.reg(c)
+                }
+            };
+            
+            parsed_assocs.push((parent_component_indice, parsed_logical_type, association_type));
+        }
+
+        for association in parsed_assocs {
+            self.create_component_assoc(association.0, association.1, association.2);
+        }
+    
 
     }
 }
@@ -197,211 +448,8 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
 
     let mut components: Vec<Component> = Vec::new();
 
-    let mut c = CatalogMaker::new(&mut pg_pool);
-    c.parse_assocs(
-        vec![
-            (
-                c.reg("CNIT CORE"),
-                AND(vec![
-                    c.c("CNIT 18000"),
-                    c.c("CNIT 15501"),
-                    c.c("CNIT 17600"),
-                    c.c("CNIT 24200"),
-                    c.c("CNIT 25501"),
-                    c.c("CNIT 27000"),
-                    c.c("CNIT 27200"),
-                    c.c("CNIT 28000"),
-                    c.c("CNIT 32000"),
-                    c.c("CNIT 48000")
-                ]),
-                "requirement"
-            ),
-            (
-                c.reg("CNIT DB PROGRAMMING"),
-                OR(vec![
-                    c.c("CNIT 37200"),
-                    c.c("CNIT 39200")
-                ]),
-                "requirement"
-            ),
-            (
-                c.reg("CNIT SYS/APP DEV"),
-                OR(vec![
-                    c.c("CNIT 31500"),
-                    c.c("CNIT 32500")
-                ]),
-                "requirement"
-            ),
-            (
-                c.reg("GENERAL BUSINESS SELECTIVE"),
-                OR(vec![
-                    c.c("IET 10400"),
-                    c.c("IT 10400"),
-                    c.c("TLI 11100"),
-                    c.c("TLI 15200")
-                ]),
-                "requirement"
-            ),
-            (
-                c.reg("UNIV CORE"),
-                AND(vec![
-                    c.c("SCLA 10100"),
-                    c.c("SCLA 10200"),
-                    c.c("TECH 12000"),
-                    c.c("MA 16010"),
-                    c.c("MA 16020"),
-                    c.c("OLS 25200"),
-                    c.c("TLI 11200"),
-                    c.c("PHIL 15000"),
-                    c.c("COMSEL 00000"),
-                    c.c("ECONSEL 00000"),
-                    c.c("SCISEL 00000"),
-                    c.c("LABSCISEL 00000"),
-                    c.c("ACCSEL 00000"),
-                    c.c("STATSEL 00000"),
-                    c.c("SPEAKSEL 00000"),
-                    c.c("WRITINGSEL 00000"),
-                    c.c("HUMSEL 00000"),
-                    c.c("BEHAVSCISEL 00000"),
-                    c.c("FOUNDSEL 00000")
-                ]),
-                "requirement"
-            ),
-            (
-                c.reg("CNIT/SAAD INTERDISC"), 
-                AND(vec![
-                    c.c("INTERDISC 00000")
-                ]),
-                "requirement"
-            ),
-            (
-                c.c("CNIT 27000"),
-                AND(vec![
-                    c.c("CNIT 17600"),
-                    c.c("CNIT 15501")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 28000"),
-                AND(vec![
-                    c.c("CNIT 18000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 25501"),
-                AND(vec![
-                    c.c("CNIT 15501")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 24200"),
-                AND(vec![
-                    c.c("CNIT 17600")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 34010"),
-                AND(vec![
-                    c.c("CNIT 24200")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 34400"),
-                AND(vec![
-                    c.c("CNIT 24200"),
-                    c.c("CNIT 27000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 32000"),
-                AND(vec![
-                    c.c("TECH 12000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 37000"),
-                AND(vec![
-                    c.c("CNIT 24200"),
-                    c.c("CNIT 27000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 32200"),
-                AND(vec![
-                    c.c("CNIT 27000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 31500"),
-                AND(vec![
-                    c.c("CNIT 25501")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 34220"),
-                OR(vec![
-                    c.c("CNIT 34000"),
-                    c.c("CNIT 34010")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 47000"),
-                AND(vec![
-                    c.c("CNIT 32000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 48000"),
-                AND(vec![
-                    c.c("CNIT 28000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 47100"),
-                AND(vec![
-                    c.c("CNIT 45500"),
-                    c.c("CNIT 37000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 34000"),
-                AND(vec![
-                    c.c("CNIT 24200")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 34500"),
-                AND(vec![
-                    c.c("CNIT 24200"),
-                    c.c("CNIT 24000")
-                ]),
-                "requisite"
-            ),
-            (
-                c.c("CNIT 34600"),
-                AND(vec![
-                    c.c("CNIT 24000"),
-                    c.c("CNIT 24200")
-                ]),
-                "requisite"
-            ),
-        ]
-    );
+    let mut c = CatalogMaker::new(pg_pool);
+    
 
     return HttpResponse::Ok().json(json!({"name": "hi"}));
 }
