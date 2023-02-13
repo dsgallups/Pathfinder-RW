@@ -7,7 +7,7 @@ use crate::{
     handlers::types::{InstantiationType, LogicalType, ParsedLogicType},
     models::{
         associations::{NewComponentAssoc, NewDegreeToComponent},
-        class::NewClass,
+        class::{self, NewClass},
         component::{Component, NewComponent},
         degree::{self, NewDegree},
     },
@@ -43,7 +43,7 @@ impl Catalog {
         None
     }
 
-    pub fn create_component(
+    pub fn parse_catalog_item(
         &mut self,
         instantiation_type: &InstantiationType,
         logic_type: &Option<&LogicalType>,
@@ -53,20 +53,22 @@ impl Catalog {
         match *instantiation_type {
             Group(name) => {
                 //So then we make this group based on its logic_type
-                self.group(name, logic_type)
+                self.create_component(name, "Group", logic_type)
             }
-            SimpleClass(name) => self.c(name),
-            Class((name, credits)) => match logic_type {
-                Some(_) => self.create_class(name, credits, logic_type),
-                None => self.class(name, credits),
-            },
+            SimpleClass(name) => self.create_class(name, 3, logic_type),
+            Class((name, credits)) => self.create_class(name, credits, logic_type),
             _ => {
                 panic!("Degree component not implemented")
             }
         }
     }
     //In theory, groups are only made if we KNOW what their logical type is.
-    pub fn group(&mut self, name: &str, logic_type: &Option<&LogicalType>) -> usize {
+    pub fn create_component(
+        &mut self,
+        name: &str,
+        pftype: &str,
+        logic_type: &Option<&LogicalType>,
+    ) -> usize {
         if let Some(index) = self.check_for_component(name) {
             //ensure that this group has the same logical type.
             match &self.components[index].logic_type {
@@ -89,6 +91,10 @@ impl Catalog {
                         ) {
                             Ok(_) => {
                                 self.components[index].logic_type = Some(l.to_string());
+                                println!(
+                                    "Updated Component Logic Type: {:?}",
+                                    &self.components[index]
+                                );
                             }
                             Err(e) => {
                                 println!("ERROR UPDATING COMPONENT LOGIC TYPE: {:?}", e);
@@ -105,11 +111,19 @@ impl Catalog {
 
         let logic_type_str = logic_type.map(|l| l.to_string());
 
-        //So if there's no component, we make one
-        let new_component = NewComponent {
-            name: Some(name.to_string()),
-            pftype: Some("Group".to_string()),
-            logic_type: logic_type_str,
+        //So if there's no component, we make one based on its pftype
+        let new_component = match pftype {
+            "Group" => NewComponent {
+                name: Some(name.to_string()),
+                pftype: Some("Group".to_string()),
+                logic_type: logic_type_str,
+            },
+            "Class" => NewComponent {
+                name: Some(name.to_string()),
+                pftype: Some("Class".to_string()),
+                logic_type: logic_type_str,
+            },
+            _ => panic!("Component has an invalid pftype!"),
         };
 
         match new_component.create(&mut self.conn) {
@@ -124,15 +138,7 @@ impl Catalog {
         }
     }
 
-    pub fn c(&mut self, name: &str) -> usize {
-        self.create_class(name, 3, &None)
-    }
-
-    pub fn class(&mut self, name: &str, credits: i32) -> usize {
-        self.create_class(name, credits, &None)
-    }
     //This function should be allowed to edit the logical type associated with a class.
-    #[allow(unused_assignments)]
     pub fn create_class(
         &mut self,
         name: &str,
@@ -141,85 +147,39 @@ impl Catalog {
     ) -> usize {
         //Make a class, then make a component for the class and return its index
         //however, first check for its existence
-        //let logic_type_str = logic_type.unwrap_or("None".to_string()).to_string();
 
-        if let Some(index) = self.check_for_component(name) {
-            match &self.components[index].logic_type {
-                //If there is an existing logic type found for this component
-                Some(_component_logic_type) => {
-                    //If we passed a logic type to this class.
-                    if let Some(_l) = logic_type {
-                        panic!("Logical type passed to class, but logical type was already set!");
-                        //TODO: If this is the same type, just append its children...or maybe do that
-                        //elsewhere.
-                    }
-                }
-                //If there is no logic type found for this component
-                None => {
-                    //If not set, let's set this logic_type if it was passed and update the db.
-                    if let Some(l) = logic_type {
-                        match Component::update_logic_type(
-                            &self.components[index].id,
-                            l.to_string(),
-                            &mut self.conn,
-                        ) {
-                            Ok(_) => self.components[index].logic_type = Some(l.to_string()),
-                            Err(e) => println!("Error updating component logic: {}", e),
-                        }
-                        //update the component in the array
-                        //this is manually set instead of querying the DB for its full update.
-                        //This is for speed purposes and I don't wanna do like 200 queries.
-                    }
+        let new_component_indice = self.create_component(name, "Class", logic_type);
 
-                    //Otherwise, if None is passed for both, we're chillin
-                }
-            }
-            return index;
-        }
-
-        //So, if it doesn't exist, let's make a new component
-        let logic_type_string = logic_type.map(|logic| logic.to_string());
-
-        let new_component = NewComponent {
-            name: Some(name.to_string()),
-            pftype: Some("Class".to_string()),
-            logic_type: logic_type_string,
-        };
-
-        let mut index = usize::MAX;
-
-        let comp = match new_component.create_class_component(&mut self.conn) {
-            Ok(comp) => {
-                println!("Created Class Component: {:?}", comp);
-                self.components.push(comp);
-                index = self.components.len() - 1;
-                &self.components[index]
-            }
-            Err(e) => {
-                panic!("Error creating class components: {}", e)
-            }
-        };
-
-        let new_class = NewClass {
-            name: Some(name.to_string()),
-            description: None,
-            credits: Some(credits),
-            pftype: None,
-            subject: None,
-            course_no: None,
-            options: None,
-            component_id: Some(comp.id),
-        };
-
-        match new_class.create(&mut self.conn) {
+        match class::Class::find_by_name(name, &mut self.conn) {
             Ok(class) => {
-                println!("Created Class: {:?}", class)
+                println!("Found existing class: {:?}", class);
             }
-            Err(e) => {
-                panic!("Error creating class: {}", e)
+            Err(_) => {
+                let comp = &self.components[new_component_indice];
+
+                let new_class = NewClass {
+                    name: Some(name.to_string()),
+                    description: None,
+                    credits: Some(credits),
+                    pftype: None,
+                    subject: None,
+                    course_no: None,
+                    options: None,
+                    component_id: Some(comp.id),
+                };
+
+                match new_class.create(&mut self.conn) {
+                    Ok(class) => {
+                        println!("Created Class: {:?}", class)
+                    }
+                    Err(e) => {
+                        panic!("Error creating class: {}", e)
+                    }
+                }
             }
         }
-        index
+
+        new_component_indice
     }
 
     fn create_component_assoc(
@@ -243,7 +203,7 @@ impl Catalog {
                     };
                     match new_component_assoc.create(&mut self.conn) {
                         Ok(new_assoc) => {
-                            println!("Created component association: {:?}", new_assoc);
+                            println!("Created component association: {:?}\n\nParent: {:?}\nChild: {:?}\n\n", new_assoc, parent, child);
                         }
                         Err(e) => {
                             panic!("Error creating component association: {}", e)
@@ -410,7 +370,7 @@ impl Catalog {
 
             //First we need to make an appropriate parent_component
             let parent_component_indice =
-                self.create_component(&parent_component, &Some(&logical_type));
+                self.parse_catalog_item(&parent_component, &Some(&logical_type));
 
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
@@ -554,7 +514,7 @@ impl Catalog {
         instantiations: &Vec<InstantiationType>,
     ) {
         for comp in instantiations {
-            indices.push(self.create_component(comp, &None));
+            indices.push(self.parse_catalog_item(comp, &None));
         }
     }
 }

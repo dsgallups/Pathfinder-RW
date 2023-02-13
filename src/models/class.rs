@@ -22,6 +22,12 @@ impl Class {
     pub fn find(id: &i32, conn: &mut PgConnection) -> Result<Class, diesel::result::Error> {
         classes::table.find(id).first(conn)
     }
+    pub fn find_by_name(
+        name: &str,
+        conn: &mut PgConnection,
+    ) -> Result<Class, diesel::result::Error> {
+        classes::table.filter(classes::name.eq(name)).first(conn)
+    }
 
     pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
         diesel::delete(classes::table.find(id)).execute(conn)?;
