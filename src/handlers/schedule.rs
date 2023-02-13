@@ -1,55 +1,77 @@
 use diesel::{
+    r2d2::{ConnectionManager, PooledConnection},
     PgConnection,
-    r2d2::{
-        PooledConnection,
-        ConnectionManager
-    }
 };
+
+use std::rc::Rc;
+use thiserror::Error;
 
 use crate::{
+    handlers::types::ComponentLogic,
     models::{
-        associations::{
-            ComponentToComponent,
-            DegreeToComponent
-        },
+        associations::{ComponentToComponent, DegreeToComponent},
         component::Component,
-        degree::Degree
+        degree::Degree,
     },
-    handlers::types::ComponentLogic
 };
-use diesel::result::Error;
 
-
+#[derive(Debug)]
 struct Req {
-    name: String,
+    component: Component,
     logic_type: Option<ComponentLogic>,
     pftype: String,
-    requirements: Vec<Req>
+    children: Option<Vec<Rc<Req>>>,
+    parent: Option<Rc<Req>>,
 }
+
 pub struct Schedule {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
     pub degree: Degree,
-    root_components: Vec<Component>
+    root_components: Vec<Component>,
+    flat_reqs: Vec<Req>,
 }
 
+#[derive(Error, Debug)]
+pub enum ScheduleError {
+    #[error("Diesel Error")]
+    DieselError(#[from] diesel::result::Error),
+}
+/**
+ * There's two methods of attack here.
+ * 1)   First I load all of the components into an array
+ *      then I reference the components via their array indice to make a recursive solution
+ *
+ * 2)   As I call from the database for particular components, I create the struct as they load in
+ *      This will utilize the Req Struct
+ *      But down the line, when I'm building the schedule, how do I know
+ *
+ *
+ *
+ */
 impl Schedule {
-    pub fn new(mut conn: PooledConnection<ConnectionManager<PgConnection>>, degree_code: &str) -> Result<Self, Error> {
-
+    pub fn new(
+        mut conn: PooledConnection<ConnectionManager<PgConnection>>,
+        degree_code: &str,
+    ) -> Result<Self, ScheduleError> {
         let degree = Degree::find_by_code(degree_code, &mut conn)?;
 
         let root_components = DegreeToComponent::get_components(&degree, &mut conn)?;
 
-        Ok(Self { conn , degree, root_components })
+        let flat_reqs: Vec<Req> = Vec::new();
+
+        Ok(Self {
+            conn,
+            degree,
+            root_components,
+            flat_reqs,
+        })
     }
 
     pub fn build_schedule(&mut self) -> Result<String, diesel::result::Error> {
-        
         //get the degree root components
         //all of these components must be satisfied for the schedule
-        
-        println!("Component List: {:?}", &self.root_components);
-        
 
+        println!("Component List: {:?}", &self.root_components);
 
         Ok(String::from("Success!"))
     }
@@ -57,7 +79,7 @@ impl Schedule {
     /**
      * This function will display a full tree of every root component, and every component
      * which satisifes its conditions.
-     * 
+     *
      */
     /*
         Example:
@@ -96,14 +118,16 @@ impl Schedule {
             }
 
         ]
-    
-    */
-    pub fn display_requirements_tree(&mut self) {
 
+        Another thing to note is that we can store the component information within our
+        Req struct...
+    */
+    pub fn build_requirements_tree(&mut self) {
         for comp in &self.root_components {
             //So we're going to basically take the values from this,
             //and its relationships to other components
             //and put it in our own personal struct
+            let mut req = {};
         }
     }
 }

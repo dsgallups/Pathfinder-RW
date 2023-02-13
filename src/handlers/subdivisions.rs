@@ -1,14 +1,7 @@
-use actix_web::{
-    web, 
-    HttpRequest, 
-    HttpResponse 
-};
 use crate::db_connection::PgPool;
+use actix_web::{web, HttpRequest, HttpResponse};
 
-use crate::models::subdivision::{
-    NewSubdivision,
-    SubdivisionList
-};
+use crate::models::subdivision::{NewSubdivision, SubdivisionList};
 
 use crate::handlers::pg_pool_handler;
 
@@ -23,10 +16,12 @@ pub async fn index(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
     }
 }
 
-pub async fn create(new_subdivision: web::Json<NewSubdivision>, pool: web::Data<PgPool>) -> HttpResponse {
-
+pub async fn create(
+    new_subdivision: web::Json<NewSubdivision>,
+    pool: web::Data<PgPool>,
+) -> HttpResponse {
     let mut pg_pool = match pg_pool_handler(pool) {
-        Ok(p) => {p}
+        Ok(p) => p,
         Err(e) => {
             return e;
         }

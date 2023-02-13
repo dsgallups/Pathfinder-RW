@@ -1,6 +1,6 @@
 use crate::schema::degrees;
-use diesel::PgConnection;
 use diesel::prelude::*;
+use diesel::PgConnection;
 
 #[derive(Debug, Identifiable, Queryable, Serialize, Deserialize)]
 pub struct Degree {
@@ -9,7 +9,7 @@ pub struct Degree {
     pub pftype: String,
     pub code: String,
     pub description: Option<String>,
-    pub subdivision: Option<i32>
+    pub subdivision: Option<i32>,
 }
 
 impl Degree {
@@ -17,25 +17,29 @@ impl Degree {
         degrees::table.find(id).first(conn)
     }
 
-    pub fn find_by_code(code: &str, conn: &mut PgConnection) -> Result<Degree, diesel::result::Error> {
+    pub fn find_by_code(
+        code: &str,
+        conn: &mut PgConnection,
+    ) -> Result<Degree, diesel::result::Error> {
         degrees::table.filter(degrees::code.eq(code)).first(conn)
     }
 
     pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
-        diesel::delete(degrees::table.find(id))
-            .execute(conn)?;
+        diesel::delete(degrees::table.find(id)).execute(conn)?;
 
         Ok(())
     }
 
-    pub fn update(id: &i32, new_degree: &NewDegree, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
+    pub fn update(
+        id: &i32,
+        new_degree: &NewDegree,
+        conn: &mut PgConnection,
+    ) -> Result<(), diesel::result::Error> {
         diesel::update(degrees::table.find(id))
             .set(new_degree)
             .execute(conn)?;
         Ok(())
     }
-
-
 }
 
 #[derive(Insertable, Deserialize, AsChangeset)]
@@ -44,9 +48,8 @@ pub struct NewDegree {
     pub name: Option<String>,
     pub description: Option<String>,
     pub pftype: Option<String>,
-    pub code: Option<String>
+    pub code: Option<String>,
 }
-
 
 impl NewDegree {
     pub fn create(&self, conn: &mut PgConnection) -> Result<Degree, diesel::result::Error> {
@@ -63,11 +66,10 @@ impl DegreeList {
     pub fn list(conn: &mut PgConnection) -> Self {
         use crate::schema::degrees::dsl::*;
 
-        let result =
-            degrees
-                .limit(10)
-                .load::<Degree>(conn)
-                .expect("Error loading degrees");
+        let result = degrees
+            .limit(10)
+            .load::<Degree>(conn)
+            .expect("Error loading degrees");
 
         DegreeList(result)
     }

@@ -5,7 +5,7 @@ use diesel::PgConnection;
 pub struct University {
     pub id: i32,
     pub name: String,
-    pub description: Option<String>
+    pub description: Option<String>,
 }
 
 impl University {
@@ -20,13 +20,16 @@ impl University {
         use diesel::QueryDsl;
         use diesel::RunQueryDsl;
 
-        diesel::delete(universities::table.find(id))
-            .execute(conn)?;
+        diesel::delete(universities::table.find(id)).execute(conn)?;
 
         Ok(())
     }
 
-    pub fn update(id: &i32, new_university: &NewUniversity, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
+    pub fn update(
+        id: &i32,
+        new_university: &NewUniversity,
+        conn: &mut PgConnection,
+    ) -> Result<(), diesel::result::Error> {
         use diesel::QueryDsl;
         use diesel::RunQueryDsl;
 
@@ -35,17 +38,14 @@ impl University {
             .execute(conn)?;
         Ok(())
     }
-
-
 }
 
 #[derive(Insertable, Deserialize, AsChangeset)]
 #[diesel(table_name = universities)]
 pub struct NewUniversity {
     pub name: Option<String>,
-    pub description: Option<String>
+    pub description: Option<String>,
 }
-
 
 impl NewUniversity {
     pub fn create(&self, conn: &mut PgConnection) -> Result<University, diesel::result::Error> {
@@ -62,15 +62,14 @@ pub struct UniversityList(pub Vec<University>);
 
 impl UniversityList {
     pub fn list(conn: &mut PgConnection) -> Self {
-        use diesel::RunQueryDsl;
-        use diesel::QueryDsl;
         use crate::schema::universities::dsl::*;
+        use diesel::QueryDsl;
+        use diesel::RunQueryDsl;
 
-        let result =
-            universities
-                .limit(10)
-                .load::<University>(conn)
-                .expect("Error loading universities");
+        let result = universities
+            .limit(10)
+            .load::<University>(conn)
+            .expect("Error loading universities");
 
         UniversityList(result)
     }

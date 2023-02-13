@@ -1,6 +1,6 @@
+use crate::models::university::University;
 use crate::schema::subdivisions;
 use diesel::PgConnection;
-use crate::models::university::University;
 
 #[derive(Debug, Queryable, Insertable, Serialize, Deserialize, Associations)]
 #[diesel(belongs_to(University))]
@@ -8,17 +8,17 @@ use crate::models::university::University;
 pub struct Subdivision {
     pub id: i32,
     pub name: String,
-    pub university_id: Option<i32>
+    pub university_id: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct SubdivisionList (pub Vec<Subdivision>);
+pub struct SubdivisionList(pub Vec<Subdivision>);
 
 impl SubdivisionList {
     pub fn list(conn: &mut PgConnection) -> Self {
-        use diesel::RunQueryDsl;
-        use diesel::QueryDsl;
         use crate::schema::subdivisions::dsl::*;
+        use diesel::QueryDsl;
+        use diesel::RunQueryDsl;
 
         let result = subdivisions
             .limit(10)
@@ -32,7 +32,7 @@ impl SubdivisionList {
 #[derive(Insertable, Deserialize, AsChangeset)]
 #[diesel(table_name= subdivisions)]
 pub struct NewSubdivision {
-    pub name: String
+    pub name: String,
 }
 
 impl NewSubdivision {
@@ -42,6 +42,5 @@ impl NewSubdivision {
         diesel::insert_into(subdivisions::table)
             .values(self)
             .get_result(conn)
-
     }
 }
