@@ -17,7 +17,7 @@ use crate::{
 
 #[derive(Debug)]
 struct Req {
-    component: Component,
+    component: Rc<Component>,
     logic_type: Option<ComponentLogic>,
     pftype: String,
     children: Option<Vec<Rc<Req>>>,
@@ -27,7 +27,6 @@ struct Req {
 pub struct Schedule {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
     pub degree: Degree,
-    root_components: Vec<Component>,
     flat_reqs: Vec<Req>,
 }
 
@@ -55,14 +54,11 @@ impl Schedule {
     ) -> Result<Self, ScheduleError> {
         let degree = Degree::find_by_code(degree_code, &mut conn)?;
 
-        let root_components = DegreeToComponent::get_components(&degree, &mut conn)?;
-
         let flat_reqs: Vec<Req> = Vec::new();
 
         Ok(Self {
             conn,
             degree,
-            root_components,
             flat_reqs,
         })
     }
@@ -71,7 +67,7 @@ impl Schedule {
         //get the degree root components
         //all of these components must be satisfied for the schedule
 
-        println!("Component List: {:?}", &self.root_components);
+        //println!("Component List: {:?}", &self.root_components);
 
         Ok(String::from("Success!"))
     }
@@ -123,11 +119,18 @@ impl Schedule {
         Req struct...
     */
     pub fn build_requirements_tree(&mut self) {
-        for comp in &self.root_components {
+        todo!();
+        /*let root_components = DegreeToComponent::get_components(&self.degree, &mut self.conn)?;
+
+        for comp in root_components {
             //So we're going to basically take the values from this,
             //and its relationships to other components
             //and put it in our own personal struct
-            let mut req = {};
-        }
+
+            let mut req = Req {
+                component: comp,
+                logic_type:
+            };
+        }*/
     }
 }
