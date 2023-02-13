@@ -37,11 +37,11 @@ enum InstatiationType<'a> {
    SimpleClass(&'a str),
    Class((&'a str, i32)),
    Reg(&'a str),
-   
+   Degree(&'a str)
 }
 
 use LogicalType::{AND, OR};
-use InstatiationType::{SimpleClass, Class, Reg};
+use InstatiationType::{SimpleClass, Class, Reg, Degree};
 
 struct CatalogMaker {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
@@ -96,6 +96,8 @@ impl CatalogMaker {
     pub fn c(&mut self, name: &str) -> usize {
         self.class(name, 3)
     }
+
+
     pub fn class(&mut self, name: &str, credits: i32) -> usize {
 
         //Make a class, then make a component for the class and return its index
@@ -434,7 +436,9 @@ impl CatalogMaker {
                             Reg(c) => {
                                 indices.push(self.reg(c));
                             }
-                    
+                            &_ => {
+                                panic!("NOOOOO")
+                            }
                         }
                     }
                 }
@@ -456,6 +460,9 @@ impl CatalogMaker {
                 Reg(c) => {
                     self.reg(c)
                 }
+                &_ => {
+                    panic!("nuuu")
+                }
             };
             
             parsed_assocs.push((parent_component_indice, parsed_logical_type, association_type));
@@ -465,10 +472,98 @@ impl CatalogMaker {
             self.create_component_assoc(association.0, association.1, association.2);
         }
     
+        let degrees = vec![(
+            "CNIT",
+            "Computer and Information Technology",
+            "Major",
+        ),
+        (
+            "CSEC",
+            "Cybersecurity",
+            "Major",
+        ),
+        (
+            "NENT",
+            "Network Engineering Technology",
+            "Major"
+        ),
+        (
+            "SAAD",
+            "Systems Analysis and Design",
+            "Major"
+        )];
+
+        let degree_requirements = vec![
+            (
+                Degree("CNIT"),
+                vec![
+                    Reg("CNIT CORE"),
+                    Reg("CNIT DB PROGRAMMING"),
+                    Reg("CNIT SYS/APP DEV"),
+                    Reg("CNIT/SAAD INTERDISC"),
+                    Reg("CNIT IT SELECTIVES"),
+                    Reg("UNIV CORE"),
+                    Reg("GENERAL BUSINESS SELECTIVE"),
+                    SimpleClass("FREE 00000")
+                ]
+            ),
+            (
+                Degree("CSEC"),
+                vec![
+                    Reg("CNIT CORE"),
+                    SimpleClass("CNIT 31500"),
+                    SimpleClass("CNIT 32200"),
+                    SimpleClass("CNIT 34400"),
+                    SimpleClass("CNIT 34010"),
+                    SimpleClass("CNIT 34220"),
+                    SimpleClass("CNIT 37000"),
+                    SimpleClass("CNIT 42000"),
+                    SimpleClass("CNIT 42200"),
+                    SimpleClass("CNIT 45500"),
+                    SimpleClass("CNIT 47000"),
+                    SimpleClass("CNIT 47100"),
+                    Reg("CSEC SELECTIVES"),
+                    Reg("CSEC INTERDISC"),
+                    Reg("UNIV CORE")
+                ]
+            ),
+            (
+                Degree("NENT"),
+                vec![
+                    Reg("CNIT CORE"),
+                    SimpleClass("CNIT 31500"),
+                    SimpleClass("CNIT 24000"),
+                    SimpleClass("CNIT 34500"),
+                    SimpleClass("CNIT 34600"),
+                    SimpleClass("CNIT 34000"),
+                    SimpleClass("CNIT 34210"),
+                    SimpleClass("CNIT 34220"),
+                    SimpleClass("CNIT 45500"),
+                    Reg("NENT IT SELECTIVES"),
+                    Reg("NENT INTERDISC"),
+                    Reg("UNIV CORE"),
+                    Reg("GENERAL BUSINESS SELECTIVE")
+                ]
+            ),
+            (
+                Degree("SAAD"),
+                vec![
+                    Reg("CNIT CORE"),
+                    SimpleClass("CNIT 39200"),
+                    Reg("CNIT SYS/APP DEV"),
+                    SimpleClass("CNIT 38000"),
+                    SimpleClass("CGT 25600"),
+                    Reg("SAAD SELECTIVES"),
+                    Reg("SAAD IT SELECTIVES"),
+                    Reg("UNIV CORE"),
+                    Reg("CNIT/SAAD INTERDISC")
+                ]
+            )
+        ];
+
 
     }
 }
-
 
 
 pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
