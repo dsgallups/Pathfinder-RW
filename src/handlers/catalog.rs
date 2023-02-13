@@ -36,13 +36,12 @@ pub enum InstantiationType<'a> {
 
 use LogicalType::{AND, OR};
 use InstantiationType::{SimpleClass, Class, Reg, Degree};
-
-pub struct CatalogMaker {
+pub struct Catalog {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
     components: Vec<Component>
 }
 
-impl CatalogMaker {
+impl Catalog {
 
     pub fn new(conn: PooledConnection<ConnectionManager<PgConnection>>) -> Self {
         
@@ -453,27 +452,6 @@ impl CatalogMaker {
         for association in parsed_assocs {
             self.create_component_assoc(association.0, association.1, association.2);
         }
-    
-        /*let degrees = vec![(
-            "CNIT",
-            "Computer and Information Technology",
-            "Major",
-        ),
-        (
-            "CSEC",
-            "Cybersecurity",
-            "Major",
-        ),
-        (
-            "NENT",
-            "Network Engineering Technology",
-            "Major"
-        ),
-        (
-            "SAAD",
-            "Systems Analysis and Design",
-            "Major"
-        )];*/
 
         let degree_requirements = vec![
             (

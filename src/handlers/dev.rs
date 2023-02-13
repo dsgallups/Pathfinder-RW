@@ -11,7 +11,8 @@ use std::process::{Command, Output};
 use crate::db_connection::{ PgPool };
 use crate::handlers::{
     pg_pool_handler,
-    catalog_maker::CatalogMaker
+    catalog::Catalog,
+    schedule::Schedule
 };
 
 
@@ -29,9 +30,22 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
     let reset_output = reset_all_tables();
     println!("-------------------------------------\nTables Reset! Output:\n\n{}\n-------------------------------------", str::from_utf8(&reset_output.stdout).unwrap());
 
-    let mut c = CatalogMaker::new(pg_pool);
+    let mut c = Catalog::new(pg_pool);
     
     c.gen_catalog();
+
+    return HttpResponse::Ok().json(json!({"result": "success"}));
+}
+
+pub async fn get_schedule(degree_name: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
+
+    let pg_pool = match pg_pool_handler(pool) {
+        Ok(p) => {p}
+        Err(e) => {
+            return e;
+        }
+    };
+    
 
     return HttpResponse::Ok().json(json!({"name": "hi"}));
 }
