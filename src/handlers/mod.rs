@@ -3,6 +3,7 @@ pub mod subdivisions;
 pub mod components;
 pub mod dev;
 pub mod degrees;
+pub mod catalog_maker;
 
 use actix_web::{web, HttpResponse};
 use crate::db_connection::{ PgPool, PgPooledConnection };
