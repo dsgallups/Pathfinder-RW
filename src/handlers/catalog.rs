@@ -8,7 +8,7 @@ use crate::{
     models::{
         associations::{NewComponentAssoc, NewDegreeToComponent},
         class::NewClass,
-        component::{self, Component, NewComponent},
+        component::{Component, NewComponent},
         degree::{self, NewDegree},
     },
 };
@@ -46,58 +46,64 @@ impl Catalog {
     pub fn create_component(
         &mut self,
         instantiation_type: &InstantiationType,
-        logic_type: &Option<LogicalType>,
+        logic_type: &Option<&LogicalType>,
     ) -> usize {
         //Here we will take our component types by instantiation, and then match it to
         //the logical type
-        match instantiation_type {
-            &Group(name) => {
+        match *instantiation_type {
+            Group(name) => {
                 //So then we make this group based on its logic_type
                 self.group(name, logic_type)
             }
-            &SimpleClass(name) => self.c(name),
-            &Class((name, credits)) => match logic_type {
-                &Some(logic) => self.create_class(name, credits, logic_type),
-                &None => self.class(name, credits),
+            SimpleClass(name) => self.c(name),
+            Class((name, credits)) => match logic_type {
+                Some(_) => self.create_class(name, credits, logic_type),
+                None => self.class(name, credits),
             },
+            _ => {
+                panic!("Degree component not implemented")
+            }
         }
     }
     //In theory, groups are only made if we KNOW what their logical type is.
-    pub fn group(&mut self, name: &str, logic_type: &Option<LogicalType>) -> usize {
+    pub fn group(&mut self, name: &str, logic_type: &Option<&LogicalType>) -> usize {
         if let Some(index) = self.check_for_component(name) {
             //ensure that this group has the same logical type.
-            match self.components[index].logic_type {
+            match &self.components[index].logic_type {
                 //if has a logic type
-                Some(component_logic) => match logic_type {
-                    &Some(l) => {
+                Some(_component_logic) => match logic_type {
+                    Some(_l) => {
                         panic!("Error setting logical type for group. Already set!")
                     }
-                    &None => {}
+                    None => {}
                 },
                 //if no logic type exists in our memory
                 None => {
                     //if the value has no logical type
                     //then give it one
                     if let Some(l) = logic_type {
-                        Component::update_logic_type(
+                        match Component::update_logic_type(
                             &self.components[index].id,
                             l.to_string(),
                             &mut self.conn,
-                        );
+                        ) {
+                            Ok(_) => {
+                                self.components[index].logic_type = Some(l.to_string());
+                            }
+                            Err(e) => {
+                                println!("ERROR UPDATING COMPONENT LOGIC TYPE: {:?}", e);
+                            }
+                        }
                         //update the component in the array
                         //this is manually set instead of querying the DB for its full update.
                         //This is for speed purposes and I don't wanna do like 200 queries.
-                        self.components[index].logic_type = Some(l.to_string());
                     }
                 }
             }
             return index;
         }
 
-        let logic_type_str = match logic_type {
-            &Some(l) => Some(l.to_string()),
-            &None => None,
-        };
+        let logic_type_str = logic_type.map(|l| l.to_string());
 
         //So if there's no component, we make one
         let new_component = NewComponent {
@@ -119,11 +125,11 @@ impl Catalog {
     }
 
     pub fn c(&mut self, name: &str) -> usize {
-        self.create_class(name, 3, None)
+        self.create_class(name, 3, &None)
     }
 
     pub fn class(&mut self, name: &str, credits: i32) -> usize {
-        self.create_class(name, credits, None)
+        self.create_class(name, credits, &None)
     }
     //This function should be allowed to edit the logical type associated with a class.
     #[allow(unused_assignments)]
@@ -131,18 +137,18 @@ impl Catalog {
         &mut self,
         name: &str,
         credits: i32,
-        logic_type: Option<LogicalType>,
+        logic_type: &Option<&LogicalType>,
     ) -> usize {
         //Make a class, then make a component for the class and return its index
         //however, first check for its existence
         //let logic_type_str = logic_type.unwrap_or("None".to_string()).to_string();
 
         if let Some(index) = self.check_for_component(name) {
-            match self.components[index].logic_type {
+            match &self.components[index].logic_type {
                 //If there is an existing logic type found for this component
-                Some(component_logic_type) => {
+                Some(_component_logic_type) => {
                     //If we passed a logic type to this class.
-                    if let Some(l) = logic_type {
+                    if let Some(_l) = logic_type {
                         panic!("Logical type passed to class, but logical type was already set!");
                         //TODO: If this is the same type, just append its children...or maybe do that
                         //elsewhere.
@@ -152,15 +158,17 @@ impl Catalog {
                 None => {
                     //If not set, let's set this logic_type if it was passed and update the db.
                     if let Some(l) = logic_type {
-                        Component::update_logic_type(
+                        match Component::update_logic_type(
                             &self.components[index].id,
                             l.to_string(),
                             &mut self.conn,
-                        );
+                        ) {
+                            Ok(_) => self.components[index].logic_type = Some(l.to_string()),
+                            Err(e) => println!("Error updating component logic: {}", e),
+                        }
                         //update the component in the array
                         //this is manually set instead of querying the DB for its full update.
                         //This is for speed purposes and I don't wanna do like 200 queries.
-                        self.components[index].logic_type = Some(l.to_string());
                     }
 
                     //Otherwise, if None is passed for both, we're chillin
@@ -170,10 +178,7 @@ impl Catalog {
         }
 
         //So, if it doesn't exist, let's make a new component
-        let logic_type_string = match logic_type {
-            Some(logic) => Some(logic.to_string()),
-            None => None,
-        };
+        let logic_type_string = logic_type.map(|logic| logic.to_string());
 
         let new_component = NewComponent {
             name: Some(name.to_string()),
@@ -223,11 +228,6 @@ impl Catalog {
         parsed_children_indices: ParsedLogicType,
     ) {
         let parent = &self.components[parent_indice];
-
-        let logic_type = match parsed_children_indices {
-            ParsedLogicType::GroupAND(_) | ParsedLogicType::PrereqAND(_) => "AND",
-            ParsedLogicType::GroupOR(_) | ParsedLogicType::PrereqOR(_) => "OR",
-        };
 
         match parsed_children_indices {
             ParsedLogicType::PrereqAND(children_indices)
@@ -409,10 +409,8 @@ impl Catalog {
             let logical_type = item.1;
 
             //First we need to make an appropriate parent_component
-
-            //If it's reg, GroupAND, then we should make it GroupAND
             let parent_component_indice =
-                self.create_component(&parent_component, &Some(logical_type));
+                self.create_component(&parent_component, &Some(&logical_type));
 
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
@@ -430,9 +428,6 @@ impl Catalog {
                 PrereqAND(_) => ParsedLogicType::PrereqAND(indices),
                 PrereqOR(_) => ParsedLogicType::PrereqOR(indices),
             };
-
-            //TODO: Now we need to update the parent_component's logical type based what's identified
-            let parent_component = &mut self.components[parent_component_indice];
 
             parsed_assocs.push((parent_component_indice, parsed_logical_type));
         }

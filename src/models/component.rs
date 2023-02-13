@@ -41,13 +41,13 @@ impl Component {
     }
 
     pub fn update_logic_type(
-        id: &i32,
+        passed_id: &i32,
         passed_logic_type: String,
         conn: &mut PgConnection,
     ) -> Result<(), diesel::result::Error> {
         use crate::schema::components::dsl::*;
 
-        let component = diesel::update(components.find(id))
+        diesel::update(components.find(passed_id))
             .set(logic_type.eq(passed_logic_type))
             .execute(conn)?;
 
