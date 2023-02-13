@@ -12,8 +12,6 @@ use crate::models::{
     degree::Degree
 };
 use diesel::PgConnection;
-use diesel::associations::HasTable;
-use diesel::pg::Pg;
 use diesel::prelude::*;
 
 
@@ -98,7 +96,6 @@ pub struct NewComponentAssoc {
 }
 impl NewComponentAssoc {
     pub fn create(&self, conn: &mut PgConnection) -> Result<ComponentToComponent, diesel::result::Error> {
-        use diesel::RunQueryDsl;
 
         diesel::insert_into(components_to_components::table)
             .values(self)

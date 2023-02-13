@@ -5,6 +5,7 @@ pub mod dev;
 pub mod degrees;
 pub mod catalog;
 pub mod schedule;
+pub mod types;
 
 use actix_web::{web, HttpResponse};
 use crate::db_connection::{ PgPool, PgPooledConnection };

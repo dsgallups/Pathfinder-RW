@@ -6,33 +6,22 @@ use diesel::{
     }
 };
 
-use crate::models::{
-    component::{
-        Component,
-        NewComponent
+use crate::{
+    models::{
+        component::{
+            Component,
+            NewComponent
+        },
+        associations::{
+            NewComponentAssoc, NewDegreeToComponent
+        }, class::NewClass, degree::{NewDegree, self}
     },
-    associations::{
-        NewComponentAssoc, NewDegreeToComponent
-    }, class::NewClass, degree::{NewDegree, self}
+    handlers::types::{
+        LogicalType,
+        ParsedLogicType,
+        InstantiationType
+    }
 };
-
-pub enum LogicalType<'a> {
-    AND(Vec<InstantiationType<'a>>),
-    OR(Vec<InstantiationType<'a>>)
-}
-
-pub enum ParsedLogicType {
-    AND(Vec<usize>),
-    OR(Vec<usize>)
-}
-
-#[allow(dead_code)]
-pub enum InstantiationType<'a> {
-   SimpleClass(&'a str),
-   Class((&'a str, i32)),
-   Reg(&'a str),
-   Degree((&'a str, &'a str, &'a str))
-}
 
 use LogicalType::{AND, OR};
 use InstantiationType::{SimpleClass, Class, Reg, Degree};
