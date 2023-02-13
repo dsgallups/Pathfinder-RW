@@ -1,7 +1,8 @@
 use crate::schema::{
     components_to_components,
     degrees_to_components,
-    components
+    components,
+    degrees
 };
 
 use crate::models::{
@@ -12,11 +13,12 @@ use crate::models::{
 };
 use diesel::PgConnection;
 use diesel::associations::HasTable;
+use diesel::pg::Pg;
 use diesel::prelude::*;
 
 
-#[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
-#[diesel(belongs_to(Component, foreign_key=child_id))]
+#[derive(Debug, Identifiable, PartialEq, Queryable, Serialize, Deserialize, Associations)]
+#[diesel(belongs_to(Component, foreign_key=parent_id))]
 #[diesel(table_name=components_to_components)]
 pub struct ComponentToComponent {
     pub id: i32,
@@ -24,6 +26,66 @@ pub struct ComponentToComponent {
     pub child_id: i32,
     pub logic_type: String,
     pub association_type: String
+}
+
+impl ComponentToComponent {
+    pub fn get_assoc_from_parent(&self, component: &Component, conn: &mut PgConnection) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
+        use crate::schema::components_to_components::dsl::*;
+
+        let res = components_to_components
+            .filter(parent_id.eq(component.id))
+            .load::<ComponentToComponent>(conn);
+
+        res
+    }
+
+    pub fn get_assoc_from_child(&self, component: &Component, conn: &mut PgConnection) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
+        use crate::schema::components_to_components::dsl::*;
+
+        let res = components_to_components
+            .filter(child_id.eq(component.id))
+            .load::<ComponentToComponent>(conn);
+
+        res
+    }
+
+    pub fn get_children(&self, component: &Component, conn: &mut PgConnection) -> Result<Vec<Component>, diesel::result::Error> {
+        use crate::schema::components::dsl::*;
+
+        let assoc = self.get_assoc_from_parent(component, conn)?;
+
+        let child_ids = assoc
+            .into_iter()
+            .map(|child| child.id)
+            .collect::<Vec<i32>>();
+
+        let res = components
+            .filter(id.eq_any(child_ids))
+            .load::<Component>(conn);
+        
+        res
+
+    }
+
+    pub fn get_parents(&self, component: &Component, conn: &mut PgConnection) -> Result<Vec<Component>, diesel::result::Error> {
+        use crate::schema::components::dsl::*;
+
+        let assoc = self.get_assoc_from_child(component, conn)?;
+
+        let parent_ids = assoc
+            .into_iter()
+            .map(|child| child.id)
+            .collect::<Vec<i32>>();
+
+        let res = components
+            .filter(id.eq_any(parent_ids))
+            .load::<Component>(conn);
+        
+        res
+        
+    }
+
+
 }
 
 #[derive(Debug, Insertable, Serialize, Deserialize)]
@@ -61,6 +123,20 @@ impl DegreeToComponent {
             .select(components::all_columns)
             .load::<Component>(conn)
     }
+    pub fn get_degrees(component: &Component, conn: &mut PgConnection) -> Result<Vec<Degree>, diesel::result::Error> {
+        DegreeToComponent::belonging_to(component)
+            .inner_join(degrees::table)
+            .select(degrees::all_columns)
+            .load::<Degree>(conn)
+    }
+    pub fn get_component_ids(degree: &Degree, conn: &mut PgConnection) -> Result<Vec<DegreeToComponent>, diesel::result::Error> {
+        DegreeToComponent::belonging_to(degree)
+            .load::<DegreeToComponent>(conn)
+    }
+    pub fn get_degree_ids(component: &Component, conn: &mut PgConnection) -> Result<Vec<DegreeToComponent>, diesel::result::Error> {
+        DegreeToComponent::belonging_to(component)
+            .load::<DegreeToComponent>(conn)
+    }
 }
 
 
@@ -73,8 +149,6 @@ pub struct NewDegreeToComponent {
 
 impl NewDegreeToComponent {
     pub fn create(&self, conn: &mut PgConnection) -> Result<DegreeToComponent, diesel::result::Error> {
-        use diesel::RunQueryDsl;
-
         diesel::insert_into(degrees_to_components::table)
             .values(self)
             .get_result(conn)
