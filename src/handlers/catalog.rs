@@ -6,7 +6,7 @@ use diesel::{
     }
 };
 
-use crate::{models::{
+use crate::models::{
     component::{
         Component,
         NewComponent
@@ -14,7 +14,7 @@ use crate::{models::{
     associations::{
         NewComponentAssoc, NewDegreeToComponent
     }, class::NewClass, degree::{NewDegree, self}
-}};
+};
 
 pub enum LogicalType<'a> {
     AND(Vec<InstantiationType<'a>>),

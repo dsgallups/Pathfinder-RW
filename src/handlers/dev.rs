@@ -45,7 +45,11 @@ pub async fn get_schedule(degree_name: web::Path<String>, pool: web::Data<PgPool
             return e;
         }
     };
-    
+
+    let mut schedule = Schedule::new(pg_pool, &degree_name)
+        .expect("Schedule failed to build!");
+
+    schedule.build_schedule().expect("Failed");
 
     return HttpResponse::Ok().json(json!({"name": "hi"}));
 }

@@ -1,7 +1,8 @@
 use crate::schema::degrees;
 use diesel::PgConnection;
+use diesel::prelude::*;
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Identifiable, Queryable, Serialize, Deserialize)]
 pub struct Degree {
     pub id: i32,
     pub name: String,
@@ -13,16 +14,14 @@ pub struct Degree {
 
 impl Degree {
     pub fn find(id: &i32, conn: &mut PgConnection) -> Result<Degree, diesel::result::Error> {
-        use diesel::QueryDsl;
-        use diesel::RunQueryDsl;
-
         degrees::table.find(id).first(conn)
     }
 
-    pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
-        use diesel::QueryDsl;
-        use diesel::RunQueryDsl;
+    pub fn find_by_code(code: &str, conn: &mut PgConnection) -> Result<Degree, diesel::result::Error> {
+        degrees::table.filter(degrees::code.eq(code)).first(conn)
+    }
 
+    pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
         diesel::delete(degrees::table.find(id))
             .execute(conn)?;
 
@@ -30,9 +29,6 @@ impl Degree {
     }
 
     pub fn update(id: &i32, new_degree: &NewDegree, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {
-        use diesel::QueryDsl;
-        use diesel::RunQueryDsl;
-
         diesel::update(degrees::table.find(id))
             .set(new_degree)
             .execute(conn)?;
@@ -54,8 +50,6 @@ pub struct NewDegree {
 
 impl NewDegree {
     pub fn create(&self, conn: &mut PgConnection) -> Result<Degree, diesel::result::Error> {
-        use diesel::RunQueryDsl;
-
         diesel::insert_into(degrees::table)
             .values(self)
             .get_result(conn)
@@ -67,8 +61,6 @@ pub struct DegreeList(pub Vec<Degree>);
 
 impl DegreeList {
     pub fn list(conn: &mut PgConnection) -> Self {
-        use diesel::RunQueryDsl;
-        use diesel::QueryDsl;
         use crate::schema::degrees::dsl::*;
 
         let result =

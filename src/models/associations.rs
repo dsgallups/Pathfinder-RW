@@ -1,6 +1,7 @@
 use crate::schema::{
     components_to_components,
-    degrees_to_components
+    degrees_to_components,
+    components
 };
 
 use crate::models::{
@@ -10,6 +11,8 @@ use crate::models::{
     degree::Degree
 };
 use diesel::PgConnection;
+use diesel::associations::HasTable;
+use diesel::prelude::*;
 
 
 #[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
@@ -41,7 +44,7 @@ impl NewComponentAssoc {
     }
 }
 
-#[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
+#[derive(Debug, Identifiable, PartialEq, Queryable, Serialize, Deserialize, Associations)]
 #[diesel(belongs_to(Degree))]
 #[diesel(belongs_to(Component))]
 #[diesel(table_name=degrees_to_components)]
@@ -49,6 +52,15 @@ pub struct DegreeToComponent {
     pub id: i32,
     pub degree_id: i32,
     pub component_id: i32
+}
+
+impl DegreeToComponent {
+    pub fn get_components(degree: &Degree, conn: &mut PgConnection) -> Result<Vec<Component>, diesel::result::Error> {
+        DegreeToComponent::belonging_to(degree)
+            .inner_join(components::table)
+            .select(components::all_columns)
+            .load::<Component>(conn)
+    }
 }
 
 
