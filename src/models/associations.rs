@@ -11,8 +11,6 @@ pub struct ComponentToComponent {
     pub id: i32,
     pub parent_id: i32,
     pub child_id: i32,
-    pub logic_type: String,
-    pub association_type: String,
 }
 
 impl ComponentToComponent {
@@ -84,8 +82,6 @@ impl ComponentToComponent {
 pub struct NewComponentAssoc {
     pub parent_id: i32,
     pub child_id: i32,
-    pub association_type: String,
-    pub logic_type: String,
 }
 impl NewComponentAssoc {
     pub fn create(

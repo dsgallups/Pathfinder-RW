@@ -19,6 +19,7 @@ diesel::table! {
         id -> Int4,
         name -> Varchar,
         pftype -> Varchar,
+        logic_type -> Nullable<Varchar>,
     }
 }
 
@@ -27,8 +28,6 @@ diesel::table! {
         id -> Int4,
         parent_id -> Int4,
         child_id -> Int4,
-        association_type -> Varchar,
-        logic_type -> Varchar,
     }
 }
 

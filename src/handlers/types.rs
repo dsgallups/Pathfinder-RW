@@ -1,11 +1,15 @@
 pub enum LogicalType<'a> {
-    AND(Vec<InstantiationType<'a>>),
-    OR(Vec<InstantiationType<'a>>),
+    GroupAND(Vec<InstantiationType<'a>>),
+    GroupOR(Vec<InstantiationType<'a>>),
+    PrereqAND(Vec<InstantiationType<'a>>),
+    PrereqOR(Vec<InstantiationType<'a>>),
 }
 
 pub enum ParsedLogicType {
-    AND(Vec<usize>),
-    OR(Vec<usize>),
+    GroupAND(Vec<usize>),
+    GroupOR(Vec<usize>),
+    PrereqAND(Vec<usize>),
+    PrereqOR(Vec<usize>),
 }
 
 #[allow(dead_code)]

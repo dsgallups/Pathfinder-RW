@@ -14,7 +14,7 @@ use crate::{
 };
 
 use InstantiationType::{Class, Degree, Reg, SimpleClass};
-use LogicalType::{AND, OR};
+use LogicalType::{GroupAND, GroupOR, PrereqAND, PrereqOR};
 pub struct Catalog {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
     components: Vec<Component>,
@@ -43,6 +43,7 @@ impl Catalog {
         None
     }
     //This is for components with only a name.
+    //We don't know here exactly what its logic_type is
     pub fn reg(&mut self, name: &str) -> usize {
         if let Some(index) = self.check_for_component(name) {
             return index;
@@ -51,6 +52,7 @@ impl Catalog {
         let new_component = NewComponent {
             name: Some(name.to_string()),
             pftype: Some("logical".to_string()),
+            logic_type: None,
         };
 
         match new_component.create(&mut self.conn) {
@@ -77,9 +79,11 @@ impl Catalog {
             return index;
         }
 
+        //We don't know what the component's logical type is except that it's a class here.
         let new_component = NewComponent {
             name: Some(name.to_string()),
             pftype: Some("class".to_string()),
+            logic_type: None,
         };
 
         let mut index = usize::MAX;
@@ -118,17 +122,12 @@ impl Catalog {
         index
     }
 
-    fn create_component_assoc(
-        &mut self,
-        parent_indice: usize,
-        parsed_children: ParsedLogicType,
-        association_type: &str,
-    ) {
+    fn create_component_assoc(&mut self, parent_indice: usize, parsed_children: ParsedLogicType) {
         let parent = &self.components[parent_indice];
 
         let logic_type = match parsed_children {
-            ParsedLogicType::AND(_) => "AND",
-            ParsedLogicType::OR(_) => "OR",
+            ParsedLogicType::GroupAND(_) | ParsedLogicType::PrereqAND(_) => "AND",
+            ParsedLogicType::GroupOR(_) | ParsedLogicType::PrereqOR(_) => "OR",
         };
 
         match parsed_children {
@@ -160,7 +159,7 @@ impl Catalog {
         let catalog = vec![
             (
                 Reg("CNIT CORE"),
-                AND(vec![
+                GroupAND(vec![
                     SimpleClass("CNIT 18000"),
                     SimpleClass("CNIT 15501"),
                     SimpleClass("CNIT 17600"),
@@ -172,31 +171,27 @@ impl Catalog {
                     SimpleClass("CNIT 32000"),
                     SimpleClass("CNIT 48000"),
                 ]),
-                "requirement",
             ),
             (
                 Reg("CNIT DB PROGRAMMING"),
-                OR(vec![SimpleClass("CNIT 37200"), SimpleClass("CNIT 39200")]),
-                "requirement",
+                GroupOR(vec![SimpleClass("CNIT 37200"), SimpleClass("CNIT 39200")]),
             ),
             (
                 Reg("CNIT SYS/APP DEV"),
-                OR(vec![SimpleClass("CNIT 31500"), SimpleClass("CNIT 32500")]),
-                "requirement",
+                GroupOR(vec![SimpleClass("CNIT 31500"), SimpleClass("CNIT 32500")]),
             ),
             (
                 Reg("GENERAL BUSINESS SELECTIVE"),
-                OR(vec![
+                GroupOR(vec![
                     SimpleClass("IET 10400"),
                     SimpleClass("IT 10400"),
                     SimpleClass("TLI 11100"),
                     SimpleClass("TLI 15200"),
                 ]),
-                "requirement",
             ),
             (
                 Reg("UNIV CORE"),
-                AND(vec![
+                GroupAND(vec![
                     SimpleClass("SCLA 10100"),
                     SimpleClass("SCLA 10200"),
                     SimpleClass("TECH 12000"),
@@ -217,136 +212,118 @@ impl Catalog {
                     SimpleClass("BEHAVSCISEL 00000"),
                     SimpleClass("FOUNDSEL 00000"),
                 ]),
-                "requirement",
             ),
             (
                 Reg("CNIT/SAAD INTERDISC"),
-                AND(vec![SimpleClass("INTERDISC 00000")]),
-                "requirement",
+                GroupAND(vec![SimpleClass("INTERDISC 00000")]),
             ),
             (
                 SimpleClass("CNIT 27000"),
-                AND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
             ),
             (
                 SimpleClass("CNIT 28000"),
-                AND(vec![SimpleClass("CNIT 18000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 18000")]),
             ),
             (
                 SimpleClass("CNIT 25501"),
-                AND(vec![SimpleClass("CNIT 15501")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 15501")]),
             ),
             (
                 SimpleClass("CNIT 24200"),
-                AND(vec![SimpleClass("CNIT 17600")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 17600")]),
             ),
             (
                 Class(("CNIT 34010", 1)),
-                AND(vec![SimpleClass("CNIT 24200")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 24200")]),
             ),
             (
                 SimpleClass("CNIT 34400"),
-                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 32000"),
-                AND(vec![SimpleClass("TECH 12000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("TECH 12000")]),
             ),
             (
                 SimpleClass("CNIT 37000"),
-                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 32200"),
-                AND(vec![SimpleClass("CNIT 27000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 31500"),
-                AND(vec![SimpleClass("CNIT 25501")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 25501")]),
             ),
             (
                 SimpleClass("CNIT 34220"),
-                OR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
-                "requisite",
+                PrereqOR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
             ),
             (
                 SimpleClass("CNIT 47000"),
-                AND(vec![SimpleClass("CNIT 32000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 32000")]),
             ),
             (
                 SimpleClass("CNIT 48000"),
-                AND(vec![SimpleClass("CNIT 28000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 28000")]),
             ),
             (
                 SimpleClass("CNIT 47100"),
-                AND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
             ),
             (
                 SimpleClass("CNIT 34000"),
-                AND(vec![SimpleClass("CNIT 24200")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 24200")]),
             ),
             (
                 SimpleClass("CNIT 34500"),
-                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 24000")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 24000")]),
             ),
             (
                 SimpleClass("CNIT 34600"),
-                AND(vec![SimpleClass("CNIT 24000"), SimpleClass("CNIT 24200")]),
-                "requisite",
+                PrereqAND(vec![SimpleClass("CNIT 24000"), SimpleClass("CNIT 24200")]),
             ),
             (
                 Reg("NETWORK ENGR GROUPED 455 PREREQ"),
-                OR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
-                "requirement",
+                GroupOR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
             ),
             (
                 SimpleClass("CNIT 45500"),
-                AND(vec![
+                PrereqAND(vec![
                     SimpleClass("CNIT 34220"),
                     Reg("NETWORK ENGR GROUPED 455 PREREQ"),
                 ]),
-                "requisite",
             ),
             (
                 Class(("MA 16020", 5)),
-                OR(vec![Class(("MA 16010", 5))]),
-                "requisite",
+                PrereqAND(vec![Class(("MA 16010", 5))]),
             ),
         ];
 
-        let mut parsed_assocs: Vec<(usize, ParsedLogicType, &str)> = Vec::new();
+        let mut parsed_assocs: Vec<(usize, ParsedLogicType)> = Vec::new();
 
         for item in catalog {
             let parent_component = item.0;
             let logical_type = item.1;
-            let association_type = item.2;
 
             //so first we will parse the logicaltype into parsed type
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
-                AND(components) | OR(components) => {
+                GroupAND(components)
+                | GroupOR(components)
+                | PrereqAND(components)
+                | PrereqOR(components) => {
                     self.instantiations_to_indices(&mut indices, components);
                 }
             }
 
             let parsed_logical_type = match &logical_type {
-                AND(_) => ParsedLogicType::AND(indices),
-                OR(_) => ParsedLogicType::OR(indices),
+                GroupAND(_) => ParsedLogicType::GroupAND(indices),
+                GroupOR(_) => ParsedLogicType::GroupOR(indices),
+                PrereqAND(_) => ParsedLogicType::PrereqAND(indices),
+                PrereqOR(_) => ParsedLogicType::PrereqOR(indices),
             };
 
             //now we can pass this (hopefully) to parse_assocs
@@ -358,16 +335,13 @@ impl Catalog {
                     panic!("nuuu")
                 }
             };
+            //TODO: Now we need to update the parent_component's logical type based what's identified
 
-            parsed_assocs.push((
-                parent_component_indice,
-                parsed_logical_type,
-                association_type,
-            ));
+            parsed_assocs.push((parent_component_indice, parsed_logical_type));
         }
 
         for association in parsed_assocs {
-            self.create_component_assoc(association.0, association.1, association.2);
+            self.create_component_assoc(association.0, association.1);
         }
 
         let degree_requirements = vec![

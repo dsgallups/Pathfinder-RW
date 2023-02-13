@@ -7,6 +7,7 @@ pub struct Component {
     pub id: i32,
     pub name: String,
     pub pftype: String,
+    pub logic_type: Option<String>,
 }
 
 impl Component {
@@ -45,6 +46,7 @@ impl Component {
 pub struct NewComponent {
     pub name: Option<String>,
     pub pftype: Option<String>,
+    pub logic_type: Option<String>,
 }
 
 impl NewComponent {
@@ -61,6 +63,7 @@ impl NewComponent {
             .values(NewComponent {
                 name: self.name.to_owned(),
                 pftype: Some("class".to_string()),
+                logic_type: self.logic_type.to_owned(),
             })
             .get_result(conn)
     }
