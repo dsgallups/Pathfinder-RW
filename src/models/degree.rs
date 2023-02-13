@@ -1,7 +1,7 @@
 use crate::schema::degrees;
 use diesel::PgConnection;
 
-#[derive(Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Degree {
     pub id: i32,
     pub name: String,
@@ -46,7 +46,9 @@ impl Degree {
 #[diesel(table_name = degrees)]
 pub struct NewDegree {
     pub name: Option<String>,
-    pub description: Option<String>
+    pub description: Option<String>,
+    pub pftype: Option<String>,
+    pub code: Option<String>
 }
 
 

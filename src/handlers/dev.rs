@@ -11,8 +11,8 @@ use crate::{models::{
             NewComponent
         },
         associations::{
-            NewComponentAssoc
-        }, class::NewClass
+            NewComponentAssoc, NewDegreeToComponent
+        }, class::NewClass, degree::{NewDegree, self}
 }};
 
 use crate::db_connection::{ PgPool };
@@ -23,8 +23,8 @@ use std::str;
 use std::process::{Command, Output};
 
 enum LogicalType<'a> {
-    AND(Vec<InstatiationType<'a>>),
-    OR(Vec<InstatiationType<'a>>)
+    AND(Vec<InstantiationType<'a>>),
+    OR(Vec<InstantiationType<'a>>)
 }
 
 enum ParsedLogicType {
@@ -33,15 +33,15 @@ enum ParsedLogicType {
 }
 
 #[allow(dead_code)]
-enum InstatiationType<'a> {
+enum InstantiationType<'a> {
    SimpleClass(&'a str),
    Class((&'a str, i32)),
    Reg(&'a str),
-   Degree(&'a str)
+   Degree((&'a str, &'a str, &'a str))
 }
 
 use LogicalType::{AND, OR};
-use InstatiationType::{SimpleClass, Class, Reg, Degree};
+use InstantiationType::{SimpleClass, Class, Reg, Degree};
 
 struct CatalogMaker {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
@@ -175,9 +175,9 @@ impl CatalogMaker {
                     };
                     match new_component_assoc.create(&mut self.conn) {
                         Ok(new_assoc) => {
-                            println!("Created Component Association: {:?}", new_assoc);
+                            println!("Created component association: {:?}", new_assoc);
                         }
-                        Err(e) => {panic!("Error Creating Component Association: {}", e)}
+                        Err(e) => {panic!("Error creating component association: {}", e)}
                     }
                 }
             }
@@ -425,24 +425,10 @@ impl CatalogMaker {
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
                 AND(components) | OR(components) => {
-                    for comp in components {
-                        match comp {
-                            SimpleClass(c) => {
-                                indices.push(self.c(c));
-                            }
-                            Class(c) => {
-                                indices.push(self.class(c.0, c.1));
-                            }
-                            Reg(c) => {
-                                indices.push(self.reg(c));
-                            }
-                            &_ => {
-                                panic!("NOOOOO")
-                            }
-                        }
-                    }
+                    self.instantiations_to_indices(&mut indices, &components);
                 }
             }
+            
 
             let parsed_logical_type = match &logical_type {
                 AND(_) => {ParsedLogicType::AND(indices)}
@@ -472,7 +458,7 @@ impl CatalogMaker {
             self.create_component_assoc(association.0, association.1, association.2);
         }
     
-        let degrees = vec![(
+        /*let degrees = vec![(
             "CNIT",
             "Computer and Information Technology",
             "Major",
@@ -491,11 +477,15 @@ impl CatalogMaker {
             "SAAD",
             "Systems Analysis and Design",
             "Major"
-        )];
+        )];*/
 
         let degree_requirements = vec![
             (
-                Degree("CNIT"),
+                Degree((
+                    "CNIT",
+                    "Computer and Information Technology",
+                    "Major",
+                )),
                 vec![
                     Reg("CNIT CORE"),
                     Reg("CNIT DB PROGRAMMING"),
@@ -508,7 +498,11 @@ impl CatalogMaker {
                 ]
             ),
             (
-                Degree("CSEC"),
+                Degree((
+                    "CSEC",
+                    "Cybersecurity",
+                    "Major",
+                )),
                 vec![
                     Reg("CNIT CORE"),
                     SimpleClass("CNIT 31500"),
@@ -528,7 +522,11 @@ impl CatalogMaker {
                 ]
             ),
             (
-                Degree("NENT"),
+                Degree((
+                    "NENT",
+                    "Network Engineering Technology",
+                    "Major"
+                )),
                 vec![
                     Reg("CNIT CORE"),
                     SimpleClass("CNIT 31500"),
@@ -546,7 +544,11 @@ impl CatalogMaker {
                 ]
             ),
             (
-                Degree("SAAD"),
+                Degree((
+                    "SAAD",
+                    "Systems Analysis and Design",
+                    "Major"
+                )),
                 vec![
                     Reg("CNIT CORE"),
                     SimpleClass("CNIT 39200"),
@@ -562,6 +564,68 @@ impl CatalogMaker {
         ];
 
 
+        //We have to repeat some code because of the borrow checker...
+        for item in degree_requirements {
+            let degree_in_instantiaion = item.0;
+            let instantiations = item.1;
+
+            if let Degree(degree_strs) = degree_in_instantiaion {
+                
+                //actually this is a code but im lazy to change it rn.
+                //TODO
+                let new_degree =  NewDegree {
+                    code: Some(degree_strs.0.to_string()),
+                    name: Some(degree_strs.1.to_string()),
+                    pftype: Some(degree_strs.2.to_string()),
+                    description: None
+                };
+
+                let degree = new_degree.create(&mut self.conn).unwrap();
+                println!("Created Degree: {:?}", &degree);
+                let mut indices: Vec<usize> = Vec::new();
+                self.instantiations_to_indices(&mut indices, &instantiations);
+                self.add_degree_requirements(degree, indices);
+
+            } else {
+                panic!("Something's where a degree should be!!");
+            }
+        }
+
+    }
+
+    fn add_degree_requirements(&mut self, degree: degree::Degree, requirements: Vec<usize>) {
+        for requirement_indice in requirements {
+            let requirement = &self.components[requirement_indice];
+            
+            let degree_to_component_assoc = NewDegreeToComponent {
+                degree_id: degree.id,
+                component_id: requirement.id
+            };
+            match degree_to_component_assoc.create(&mut self.conn) {
+                Ok(new_assoc) => {
+                    println!("Created degree to component association: {:?}", new_assoc);
+                }
+                Err(e) => {panic!("Error creating degree to component association: {}", e)}
+            }
+        }
+    }
+    fn instantiations_to_indices(&mut self, indices: &mut Vec<usize>, instantiations: &Vec<InstantiationType>) {
+        for comp in instantiations {
+            match comp {
+                SimpleClass(c) => {
+                    indices.push(self.c(c));
+                }
+                Class(c) => {
+                    indices.push(self.class(c.0, c.1));
+                }
+                Reg(c) => {
+                    indices.push(self.reg(c));
+                }
+                Degree(_) => {
+                    panic!("NOOOOO")
+                }
+            }
+        }
     }
 }
 
