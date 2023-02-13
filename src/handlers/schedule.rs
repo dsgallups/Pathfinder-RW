@@ -29,9 +29,33 @@ impl Schedule {
     }
 
     pub fn build_schedule(&mut self) -> Result<String, diesel::result::Error> {
-        let component_list = DegreeToComponent::get_components(&self.degree, &mut self.conn);
-        println!("Component List: {:?}", component_list);
+        
+        //get the degree root components
+        //all of these components must be satisfied for the schedule
+        let root_components = DegreeToComponent::get_components(&self.degree, &mut self.conn)?;
+        println!("Component List: {:?}", root_components);
+        
+
 
         Ok(String::from("Success!"))
+    }
+
+    /**
+     * This function will display a full tree of every root component, and every component
+     * which satisifes its conditions.
+     * 
+     */
+    /*
+        Example:
+        []
+            CNIT CORE,
+            AND,
+
+        }
+    
+    */
+    pub fn display_requirements_tree(&mut self) {
+
+
     }
 }
