@@ -31,12 +31,26 @@ impl Component {
 
     pub fn update(
         id: &i32,
-        new_university: &NewComponent,
+        new_component: &NewComponent,
         conn: &mut PgConnection,
     ) -> Result<(), diesel::result::Error> {
         diesel::update(components::table.find(id))
-            .set(new_university)
+            .set(new_component)
             .execute(conn)?;
+        Ok(())
+    }
+
+    pub fn update_logic_type(
+        id: &i32,
+        passed_logic_type: String,
+        conn: &mut PgConnection,
+    ) -> Result<(), diesel::result::Error> {
+        use crate::schema::components::dsl::*;
+
+        let component = diesel::update(components.find(id))
+            .set(logic_type.eq(passed_logic_type))
+            .execute(conn)?;
+
         Ok(())
     }
 }
@@ -60,11 +74,7 @@ impl NewComponent {
         conn: &mut PgConnection,
     ) -> Result<Component, diesel::result::Error> {
         diesel::insert_into(components::table)
-            .values(NewComponent {
-                name: self.name.to_owned(),
-                pftype: Some("class".to_string()),
-                logic_type: self.logic_type.to_owned(),
-            })
+            .values(self)
             .get_result(conn)
     }
 }

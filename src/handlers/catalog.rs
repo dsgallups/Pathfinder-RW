@@ -8,12 +8,12 @@ use crate::{
     models::{
         associations::{NewComponentAssoc, NewDegreeToComponent},
         class::NewClass,
-        component::{Component, NewComponent},
+        component::{self, Component, NewComponent},
         degree::{self, NewDegree},
     },
 };
 
-use InstantiationType::{Class, Degree, Reg, SimpleClass};
+use InstantiationType::{Class, Degree, Group, SimpleClass};
 use LogicalType::{GroupAND, GroupOR, PrereqAND, PrereqOR};
 pub struct Catalog {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
@@ -42,17 +42,55 @@ impl Catalog {
         };
         None
     }
-    //This is for components with only a name.
-    //We don't know here exactly what its logic_type is
-    pub fn reg(&mut self, name: &str) -> usize {
+
+    pub fn create_component(
+        &self,
+        instantiation_type: &InstantiationType,
+        logic_type: &LogicalType,
+    ) -> usize {
+        //Here we will take our component types by instantiation, and then match it to
+        //the logical type
+        match instantiation_type {
+            &Group(name) => {
+                //So then we make this group based on its logic_type
+                self.group(name, logic_type)
+            }
+            &SimpleClass(name) => {}
+            &Class((name, credits)) => {}
+        }
+    }
+    //In theory, groups are only made if we KNOW what their logical type is.
+    fn group(&mut self, name: &str, logic_type: &LogicalType) -> usize {
+        let logic_type_str = logic_type.to_string();
+
         if let Some(index) = self.check_for_component(name) {
-            return index;
+            //ensure that this group has the same logical type.
+            if let Some(component_logic_string) = self.components[index].logic_type {
+                if component_logic_string.eq(&logic_type_str) {
+                    //TODO
+                    //In theory, we should allow additional children components to be appended.
+                    //However, this is not necessary right now.
+                    return index;
+                } else {
+                    panic!(
+                        "Component: {:?}\nDoes NOT contain logic_type: {:?}",
+                        self.components[index], logic_type_str
+                    )
+                }
+            } else {
+                //if the value has no logical type
+                panic!(
+                    "Error: Group lacks a logical type.\n{:?}",
+                    self.components[index]
+                )
+            }
         }
 
+        //So if there's no component, we make one
         let new_component = NewComponent {
             name: Some(name.to_string()),
-            pftype: Some("logical".to_string()),
-            logic_type: None,
+            pftype: Some("Group".to_string()),
+            logic_type: Some(logic_type_str),
         };
 
         match new_component.create(&mut self.conn) {
@@ -66,24 +104,60 @@ impl Catalog {
             }
         }
     }
+
     pub fn c(&mut self, name: &str) -> usize {
         self.class(name, 3)
     }
 
+    //This function should be allowed to edit the logical type associated with a class.
     #[allow(unused_assignments)]
-    pub fn class(&mut self, name: &str, credits: i32) -> usize {
+    pub fn class(&mut self, name: &str, credits: i32, logic_type: Option<LogicalType>) -> usize {
         //Make a class, then make a component for the class and return its index
         //however, first check for its existence
+        //let logic_type_str = logic_type.unwrap_or("None".to_string()).to_string();
 
         if let Some(index) = self.check_for_component(name) {
+            match self.components[index].logic_type {
+                //If there is an existing logic type found for this component
+                Some(component_logic_type) => {
+                    //If we passed a logic type to this class.
+                    if let Some(l) = logic_type {
+                        panic!("Logical type passed to class, but logical type was already set!");
+                        //TODO: If this is the same type, just append its children...or maybe do that
+                        //elsewhere.
+                    }
+                }
+                //If there is no logic type found for this component
+                None => {
+                    //If not set, let's set this logic_type if it was passed and update the db.
+                    if let Some(l) = logic_type {
+                        Component::update_logic_type(
+                            &self.components[index].id,
+                            l.to_string(),
+                            &mut self.conn,
+                        );
+                        //update the component in the array
+                        //this is manually set instead of querying the DB for its full update.
+                        //This is for speed purposes and I don't wanna do like 200 queries.
+                        self.components[index].logic_type = Some(l.to_string());
+                    }
+
+                    //Otherwise, if None is passed for both, we're chillin
+                }
+            }
             return index;
         }
 
-        //We don't know what the component's logical type is except that it's a class here.
+        //So, if it doesn't exist, let's make a new component
+        let logic_type_string = match logic_type {
+            Some(logic) => Some(logic.to_string()),
+            None => None,
+        };
+
         let new_component = NewComponent {
             name: Some(name.to_string()),
-            pftype: Some("class".to_string()),
-            logic_type: None,
+            pftype: Some("Class".to_string()),
+            logic_type: logic_type_string,
         };
 
         let mut index = usize::MAX;
@@ -158,7 +232,7 @@ impl Catalog {
         //first we get parse self.cs
         let catalog = vec![
             (
-                Reg("CNIT CORE"),
+                Group("CNIT CORE"),
                 GroupAND(vec![
                     SimpleClass("CNIT 18000"),
                     SimpleClass("CNIT 15501"),
@@ -173,15 +247,15 @@ impl Catalog {
                 ]),
             ),
             (
-                Reg("CNIT DB PROGRAMMING"),
+                Group("CNIT DB PROGRAMMING"),
                 GroupOR(vec![SimpleClass("CNIT 37200"), SimpleClass("CNIT 39200")]),
             ),
             (
-                Reg("CNIT SYS/APP DEV"),
+                Group("CNIT SYS/APP DEV"),
                 GroupOR(vec![SimpleClass("CNIT 31500"), SimpleClass("CNIT 32500")]),
             ),
             (
-                Reg("GENERAL BUSINESS SELECTIVE"),
+                Group("GENERAL BUSINESS SELECTIVE"),
                 GroupOR(vec![
                     SimpleClass("IET 10400"),
                     SimpleClass("IT 10400"),
@@ -190,7 +264,7 @@ impl Catalog {
                 ]),
             ),
             (
-                Reg("UNIV CORE"),
+                Group("UNIV CORE"),
                 GroupAND(vec![
                     SimpleClass("SCLA 10100"),
                     SimpleClass("SCLA 10200"),
@@ -214,7 +288,7 @@ impl Catalog {
                 ]),
             ),
             (
-                Reg("CNIT/SAAD INTERDISC"),
+                Group("CNIT/SAAD INTERDISC"),
                 GroupAND(vec![SimpleClass("INTERDISC 00000")]),
             ),
             (
@@ -286,14 +360,14 @@ impl Catalog {
                 PrereqAND(vec![SimpleClass("CNIT 24000"), SimpleClass("CNIT 24200")]),
             ),
             (
-                Reg("NETWORK ENGR GROUPED 455 PREREQ"),
+                Group("NETWORK ENGR GROUPED 455 PREREQ"),
                 GroupOR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
             ),
             (
                 SimpleClass("CNIT 45500"),
                 PrereqAND(vec![
                     SimpleClass("CNIT 34220"),
-                    Reg("NETWORK ENGR GROUPED 455 PREREQ"),
+                    Group("NETWORK ENGR GROUPED 455 PREREQ"),
                 ]),
             ),
             (
@@ -308,7 +382,11 @@ impl Catalog {
             let parent_component = item.0;
             let logical_type = item.1;
 
-            //so first we will parse the logicaltype into parsed type
+            //First we need to make an appropriate parent_component
+
+            //If it's reg, GroupAND, then we should make it GroupAND
+            let parent_component_indice = self.create_component(&parent_component, &logical_type);
+
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
                 GroupAND(components)
@@ -326,16 +404,8 @@ impl Catalog {
                 PrereqOR(_) => ParsedLogicType::PrereqOR(indices),
             };
 
-            //now we can pass this (hopefully) to parse_assocs
-            let parent_component_indice = match &parent_component {
-                SimpleClass(c) => self.c(c),
-                Class(c) => self.class(c.0, c.1),
-                Reg(c) => self.reg(c),
-                &_ => {
-                    panic!("nuuu")
-                }
-            };
             //TODO: Now we need to update the parent_component's logical type based what's identified
+            let parent_component = &mut self.components[parent_component_indice];
 
             parsed_assocs.push((parent_component_indice, parsed_logical_type));
         }
@@ -348,20 +418,20 @@ impl Catalog {
             (
                 Degree(("CNIT", "Computer and Information Technology", "Major")),
                 vec![
-                    Reg("CNIT CORE"),
-                    Reg("CNIT DB PROGRAMMING"),
-                    Reg("CNIT SYS/APP DEV"),
-                    Reg("CNIT/SAAD INTERDISC"),
-                    Reg("CNIT IT SELECTIVES"),
-                    Reg("UNIV CORE"),
-                    Reg("GENERAL BUSINESS SELECTIVE"),
+                    Group("CNIT CORE"),
+                    Group("CNIT DB PROGRAMMING"),
+                    Group("CNIT SYS/APP DEV"),
+                    Group("CNIT/SAAD INTERDISC"),
+                    Group("CNIT IT SELECTIVES"),
+                    Group("UNIV CORE"),
+                    Group("GENERAL BUSINESS SELECTIVE"),
                     SimpleClass("FREE 00000"),
                 ],
             ),
             (
                 Degree(("CSEC", "Cybersecurity", "Major")),
                 vec![
-                    Reg("CNIT CORE"),
+                    Group("CNIT CORE"),
                     SimpleClass("CNIT 31500"),
                     SimpleClass("CNIT 32200"),
                     SimpleClass("CNIT 34400"),
@@ -373,15 +443,15 @@ impl Catalog {
                     SimpleClass("CNIT 45500"),
                     SimpleClass("CNIT 47000"),
                     SimpleClass("CNIT 47100"),
-                    Reg("CSEC SELECTIVES"),
-                    Reg("CSEC INTERDISC"),
-                    Reg("UNIV CORE"),
+                    Group("CSEC SELECTIVES"),
+                    Group("CSEC INTERDISC"),
+                    Group("UNIV CORE"),
                 ],
             ),
             (
                 Degree(("NENT", "Network Engineering Technology", "Major")),
                 vec![
-                    Reg("CNIT CORE"),
+                    Group("CNIT CORE"),
                     SimpleClass("CNIT 31500"),
                     SimpleClass("CNIT 24000"),
                     SimpleClass("CNIT 34500"),
@@ -390,24 +460,24 @@ impl Catalog {
                     SimpleClass("CNIT 34210"),
                     SimpleClass("CNIT 34220"),
                     SimpleClass("CNIT 45500"),
-                    Reg("NENT IT SELECTIVES"),
-                    Reg("NENT INTERDISC"),
-                    Reg("UNIV CORE"),
-                    Reg("GENERAL BUSINESS SELECTIVE"),
+                    Group("NENT IT SELECTIVES"),
+                    Group("NENT INTERDISC"),
+                    Group("UNIV CORE"),
+                    Group("GENERAL BUSINESS SELECTIVE"),
                 ],
             ),
             (
                 Degree(("SAAD", "Systems Analysis and Design", "Major")),
                 vec![
-                    Reg("CNIT CORE"),
+                    Group("CNIT CORE"),
                     SimpleClass("CNIT 39200"),
-                    Reg("CNIT SYS/APP DEV"),
+                    Group("CNIT SYS/APP DEV"),
                     SimpleClass("CNIT 38000"),
                     SimpleClass("CGT 25600"),
-                    Reg("SAAD SELECTIVES"),
-                    Reg("SAAD IT SELECTIVES"),
-                    Reg("UNIV CORE"),
-                    Reg("CNIT/SAAD INTERDISC"),
+                    Group("SAAD SELECTIVES"),
+                    Group("SAAD IT SELECTIVES"),
+                    Group("UNIV CORE"),
+                    Group("CNIT/SAAD INTERDISC"),
                 ],
             ),
         ];
@@ -469,7 +539,7 @@ impl Catalog {
                 Class(c) => {
                     indices.push(self.class(c.0, c.1));
                 }
-                Reg(c) => {
+                Group(c) => {
                     indices.push(self.reg(c));
                 }
                 Degree(_) => {

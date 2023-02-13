@@ -12,7 +12,7 @@ CREATE TABLE components (
     id SERIAL PRIMARY KEY,
     name CHARACTER VARYING (50) NOT NULL,
     pftype CHARACTER VARYING (10) NOT NULL,
-    logic_type CHARACTER VARYING(3)
+    logic_type CHARACTER VARYING(10)
 );
 CREATE TABLE classes (
     id SERIAL PRIMARY KEY,
