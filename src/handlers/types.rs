@@ -1,5 +1,3 @@
-use super::schedule::Schedule;
-
 pub enum LogicalType<'a> {
     AND(Vec<InstantiationType<'a>>),
     OR(Vec<InstantiationType<'a>>),

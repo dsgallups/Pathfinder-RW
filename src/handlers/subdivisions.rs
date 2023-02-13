@@ -7,12 +7,8 @@ use crate::handlers::pg_pool_handler;
 
 pub async fn index(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
     match pg_pool_handler(pool) {
-        Ok(mut pg_pool) => {
-            return HttpResponse::Ok().json(SubdivisionList::list(&mut pg_pool));
-        }
-        Err(e) => {
-            return e;
-        }
+        Ok(mut pg_pool) => HttpResponse::Ok().json(SubdivisionList::list(&mut pg_pool)),
+        Err(e) => e,
     }
 }
 
@@ -28,11 +24,7 @@ pub async fn create(
     };
 
     match new_subdivision.create(&mut pg_pool) {
-        Ok(subd) => {
-            return HttpResponse::Ok().json(subd);
-        }
-        Err(e) => {
-            return HttpResponse::InternalServerError().json(e.to_string());
-        }
+        Ok(subd) => HttpResponse::Ok().json(subd),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
     }
 }

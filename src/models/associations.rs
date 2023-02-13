@@ -23,11 +23,9 @@ impl ComponentToComponent {
     ) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
         use crate::schema::components_to_components::dsl::*;
 
-        let res = components_to_components
+        components_to_components
             .filter(parent_id.eq(component.id))
-            .load::<ComponentToComponent>(conn);
-
-        res
+            .load::<ComponentToComponent>(conn)
     }
 
     pub fn get_assoc_from_child(
@@ -37,11 +35,9 @@ impl ComponentToComponent {
     ) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
         use crate::schema::components_to_components::dsl::*;
 
-        let res = components_to_components
+        components_to_components
             .filter(child_id.eq(component.id))
-            .load::<ComponentToComponent>(conn);
-
-        res
+            .load::<ComponentToComponent>(conn)
     }
 
     pub fn get_children(
@@ -58,11 +54,9 @@ impl ComponentToComponent {
             .map(|child| child.id)
             .collect::<Vec<i32>>();
 
-        let res = components
+        components
             .filter(id.eq_any(child_ids))
-            .load::<Component>(conn);
-
-        res
+            .load::<Component>(conn)
     }
 
     pub fn get_parents(
@@ -79,11 +73,9 @@ impl ComponentToComponent {
             .map(|child| child.id)
             .collect::<Vec<i32>>();
 
-        let res = components
+        components
             .filter(id.eq_any(parent_ids))
-            .load::<Component>(conn);
-
-        res
+            .load::<Component>(conn)
     }
 }
 

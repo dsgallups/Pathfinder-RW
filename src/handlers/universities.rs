@@ -9,12 +9,8 @@ use crate::handlers::pg_pool_handler;
 // serializing it to a json response
 pub async fn index(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
     match pg_pool_handler(pool) {
-        Ok(mut pg_pool) => {
-            return HttpResponse::Ok().json(UniversityList::list(&mut pg_pool));
-        }
-        Err(e) => {
-            return e;
-        }
+        Ok(mut pg_pool) => HttpResponse::Ok().json(UniversityList::list(&mut pg_pool)),
+        Err(e) => e,
     }
 }
 
@@ -30,12 +26,8 @@ pub async fn create(
     };
 
     match new_university.create(&mut pg_pool) {
-        Ok(univ) => {
-            return HttpResponse::Ok().json(univ);
-        }
-        Err(e) => {
-            return HttpResponse::InternalServerError().json(e.to_string());
-        }
+        Ok(univ) => HttpResponse::Ok().json(univ),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
     }
 }
 
@@ -48,12 +40,8 @@ pub async fn show(id: web::Path<i32>, pool: web::Data<PgPool>) -> HttpResponse {
     };
 
     match University::find(&id, &mut pg_pool) {
-        Ok(univ) => {
-            return HttpResponse::Ok().json(univ);
-        }
-        Err(e) => {
-            return HttpResponse::InternalServerError().json(e.to_string());
-        }
+        Ok(univ) => HttpResponse::Ok().json(univ),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
     }
 }
 
@@ -66,12 +54,8 @@ pub async fn destroy(id: web::Path<i32>, pool: web::Data<PgPool>) -> HttpRespons
     };
 
     match University::destroy(&id, &mut pg_pool) {
-        Ok(_) => {
-            return HttpResponse::Ok().json(());
-        }
-        Err(e) => {
-            return HttpResponse::InternalServerError().json(e.to_string());
-        }
+        Ok(_) => HttpResponse::Ok().json(()),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
     }
 }
 
@@ -89,12 +73,10 @@ pub async fn update(
     };
 
     match University::update(&id, &new_university, &mut pg_pool) {
-        Ok(_) => {
-            return HttpResponse::Ok().json(());
-        }
+        Ok(_) => HttpResponse::Ok().json(()),
         Err(e) => {
             println!("univesrity err");
-            return HttpResponse::InternalServerError().json(e.to_string());
+            HttpResponse::InternalServerError().json(e.to_string())
         }
     }
 }

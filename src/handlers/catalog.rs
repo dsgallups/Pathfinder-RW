@@ -57,7 +57,7 @@ impl Catalog {
             Ok(component) => {
                 println!("Created Component: {:?}", &component);
                 self.components.push(component);
-                return self.components.len() - 1;
+                self.components.len() - 1
             }
             Err(e) => {
                 panic!("Error: {}", e)
@@ -340,7 +340,7 @@ impl Catalog {
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
                 AND(components) | OR(components) => {
-                    self.instantiations_to_indices(&mut indices, &components);
+                    self.instantiations_to_indices(&mut indices, components);
                 }
             }
 

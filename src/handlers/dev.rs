@@ -21,7 +21,7 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
 
     c.gen_catalog();
 
-    return HttpResponse::Ok().json(json!({"result": "success"}));
+    HttpResponse::Ok().json(json!({"result": "success"}))
 }
 
 pub async fn get_schedule(degree_name: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
@@ -36,7 +36,7 @@ pub async fn get_schedule(degree_name: web::Path<String>, pool: web::Data<PgPool
 
     schedule.build_schedule().expect("Failed");
 
-    return HttpResponse::Ok().json(json!({"name": "hi"}));
+    HttpResponse::Ok().json(json!({"name": "hi"}))
 }
 
 fn reset_all_tables() -> Output {
