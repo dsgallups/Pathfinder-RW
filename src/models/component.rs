@@ -2,7 +2,7 @@ use crate::schema::components;
 use diesel::prelude::*;
 use diesel::PgConnection;
 
-#[derive(Debug, Identifiable, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Identifiable, Queryable, Serialize, Deserialize, Clone)]
 pub struct Component {
     pub id: i32,
     pub name: String,

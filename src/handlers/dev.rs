@@ -4,7 +4,7 @@ use std::process::{Command, Output};
 use std::str;
 
 use crate::db_connection::PgPool;
-use crate::handlers::{catalog::Catalog, pg_pool_handler, schedule::Schedule};
+use crate::handlers::{catalog::Catalog, pg_pool_handler, schedule::ScheduleMaker};
 
 pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> HttpResponse {
     let pg_pool = match pg_pool_handler(pool) {
@@ -33,7 +33,8 @@ pub async fn get_schedule(degree_name: web::Path<String>, pool: web::Data<PgPool
         }
     };
 
-    let mut schedule = Schedule::new(pg_pool, &degree_name).expect("Schedule failed to build!");
+    let mut schedule =
+        ScheduleMaker::new(pg_pool, &degree_name).expect("Schedule failed to build!");
 
     schedule.build_schedule().expect("Failed");
 

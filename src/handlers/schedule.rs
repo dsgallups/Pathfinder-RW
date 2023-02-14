@@ -11,28 +11,68 @@ use crate::models::{
     degree::Degree,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Req {
     component: Component,
-    children: Vec<usize>,
-    parents: Vec<usize>,
+    children: Vec<(usize, Status)>,
+    parents: Vec<(usize, Status)>,
 }
+
+impl Req {
+    pub fn satisfy_requirement(&mut self) -> Result<(), ScheduleError> {
+        Ok(())
+    }
+}
+
+struct Cost<'a> {
+    index: usize,
+    //An array that follows a path of components to satisfy and cost
+    path_cost: Vec<(Vec<&'a Req>, i32)>,
+}
+
+#[derive(Debug, Clone)]
+enum Status {
+    Unchecked,
+    CheckedButNotSelected,
+    Selected,
+}
+
+use Status::{CheckedButNotSelected, Selected, Unchecked};
 
 #[derive(Error, Debug)]
 pub enum ScheduleError {
     #[error("Diesel Error")]
     DieselError(#[from] diesel::result::Error),
 }
-/**
- * Uses an adjacent array to build a graph via the Req struct.
- */
+
 pub struct Schedule {
-    conn: PooledConnection<ConnectionManager<PgConnection>>,
-    pub degree: Degree,
-    reqs: Vec<Req>,
+    pub periods: Vec<Period>,
 }
 
 impl Schedule {
+    pub fn new() -> Self {
+        Schedule {
+            periods: Vec::new(),
+        }
+    }
+}
+
+pub struct Period {
+    year: u32,
+    time: String,
+    classes: Vec<Component>,
+}
+/**
+ * Uses an adjacent array to build a graph via the Req struct.
+ */
+pub struct ScheduleMaker {
+    conn: PooledConnection<ConnectionManager<PgConnection>>,
+    pub degree: Degree,
+    reqs: Vec<Req>,
+    schedule: Option<Schedule>,
+}
+
+impl ScheduleMaker {
     pub fn new(
         mut conn: PooledConnection<ConnectionManager<PgConnection>>,
         degree_code: &str,
@@ -41,15 +81,25 @@ impl Schedule {
 
         let reqs: Vec<Req> = Vec::new();
 
-        Ok(Self { conn, degree, reqs })
+        Ok(Self {
+            conn,
+            degree,
+            reqs,
+            schedule: None,
+        })
     }
 
     pub fn build_schedule(&mut self) -> Result<String, ScheduleError> {
         //get the degree root components
         //all of these components must be satisfied for the schedule
 
-        //println!("Component List: {:?}", &self.root_components);
+        //This builds our graph in an adjacency matrix stores in self.reqs
+        //Note that the degree itself is modeled into a fake req
+        //This degree root is at self.reqs[0]
         self.build_requirements_graph()?;
+
+        //turn the requirements graph into a schedule
+        self.generate_schedule()?;
 
         Ok(String::from("Success!"))
     }
@@ -114,10 +164,10 @@ impl Schedule {
                         &spacing, id
                     );
                     //push the parent id to this component
-                    self.reqs[id].parents.push(parent_id);
+                    self.reqs[id].parents.push((parent_id, Unchecked));
 
                     //push this id to the parent's children
-                    self.reqs[parent_id].children.push(id);
+                    self.reqs[parent_id].children.push((id, Unchecked));
 
                     println!(
                         "{}Associated parent (req_id: {}) to this child (req_id: {})",
@@ -150,7 +200,7 @@ impl Schedule {
                     );
 
                     //push the parent_id to this component
-                    self.reqs[id].parents.push(parent_id);
+                    self.reqs[id].parents.push((parent_id, Unchecked));
 
                     //push this id to the parent component's children
                     self.reqs[parent_id].children.push(id);
@@ -181,6 +231,57 @@ impl Schedule {
                 }
             };
         }
+        Ok(())
+    }
+
+    /**
+     * This function should only be called once the graph is made in build_requirements_graph()
+     */
+    fn generate_schedule(&mut self) -> Result<(), ScheduleError> {
+        let schedule = Schedule::new();
+
+        let root_component_indice: usize = 0;
+
+        self.satisfy_requirements(root_component_indice)?;
+        //since this root component has a logic type of GroupAND, all of its requirements MUST
+        //be fulfilled
+
+        Ok(())
+    }
+
+    fn satisfy_requirements(&mut self, requirement_indice: usize) -> Result<(), ScheduleError> {
+        //borrow checker doesn't like that I'm mutating its memory and also calling it.
+        //The easiest way to fix this is to make a clone of it and then set the requirement to that
+        //clone after manipulation. This will decrease performance but is guaranteed to be safe
+        let requirement = self.reqs[requirement_indice].clone();
+
+        if let Some(logic_type) = requirement.component.logic_type {
+            match logic_type.as_str() {
+                "GroupAND" => {
+                    //Since all of the degrees in our catalog is GroupAND, we
+                    let children = requirement.children;
+
+                    //So we want to make sure that the current requirement is satisfied
+                    //To do this, we need to store a value that tells us if the
+                    //requirement is selected.
+                    for child_indice in children {
+                        self.satisfy_requirements(child_indice)?;
+                    }
+                }
+                "GroupOR" => {}
+                "PrereqAND" => {}
+                "PrereqOR" => {}
+                "None" => {}
+                _ => {
+                    panic!(
+                        "This component has an invalid logic_type! {:?}",
+                        self.reqs[requirement_indice]
+                    )
+                }
+            }
+        }
+
+        self.reqs[requirement_indice] = requirement;
         Ok(())
     }
 }
