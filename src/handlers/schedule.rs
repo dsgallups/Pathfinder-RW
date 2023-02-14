@@ -24,16 +24,7 @@ pub enum ScheduleError {
     DieselError(#[from] diesel::result::Error),
 }
 /**
- * There's two methods of attack here.
- * 1)   First I load all of the components into an array
- *      then I reference the components via their array indice to make a recursive solution
- *
- * 2)   As I call from the database for particular components, I create the struct as they load in
- *      This will utilize the Req Struct
- *      But down the line, when I'm building the schedule, how do I know
- *
- *
- *
+ * Uses an adjacent array to build a graph via the Req struct.
  */
 pub struct Schedule {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
@@ -68,47 +59,6 @@ impl Schedule {
      * which satisifes its conditions.
      *
      */
-    /*
-        Example:
-        [
-            {
-                name: CNIT CORE,
-                logic_type: AND,
-                pftype: logical
-                requirements: [
-                    {
-                        name: CNIT 27000,
-                        logic_type: None,
-                        pftype: class,
-                        requirements: None
-                    },
-                    {
-                        name: CNIT NETWORKING FUNDAMENTALS,
-                        logic_type: OR,
-                        pftype: logical,
-                        requirements: [
-                            {
-                                name: CNIT 34400
-                                ...
-                            }
-                            {
-                                name: CNIT 24000
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                name: CNIT 315
-                logic_type: None,
-                pftype: class
-            }
-
-        ]
-
-        Another thing to note is that we can store the component information within our
-        Req struct...
-    */
     fn build_requirements_graph(&mut self) -> Result<(), ScheduleError> {
         //build a root node for the degree
         //TODO: this is extremely poor practice...notably giving it an id of -1.
@@ -183,7 +133,7 @@ impl Schedule {
                 None => {
                     //Create the req for this component
                     let req = Req {
-                        component: component,
+                        component,
                         children: Vec::new(),
                         parents: Vec::new(),
                     };

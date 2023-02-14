@@ -32,18 +32,23 @@ impl Catalog {
         let in_self = self.components.iter().position(|v| v.name.eq(name));
 
         if let Some(component_i) = in_self {
+            println!(
+                "Found Component internally: {:?}",
+                &self.components[component_i]
+            );
             return Some(component_i);
         }
 
-        //so check if it exists, if not, make it.
+        //so check if it exists in the db, if so, add it to our components.
         if let Ok(component) = Component::find_by_name(name, &mut self.conn) {
+            println!("Found Component in DB: {:?}", &component);
             self.components.push(component);
             return Some(self.components.len() - 1);
         };
         None
     }
 
-    pub fn parse_catalog_item(
+    fn parse_catalog_item(
         &mut self,
         instantiation_type: &InstantiationType,
         logic_type: &Option<&LogicalType>,
@@ -62,8 +67,8 @@ impl Catalog {
             }
         }
     }
-    //In theory, groups are only made if we KNOW what their logical type is.
-    pub fn create_component(
+
+    fn create_component(
         &mut self,
         name: &str,
         pftype: &str,
@@ -84,12 +89,15 @@ impl Catalog {
                     //if the value has no logical type
                     //then give it one
                     if let Some(l) = logic_type {
+                        //update the component in the array
                         match Component::update_logic_type(
                             &self.components[index].id,
                             l.to_string(),
                             &mut self.conn,
                         ) {
                             Ok(_) => {
+                                //this is manually set instead of querying the DB for its full update.
+                                //This is for speed purposes and I don't wanna do like 200 queries.
                                 self.components[index].logic_type = Some(l.to_string());
                                 println!(
                                     "Updated Component Logic Type: {:?}",
@@ -100,9 +108,6 @@ impl Catalog {
                                 println!("ERROR UPDATING COMPONENT LOGIC TYPE: {:?}", e);
                             }
                         }
-                        //update the component in the array
-                        //this is manually set instead of querying the DB for its full update.
-                        //This is for speed purposes and I don't wanna do like 200 queries.
                     }
                 }
             }
@@ -139,7 +144,7 @@ impl Catalog {
     }
 
     //This function should be allowed to edit the logical type associated with a class.
-    pub fn create_class(
+    fn create_class(
         &mut self,
         name: &str,
         credits: i32,
@@ -147,7 +152,6 @@ impl Catalog {
     ) -> usize {
         //Make a class, then make a component for the class and return its index
         //however, first check for its existence
-
         let new_component_indice = self.create_component(name, "Class", logic_type);
 
         match class::Class::find_by_name(name, &mut self.conn) {
