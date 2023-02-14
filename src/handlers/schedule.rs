@@ -109,7 +109,7 @@ impl Schedule {
         Another thing to note is that we can store the component information within our
         Req struct...
     */
-    pub fn build_requirements_graph(&mut self) -> Result<(), ScheduleError> {
+    fn build_requirements_graph(&mut self) -> Result<(), ScheduleError> {
         //build a root node for the degree
         //TODO: this is extremely poor practice...notably giving it an id of -1.
         let degree_component = Component {
@@ -140,7 +140,7 @@ impl Schedule {
         Ok(())
     }
 
-    pub fn associate_components(
+    fn associate_components(
         &mut self,
         parent_id: usize,
         components: Vec<Component>,
