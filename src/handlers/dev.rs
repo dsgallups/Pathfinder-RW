@@ -25,6 +25,7 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
 }
 
 pub async fn get_schedule(degree_name: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
+    println!("in get schedule");
     let pg_pool = match pg_pool_handler(pool) {
         Ok(p) => p,
         Err(e) => {

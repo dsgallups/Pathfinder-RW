@@ -15,7 +15,6 @@ pub struct ComponentToComponent {
 
 impl ComponentToComponent {
     pub fn get_assoc_from_parent(
-        &self,
         component: &Component,
         conn: &mut PgConnection,
     ) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
@@ -27,7 +26,6 @@ impl ComponentToComponent {
     }
 
     pub fn get_assoc_from_child(
-        &self,
         component: &Component,
         conn: &mut PgConnection,
     ) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
@@ -39,17 +37,15 @@ impl ComponentToComponent {
     }
 
     pub fn get_children(
-        &self,
         component: &Component,
         conn: &mut PgConnection,
     ) -> Result<Vec<Component>, diesel::result::Error> {
         use crate::schema::components::dsl::*;
 
-        let assoc = self.get_assoc_from_parent(component, conn)?;
-
+        let assoc = ComponentToComponent::get_assoc_from_parent(component, conn)?;
         let child_ids = assoc
             .into_iter()
-            .map(|child| child.id)
+            .map(|assoc| assoc.child_id)
             .collect::<Vec<i32>>();
 
         components
@@ -64,11 +60,11 @@ impl ComponentToComponent {
     ) -> Result<Vec<Component>, diesel::result::Error> {
         use crate::schema::components::dsl::*;
 
-        let assoc = self.get_assoc_from_child(component, conn)?;
+        let assoc = ComponentToComponent::get_assoc_from_child(component, conn)?;
 
         let parent_ids = assoc
             .into_iter()
-            .map(|child| child.id)
+            .map(|assoc| assoc.parent_id)
             .collect::<Vec<i32>>();
 
         components
