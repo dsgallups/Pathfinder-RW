@@ -293,22 +293,22 @@ impl ScheduleMaker {
                 "GroupOR" => {
                     let children = &mut requirement.children;
 
-                    let mut minimal_cost: i32 = i32::MAX;
+                    let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
                     for (indice, child) in children.into_iter().enumerate() {
                         let result = self.satisfy_requirements(child)?;
-                        if result < minimal_cost {
-                            minimal_cost = result;
 
-                            //Change the values of other checkedAndSelected to checked
-                            for i in 0..indice {
-                                children[i].1 = Checked;
-                            }
-                            child.1 = CheckedAndSelected;
+                        minimal_cost = if result < minimal_cost.1 {
+                            (indice, result)
                         } else {
-                            child.1 = Checked;
-                        }
+                            minimal_cost
+                        };
+
+                        child.1 = Checked;
                     }
+
+                    //now set the selected indice to checkedandselected
+                    children[minimal_cost.0].1 = CheckedAndSelected;
                 }
                 "PrereqAND" => {}
                 "PrereqOR" => {}
