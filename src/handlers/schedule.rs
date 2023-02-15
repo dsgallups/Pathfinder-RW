@@ -203,7 +203,7 @@ impl ScheduleMaker {
                     self.reqs[id].parents.push((parent_id, Unchecked));
 
                     //push this id to the parent component's children
-                    self.reqs[parent_id].children.push(id);
+                    self.reqs[parent_id].children.push((parent_id, Unchecked));
 
                     println!(
                         "{}Associated parent (req_id: {}) to this child (req_id: {})",
@@ -240,32 +240,37 @@ impl ScheduleMaker {
     fn generate_schedule(&mut self) -> Result<(), ScheduleError> {
         let schedule = Schedule::new();
 
-        let root_component_indice: usize = 0;
-
-        self.satisfy_requirements(root_component_indice)?;
+        self.satisfy_requirements(&mut (0, Unchecked))?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
         Ok(())
     }
 
-    fn satisfy_requirements(&mut self, requirement_indice: usize) -> Result<(), ScheduleError> {
+    fn satisfy_requirements(
+        &mut self,
+        requirement_info: &mut (usize, Status),
+    ) -> Result<(), ScheduleError> {
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
-        let requirement = self.reqs[requirement_indice].clone();
+
+        let requirement_indice = requirement_info.0;
+        let requirement_status = &mut requirement_info.1;
+
+        let mut requirement = self.reqs[requirement_indice].clone();
 
         if let Some(logic_type) = requirement.component.logic_type {
             match logic_type.as_str() {
                 "GroupAND" => {
                     //Since all of the degrees in our catalog is GroupAND, we
-                    let children = requirement.children;
+                    let children = &mut requirement.children;
 
                     //So we want to make sure that the current requirement is satisfied
                     //To do this, we need to store a value that tells us if the
                     //requirement is selected.
-                    for child_indice in children {
-                        self.satisfy_requirements(child_indice)?;
+                    for child in children {
+                        self.satisfy_requirements(child)?;
                     }
                 }
                 "GroupOR" => {}
@@ -281,7 +286,7 @@ impl ScheduleMaker {
             }
         }
 
-        self.reqs[requirement_indice] = requirement;
+        //self.reqs[requirement_indice] = requirement;
         Ok(())
     }
 }
