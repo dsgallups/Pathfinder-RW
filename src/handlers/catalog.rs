@@ -233,10 +233,29 @@ impl Catalog {
                     Class(("MA 16020", 5)),
                     Class(("MA 16600", 4))
                 ])
+            ),
+            (
+                SimpleClass("MA 16020"),
+                PrereqAND(vec![SimpleClass("MA 16010")]),
+            ),
+            (
+                SimpleClass("MA 16600"),
+                PrereqAND(vec![SimpleClass("MA 16200")])
             )
         ];
 
-        let parsed_catalog = self.parse_initial_catalog(catalog);
+        let degree_requirements = vec![
+            (
+                Degree(("TEST", "TEST MAJOR", "Major")),
+                vec![
+                    Group("CALC 1"),
+                    Group("CALC 2")
+                ]
+            )
+        ];
+
+        self.parse_initial_catalog(catalog);
+        self.parse_degree_requirements(degree_requirements);
     }
 
     pub fn gen_full_catalog(&mut self) {
