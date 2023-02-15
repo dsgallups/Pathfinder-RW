@@ -273,7 +273,7 @@ impl ScheduleMaker {
 
         let mut requirement = self.reqs[requirement_indice].clone();
 
-        if let Some(logic_type) = requirement.component.logic_type {
+        if let Some(logic_type) = &requirement.component.logic_type {
             match logic_type.as_str() {
                 "GroupAND" => {
                     //Since all of the degrees in our catalog is GroupAND, we
@@ -286,13 +286,41 @@ impl ScheduleMaker {
                     //Make sure that we get a return value that will tell us if it is checked
                     for child in children {
                         self.satisfy_requirements(child)?;
+
+                        child.1 = Checked;
                     }
                 }
-                "GroupOR" => {}
+                "GroupOR" => {
+                    let children = &mut requirement.children;
+
+                    let mut minimal_cost: i32 = i32::MAX;
+
+                    for (indice, child) in children.into_iter().enumerate() {
+                        let result = self.satisfy_requirements(child)?;
+                        if result < minimal_cost {
+                            minimal_cost = result;
+
+                            //Change the values of other checkedAndSelected to checked
+                            for i in 0..indice {
+                                children[i].1 = Checked;
+                            }
+                            child.1 = CheckedAndSelected;
+                        } else {
+                            child.1 = Checked;
+                        }
+                    }
+                }
                 "PrereqAND" => {}
                 "PrereqOR" => {}
                 "None" => {
                     //Check this class's value
+                    if requirement.component.pftype.eq("Class") {
+                        return Ok(requirement.class.unwrap().credits.unwrap());
+                    }
+                    panic!(
+                        "Requirement is NOT a class and has a logic_type of NONE: {:?}",
+                        &requirement
+                    );
                 }
                 _ => {
                     panic!(
@@ -304,6 +332,6 @@ impl ScheduleMaker {
         }
 
         //self.reqs[requirement_indice] = requirement;
-        Ok(Checked)
+        Ok(0)
     }
 }
