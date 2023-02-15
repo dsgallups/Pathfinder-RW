@@ -103,7 +103,7 @@ impl ScheduleMaker {
         self.build_requirements_graph()?;
 
         //turn the requirements graph into a schedule
-        self.generate_schedule()?;
+        self.analyze_requirements_graph()?;
 
         Ok(String::from("Success!"))
     }
@@ -133,6 +133,9 @@ impl ScheduleMaker {
 
         self.reqs.push(req);
         let id = self.reqs.len() - 1;
+
+        //TODO, FIX: 0: Req { component: Component { id: -1, name: "TEST MAJOR", pftype: "Degree", logic_type: Some("GroupAND") }, class: None, children: [(0, Unchecked), (0, Unchecked)], parents: [] }
+        println!("Root component: {:?}", &self.reqs[id]);
 
         self.associate_components(id, root_components, 0)?;
 
@@ -212,7 +215,7 @@ impl ScheduleMaker {
                         &spacing, id
                     );
 
-                    //push the parent_id to this component
+                    //push the parent_id to this component 
                     self.reqs[id].parents.push((parent_id, Unchecked));
 
                     //push this id to the parent component's children
@@ -250,8 +253,10 @@ impl ScheduleMaker {
     /**
      * This function should only be called once the graph is made in build_requirements_graph()
      */
-    fn generate_schedule(&mut self) -> Result<(), ScheduleError> {
+    fn analyze_requirements_graph(&mut self) -> Result<(), ScheduleError> {
         let schedule = Schedule::new();
+
+        println!("Now generating schedule....");
 
         self.satisfy_requirements(&mut (0, Unchecked))?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
@@ -264,6 +269,7 @@ impl ScheduleMaker {
         &mut self,
         requirement_info: &mut (usize, Status),
     ) -> Result<i32, ScheduleError> {
+        //println!("called satisfy_requirements");
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
