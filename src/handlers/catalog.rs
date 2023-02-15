@@ -218,7 +218,28 @@ impl Catalog {
         }
     }
 
-    pub fn gen_catalog(&mut self) {
+    pub fn gen_test_catalog(&mut self) {
+        let catalog = vec![
+            (
+                Group("CALC 1"),
+                GroupOR(vec![
+                    Class(("MA 16010", 5)),
+                    Class(("MA 16200", 4))
+                ])
+            ),
+            (
+                Group("CALC 2"),
+                GroupOR(vec![
+                    Class(("MA 16020", 5)),
+                    Class(("MA 16600", 4))
+                ])
+            )
+        ];
+
+        let parsed_catalog = self.parse_initial_catalog(catalog);
+    }
+
+    pub fn gen_full_catalog(&mut self) {
         //first we get parse self.cs
         let catalog = vec![
             (
@@ -366,39 +387,9 @@ impl Catalog {
             ),
         ];
 
-        let mut parsed_assocs: Vec<(usize, ParsedLogicType)> = Vec::new();
+        self.parse_initial_catalog(catalog);
 
-        for item in catalog {
-            let parent_component = item.0;
-            let logical_type = item.1;
-
-            //First we need to make an appropriate parent_component
-            let parent_component_indice =
-                self.parse_catalog_item(&parent_component, &Some(&logical_type));
-
-            let mut indices: Vec<usize> = Vec::new();
-            match &logical_type {
-                GroupAND(components)
-                | GroupOR(components)
-                | PrereqAND(components)
-                | PrereqOR(components) => {
-                    self.instantiations_to_indices(&mut indices, components);
-                }
-            }
-
-            let parsed_logical_type = match &logical_type {
-                GroupAND(_) => ParsedLogicType::GroupAND(indices),
-                GroupOR(_) => ParsedLogicType::GroupOR(indices),
-                PrereqAND(_) => ParsedLogicType::PrereqAND(indices),
-                PrereqOR(_) => ParsedLogicType::PrereqOR(indices),
-            };
-
-            parsed_assocs.push((parent_component_indice, parsed_logical_type));
-        }
-
-        for association in parsed_assocs {
-            self.create_component_assoc(association.0, association.1);
-        }
+    
 
         let degree_requirements = vec![
             (
@@ -467,13 +458,55 @@ impl Catalog {
                 ],
             ),
         ];
+        
+        self.parse_degree_requirements(degree_requirements);
 
+    }
+
+    pub fn parse_initial_catalog(&mut self, catalog: Vec<(InstantiationType, LogicalType)>) {
+        let mut parsed_assocs: Vec<(usize, ParsedLogicType)> = Vec::new();
+        
+        for item in catalog {
+            let parent_component = item.0;
+            let logical_type = item.1;
+
+            //First we need to make an appropriate parent_component
+            let parent_component_indice =
+                self.parse_catalog_item(&parent_component, &Some(&logical_type));
+
+            let mut indices: Vec<usize> = Vec::new();
+            match &logical_type {
+                GroupAND(components)
+                | GroupOR(components)
+                | PrereqAND(components)
+                | PrereqOR(components) => {
+                    self.instantiations_to_indices(&mut indices, components);
+                }
+            }
+
+            let parsed_logical_type = match &logical_type {
+                GroupAND(_) => ParsedLogicType::GroupAND(indices),
+                GroupOR(_) => ParsedLogicType::GroupOR(indices),
+                PrereqAND(_) => ParsedLogicType::PrereqAND(indices),
+                PrereqOR(_) => ParsedLogicType::PrereqOR(indices),
+            };
+
+            parsed_assocs.push((parent_component_indice, parsed_logical_type));
+        }
+
+        for association in parsed_assocs {
+            self.create_component_assoc(association.0, association.1);
+        }
+
+    }
+
+    fn parse_degree_requirements(&mut self, degree_requirements: Vec<(InstantiationType, Vec<InstantiationType>)>) {
         //We have to repeat some code because of the borrow checker...
         for item in degree_requirements {
-            let degree_in_instantiaion = item.0;
+            let degree_in_instantiation = item.0;
             let instantiations = item.1;
 
-            if let Degree(degree_strs) = degree_in_instantiaion {
+            if let Degree(degree_strs) = degree_in_instantiation {
                 //actually this is a code but im lazy to change it rn.
                 //TODO
                 let new_degree = NewDegree {

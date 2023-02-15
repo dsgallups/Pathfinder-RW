@@ -19,7 +19,7 @@ pub async fn reset_and_pop_db(_req: HttpRequest, pool: web::Data<PgPool>) -> Htt
 
     let mut c = Catalog::new(pg_pool);
 
-    c.gen_catalog();
+    c.gen_full_catalog();
 
     HttpResponse::Ok().json(json!({"result": "success"}))
 }

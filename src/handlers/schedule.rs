@@ -308,6 +308,12 @@ impl ScheduleMaker {
                     }
 
                     //now set the selected indice to checkedandselected
+                    //I wonder if we should instead provide it a path cost....hmm.
+                    /*
+                        Where the requirement would have something like
+                        (MA 16010, 5, Required),
+                        (MA 162, 3, Best)
+                     */
                     children[minimal_cost.0].1 = CheckedAndSelected;
                 }
                 "PrereqAND" => {}
