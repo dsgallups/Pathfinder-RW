@@ -3,7 +3,7 @@ use crate::schema::classes;
 use diesel::prelude::*;
 use diesel::PgConnection;
 
-#[derive(Debug, Queryable, Serialize, Deserialize, Associations)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Associations, Clone)]
 #[diesel(belongs_to(Component))]
 #[diesel(table_name = classes)]
 pub struct Class {
@@ -27,6 +27,15 @@ impl Class {
         conn: &mut PgConnection,
     ) -> Result<Class, diesel::result::Error> {
         classes::table.filter(classes::name.eq(name)).first(conn)
+    }
+
+    pub fn find_by_component_id(
+        component_id: &i32,
+        conn: &mut PgConnection,
+    ) -> Result<Class, diesel::result::Error> {
+        classes::table
+            .filter(classes::component_id.eq(component_id))
+            .first(conn)
     }
 
     pub fn destroy(id: &i32, conn: &mut PgConnection) -> Result<(), diesel::result::Error> {

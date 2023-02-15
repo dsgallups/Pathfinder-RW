@@ -7,6 +7,7 @@ use thiserror::Error;
 
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
+    class::Class,
     component::Component,
     degree::Degree,
 };
@@ -14,6 +15,7 @@ use crate::models::{
 #[derive(Debug, Clone)]
 struct Req {
     component: Component,
+    class: Option<Class>,
     children: Vec<(usize, Status)>,
     parents: Vec<(usize, Status)>,
 }
@@ -33,11 +35,13 @@ struct Cost<'a> {
 #[derive(Debug, Clone)]
 enum Status {
     Unchecked,
-    CheckedButNotSelected,
-    Selected,
+    Checked,
+    CheckedAndSelected,
 }
 
-use Status::{CheckedButNotSelected, Selected, Unchecked};
+use Status::{Checked, CheckedAndSelected, Unchecked};
+
+use super::types::LogicalType;
 
 #[derive(Error, Debug)]
 pub enum ScheduleError {
@@ -120,6 +124,7 @@ impl ScheduleMaker {
         };
         let req = Req {
             component: degree_component,
+            class: None,
             children: Vec::new(),
             parents: Vec::new(),
         };
@@ -181,9 +186,17 @@ impl ScheduleMaker {
                     //No need to run it again.
                 }
                 None => {
+                    //If this component is a class...
+                    let class = if component.pftype.eq("Class") {
+                        Some(Class::find_by_component_id(&component.id, &mut self.conn)?)
+                    } else {
+                        None
+                    };
+
                     //Create the req for this component
                     let req = Req {
                         component,
+                        class,
                         children: Vec::new(),
                         parents: Vec::new(),
                     };
@@ -250,7 +263,7 @@ impl ScheduleMaker {
     fn satisfy_requirements(
         &mut self,
         requirement_info: &mut (usize, Status),
-    ) -> Result<(), ScheduleError> {
+    ) -> Result<i32, ScheduleError> {
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
@@ -269,6 +282,8 @@ impl ScheduleMaker {
                     //So we want to make sure that the current requirement is satisfied
                     //To do this, we need to store a value that tells us if the
                     //requirement is selected.
+
+                    //Make sure that we get a return value that will tell us if it is checked
                     for child in children {
                         self.satisfy_requirements(child)?;
                     }
@@ -276,7 +291,9 @@ impl ScheduleMaker {
                 "GroupOR" => {}
                 "PrereqAND" => {}
                 "PrereqOR" => {}
-                "None" => {}
+                "None" => {
+                    //Check this class's value
+                }
                 _ => {
                     panic!(
                         "This component has an invalid logic_type! {:?}",
@@ -287,6 +304,6 @@ impl ScheduleMaker {
         }
 
         //self.reqs[requirement_indice] = requirement;
-        Ok(())
+        Ok(Checked)
     }
 }
