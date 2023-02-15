@@ -173,9 +173,17 @@ impl ScheduleMaker {
                     );
                     //push the parent id to this component
                     self.reqs[id].parents.push((parent_id, Unchecked));
+                    println!(
+                        "{}Gave self (req_id: {}) a parent (req_id: {})",
+                        &spacing, id, parent_id
+                    );
 
                     //push this id to the parent's children
                     self.reqs[parent_id].children.push((id, Unchecked));
+                    println!(
+                        "{}Gave parent (req_id: {}) a child(req_id: {})",
+                        &spacing, parent_id, id
+                    );
 
                     println!(
                         "{}Associated parent (req_id: {}) to this child (req_id: {})",
@@ -215,11 +223,19 @@ impl ScheduleMaker {
                         &spacing, id
                     );
 
-                    //push the parent_id to this component 
+                    //push the parent_id to this component
                     self.reqs[id].parents.push((parent_id, Unchecked));
+                    println!(
+                        "{}Gave self (req_id: {}) a parent (req_id: {})",
+                        &spacing, id, parent_id
+                    );
 
                     //push this id to the parent component's children
-                    self.reqs[parent_id].children.push((parent_id, Unchecked));
+                    self.reqs[parent_id].children.push((id, Unchecked));
+                    println!(
+                        "{}Gave parent (req_id: {}) a child(req_id: {})",
+                        &spacing, parent_id, id
+                    );
 
                     println!(
                         "{}Associated parent (req_id: {}) to this child (req_id: {})",
@@ -316,10 +332,10 @@ impl ScheduleMaker {
                     //now set the selected indice to checkedandselected
                     //I wonder if we should instead provide it a path cost....hmm.
                     /*
-                        Where the requirement would have something like
-                        (MA 16010, 5, Required),
-                        (MA 162, 3, Best)
-                     */
+                       Where the requirement would have something like
+                       (MA 16010, 5, Required),
+                       (MA 162, 3, Best)
+                    */
                     children[minimal_cost.0].1 = CheckedAndSelected;
                 }
                 "PrereqAND" => {}
