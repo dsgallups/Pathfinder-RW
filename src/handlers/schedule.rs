@@ -377,7 +377,7 @@ impl ScheduleMaker {
                 }
                 "PrereqAND" => {
                     for (internal_indice, child) in children.into_iter().enumerate() {
-                        //let result = self.satisfy_requirements
+                        let result = self.evaluate_prereq(child.0);
                     }
                 }
                 "PrereqOR" => {}
@@ -404,5 +404,9 @@ impl ScheduleMaker {
         Ok(0)
     }
 
-    //fn evaluate_prereqs(&mut self, )
+    fn evaluate_prereq(&mut self, requirement_indice: usize) {
+        let requirement = self.reqs[requirement_indice].clone();
+
+        //TODO work on this
+    }
 }
