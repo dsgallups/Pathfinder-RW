@@ -304,6 +304,10 @@ impl ScheduleMaker {
         let mut requirement = self.reqs[requirement_indice].clone();
 
         if let Some(logic_type) = &requirement.component.logic_type {
+            let children = &mut requirement.children;
+
+            let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+
             match logic_type.as_str() {
                 "GroupAND" => {
                     //Since all of the degrees in our catalog is GroupAND, we
@@ -317,24 +321,36 @@ impl ScheduleMaker {
                     for child in children {
                         self.satisfy_requirements(child)?;
 
-                        child.1 = Checked;
+                        child.1 = CheckedAndSelected;
+                        for parent in &mut self.reqs[child.0].parents {
+                            if parent.0 == requirement_indice {
+                                parent.1 = CheckedAndSelected;
+                                break;
+                            }
+                        }
                     }
                 }
                 "GroupOR" => {
-                    let children = &mut requirement.children;
-
-                    let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
-
-                    for (indice, child) in children.into_iter().enumerate() {
+                    for (internal_indice, child) in children.into_iter().enumerate() {
                         let result = self.satisfy_requirements(child)?;
-
+                        println!(
+                            "Minimal cost: {:?}, result for req_id {}: {}",
+                            minimal_cost, child.0, result
+                        );
                         minimal_cost = if result < minimal_cost.1 {
-                            (indice, result)
+                            (internal_indice, result)
                         } else {
                             minimal_cost
                         };
 
                         child.1 = Checked;
+                        //also check the parent
+                        for parent in &mut self.reqs[child.0].parents {
+                            if parent.0 == requirement_indice {
+                                parent.1 = Checked;
+                                break;
+                            }
+                        }
                     }
 
                     //now set the selected indice to checkedandselected
@@ -345,19 +361,26 @@ impl ScheduleMaker {
                        (MA 162, 3, Best)
                     */
                     children[minimal_cost.0].1 = CheckedAndSelected;
-                }
-                "PrereqAND" => {}
-                "PrereqOR" => {}
-                "None" => {
-                    //Check this class's value
-                    if requirement.component.pftype.eq("Class") {
-                        return Ok(requirement.class.unwrap().credits.unwrap());
+
+                    //Also, on the child, make sure to add checkedandselected to its parent
+                    let child_indice_in_reqs = children[minimal_cost.0].0;
+
+                    //Note that we aren't copying this and setting the value to it. We are
+                    //going straight to the value in self.reqs and changing it.
+
+                    for parent in &mut self.reqs[child_indice_in_reqs].parents {
+                        if parent.0 == requirement_indice {
+                            parent.1 = CheckedAndSelected;
+                            break;
+                        }
                     }
-                    panic!(
-                        "Requirement is NOT a class and has a logic_type of NONE: {:?}",
-                        &requirement
-                    );
                 }
+                "PrereqAND" => {
+                    for (internal_indice, child) in children.into_iter().enumerate() {
+                        //let result = self.satisfy_requirements
+                    }
+                }
+                "PrereqOR" => {}
                 _ => {
                     panic!(
                         "This component has an invalid logic_type! {:?}",
@@ -365,9 +388,21 @@ impl ScheduleMaker {
                     )
                 }
             }
+        } else {
+            //No logic type
+            //Check this class's value
+            if requirement.component.pftype.eq("Class") {
+                return Ok(requirement.class.unwrap().credits.unwrap());
+            }
+            panic!(
+                "Requirement is NOT a class and has a logic_type of NONE: {:?}",
+                &requirement
+            );
         }
 
         self.reqs[requirement_indice] = requirement;
         Ok(0)
     }
+
+    //fn evaluate_prereqs(&mut self, )
 }
