@@ -222,17 +222,11 @@ impl Catalog {
         let catalog = vec![
             (
                 Group("CALC 1"),
-                GroupOR(vec![
-                    Class(("MA 16010", 5)),
-                    Class(("MA 16200", 4))
-                ])
+                GroupOR(vec![Class(("MA 16010", 5)), Class(("MA 16200", 4))]),
             ),
             (
                 Group("CALC 2"),
-                GroupOR(vec![
-                    Class(("MA 16020", 5)),
-                    Class(("MA 16600", 4))
-                ])
+                GroupOR(vec![Class(("MA 16020", 5)), Class(("MA 16600", 4))]),
             ),
             (
                 SimpleClass("MA 16020"),
@@ -240,18 +234,19 @@ impl Catalog {
             ),
             (
                 SimpleClass("MA 16600"),
-                PrereqAND(vec![SimpleClass("MA 16200")])
-            )
+                PrereqAND(vec![SimpleClass("MA 16200")]),
+            ),
         ];
 
         let degree_requirements = vec![
             (
-                Degree(("TEST", "TEST MAJOR", "Major")),
-                vec![
-                    Group("CALC 1"),
-                    Group("CALC 2")
-                ]
-            )
+                Degree(("TEST1", "TEST MAJOR", "Major")),
+                vec![Group("CALC 1"), Group("CALC 2")],
+            ),
+            (
+                Degree(("TEST2", "Test major with some quirks", "Major")),
+                vec![Group("CALC 1"), SimpleClass("MA 16020")],
+            ),
         ];
 
         self.parse_initial_catalog(catalog);
@@ -408,8 +403,6 @@ impl Catalog {
 
         self.parse_initial_catalog(catalog);
 
-    
-
         let degree_requirements = vec![
             (
                 Degree(("CNIT", "Computer and Information Technology", "Major")),
@@ -477,14 +470,13 @@ impl Catalog {
                 ],
             ),
         ];
-        
-        self.parse_degree_requirements(degree_requirements);
 
+        self.parse_degree_requirements(degree_requirements);
     }
 
     pub fn parse_initial_catalog(&mut self, catalog: Vec<(InstantiationType, LogicalType)>) {
         let mut parsed_assocs: Vec<(usize, ParsedLogicType)> = Vec::new();
-        
+
         for item in catalog {
             let parent_component = item.0;
             let logical_type = item.1;
@@ -516,10 +508,12 @@ impl Catalog {
         for association in parsed_assocs {
             self.create_component_assoc(association.0, association.1);
         }
-
     }
 
-    fn parse_degree_requirements(&mut self, degree_requirements: Vec<(InstantiationType, Vec<InstantiationType>)>) {
+    fn parse_degree_requirements(
+        &mut self,
+        degree_requirements: Vec<(InstantiationType, Vec<InstantiationType>)>,
+    ) {
         //We have to repeat some code because of the borrow checker...
         for item in degree_requirements {
             let degree_in_instantiation = item.0;

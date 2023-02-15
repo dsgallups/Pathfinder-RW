@@ -102,8 +102,22 @@ impl ScheduleMaker {
         //This degree root is at self.reqs[0]
         self.build_requirements_graph()?;
 
+        println!("\n\nbuild_requirements_graph() finished.");
+        println!("------------------------------------------Begin Reqs------------------------------------------");
+        for (pos, req) in self.reqs.iter().enumerate() {
+            println!("{:>2}: {:?}", pos, req);
+        }
+        println!("------------------------------------------End Reqs------------------------------------------");
+
         //turn the requirements graph into a schedule
         self.analyze_requirements_graph()?;
+
+        println!("\n\nanalyze_requirements_graph() finished.");
+        println!("------------------------------------------Begin Reqs------------------------------------------");
+        for (pos, req) in self.reqs.iter().enumerate() {
+            println!("{:>2}: {:?}", pos, req);
+        }
+        println!("------------------------------------------End Reqs------------------------------------------");
 
         Ok(String::from("Success!"))
     }
@@ -138,12 +152,6 @@ impl ScheduleMaker {
         println!("Root component: {:?}", &self.reqs[id]);
 
         self.associate_components(id, root_components, 0)?;
-
-        println!("\n\n------------------------------------------Begin Reqs------------------------------------------");
-        for (pos, req) in self.reqs.iter().enumerate() {
-            println!("{:>2}: {:?}", pos, req);
-        }
-        println!("------------------------------------------End Reqs------------------------------------------");
 
         Ok(())
     }
@@ -359,7 +367,7 @@ impl ScheduleMaker {
             }
         }
 
-        //self.reqs[requirement_indice] = requirement;
+        self.reqs[requirement_indice] = requirement;
         Ok(0)
     }
 }
