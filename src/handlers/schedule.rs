@@ -3,8 +3,8 @@ use diesel::{
     PgConnection,
 };
 
-use thiserror::Error;
 use std::collections::HashMap;
+use thiserror::Error;
 
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
@@ -20,8 +20,8 @@ struct Req {
     pftype: String,
     class: Option<Class>,
     logic_type: Option<String>,
-    children: Vec<usize>,
-    parents: Vec<usize>,
+    children: Vec<i32>,
+    parents: Vec<i32>,
 }
 
 impl Req {
@@ -35,24 +35,29 @@ impl Req {
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
-    reqs: HashMap<i32, Req>
+    reqs: HashMap<i32, Req>,
 }
 
 impl ReqHolder {
     fn new() -> ReqHolder {
-        ReqHolder { reqs: HashMap::new() }
+        ReqHolder {
+            reqs: HashMap::new(),
+        }
     }
 
     fn add_req(&mut self, component: Component) {
-        self.reqs.insert(component.id, Req {
-            id: component.id,
-            name: component.name,
-            pftype: component.pftype,
-            class: None,
-            logic_type: component.logic_type,
-            children: Vec::new(),
-            parents: Vec::new()
-        });
+        self.reqs.insert(
+            component.id,
+            Req {
+                id: component.id,
+                name: component.name,
+                pftype: component.pftype,
+                class: None,
+                logic_type: component.logic_type,
+                children: Vec::new(),
+                parents: Vec::new(),
+            },
+        );
     }
 
     fn add_association(&mut self, parent: i32, child: i32) {
@@ -66,6 +71,14 @@ impl ReqHolder {
             child_req.parents.push(parent);
         } else {
             panic!("Req {} does not exist in the graph.", child);
+        }
+    }
+
+    fn get_req(&mut self, id: i32) -> &mut Req {
+        if let Some(req) = self.reqs.get_mut(&id) {
+            return req;
+        } else {
+            panic!("Req {} does not exist, cannot GET.", id);
         }
     }
 }
@@ -341,7 +354,7 @@ impl ScheduleMaker {
 
         Ok(())
     }
-    
+
     fn satisfy_requirements(&mut self, requirement_indice: usize) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
@@ -496,7 +509,6 @@ impl ScheduleMaker {
 
         Ok(0)
     }
-    
 
     fn evaluate_prereq(&mut self, requirement_indice: usize) -> Result<String, ScheduleError> {
         let requirement = self.reqs[requirement_indice].clone();
