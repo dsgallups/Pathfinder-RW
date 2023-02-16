@@ -4,6 +4,7 @@ use diesel::{
 };
 
 use thiserror::Error;
+use std::collections::HashMap;
 
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
@@ -14,18 +15,58 @@ use crate::models::{
 
 #[derive(Debug, Clone)]
 struct Req {
-    component: Component,
+    id: i32,
+    name: String,
+    pftype: String,
     class: Option<Class>,
-    children: Vec<(usize, Status)>,
-    parents: Vec<(usize, Status)>,
+    logic_type: Option<String>,
+    children: Vec<usize>,
+    parents: Vec<usize>,
 }
 
 impl Req {
     pub fn str(&self) -> String {
         format!(
             "{:12}: logic_type: {:60?}, children:{:?}, parents: {:?}",
-            self.component.name, self.component.logic_type, self.children, self.parents
+            self.name, self.logic_type, self.children, self.parents
         )
+    }
+}
+
+#[derive(Debug, Clone)]
+struct ReqHolder {
+    reqs: HashMap<i32, Req>
+}
+
+impl ReqHolder {
+    fn new() -> ReqHolder {
+        ReqHolder { reqs: HashMap::new() }
+    }
+
+    fn add_req(&mut self, component: Component) {
+        self.reqs.insert(component.id, Req {
+            id: component.id,
+            name: component.name,
+            pftype: component.pftype,
+            class: None,
+            logic_type: component.logic_type,
+            children: Vec::new(),
+            parents: Vec::new()
+        });
+    }
+
+    fn add_association(&mut self, parent: i32, child: i32) {
+        if let Some(parent_req) = self.reqs.get_mut(&parent) {
+            parent_req.children.push(child);
+        } else {
+            panic!("Req {} does not exist in the graph.", parent);
+        }
+
+        if let Some(child_req) = self.reqs.get_mut(&parent) {
+            child_req.parents.push(parent);
+        } else {
+            panic!("Req {} does not exist in the graph.", child);
+        }
     }
 }
 
@@ -294,13 +335,13 @@ impl ScheduleMaker {
 
         println!("Now generating schedule....");
 
-        self.satisfy_requirements(0)?;
+        //self.satisfy_requirements(0)?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
         Ok(())
     }
-
+    
     fn satisfy_requirements(&mut self, requirement_indice: usize) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
@@ -315,7 +356,6 @@ impl ScheduleMaker {
             match logic_type.as_str() {
                 "GroupAND" => {
                     //Since all of the degrees in our catalog is GroupAND
-
                     //So we want to make sure that the current requirement is satisfied
                     //To do this, we need to store a value that tells us if the
                     //requirement is selected.
@@ -456,6 +496,7 @@ impl ScheduleMaker {
 
         Ok(0)
     }
+    
 
     fn evaluate_prereq(&mut self, requirement_indice: usize) -> Result<String, ScheduleError> {
         let requirement = self.reqs[requirement_indice].clone();
