@@ -307,9 +307,9 @@ impl ScheduleMaker {
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
 
-        let mut requirement = self.reqs[requirement_indice].clone();
+        //let mut requirement = &mut self.reqs[requirement_indice];
 
-        if let Some(logic_type) = &requirement.component.logic_type {
+        if let Some(logic_type) = &mut self.reqs[requirement_indice].component.logic_type {
             let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
             match logic_type.as_str() {
@@ -321,7 +321,7 @@ impl ScheduleMaker {
                     //requirement is selected.
 
                     //Make sure that we get a return value that will tell us if it is checked
-                    for child in &mut requirement.children {
+                    for child in &mut self.reqs[requirement_indice].children {
                         self.satisfy_requirements(child.0)?;
 
                         child.1 = CheckedAndSelected;
@@ -336,7 +336,7 @@ impl ScheduleMaker {
                 "GroupOR" => {
                     let mut internal_indice: usize = 0;
 
-                    for mut child in &mut requirement.children {
+                    for mut child in &mut self.reqs[requirement_indice].children {
                         let result = self.satisfy_requirements(child.0)?;
                         println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
@@ -366,10 +366,11 @@ impl ScheduleMaker {
                        (MA 16010, 5, Required),
                        (MA 162, 3, Best)
                     */
-                    requirement.children[minimal_cost.0].1 = CheckedAndSelected;
+                    self.reqs[requirement_indice].children[minimal_cost.0].1 = CheckedAndSelected;
 
                     //Also, on the child, make sure to add checkedandselected to its parent
-                    let child_indice_in_reqs = requirement.children[minimal_cost.0].0;
+                    let child_indice_in_reqs =
+                        self.reqs[requirement_indice].children[minimal_cost.0].0;
 
                     //Note that we aren't copying this and setting the value to it. We are
                     //going straight to the value in self.reqs and changing it.
@@ -384,7 +385,7 @@ impl ScheduleMaker {
                 "PrereqAND" => {
                     //Return Ok ONLY IF every prereq is satisfied here.
                     let mut can_associate = true;
-                    for child in &mut requirement.children {
+                    for child in &mut self.reqs[requirement_indice].children {
                         match self.evaluate_prereq(child.0) {
                             Ok(res) => {}
                             Err(e) => {
@@ -404,12 +405,12 @@ impl ScheduleMaker {
                     if requirement_indice == 6 {
                         println!(
                             "\n\nEVALUATING {:?}\nCAN ASSOCIATE: {:?}\n",
-                            &requirement, can_associate
+                            &self.reqs[requirement_indice], can_associate
                         );
                     }
 
                     if can_associate {
-                        for child in &mut requirement.children {
+                        for child in &mut self.reqs[requirement_indice].children {
                             //give each child for this component a value of CheckedAndSelected
                             child.1 = CheckedAndSelected;
                             for parent in &mut self.reqs[child.0].parents {
@@ -418,8 +419,7 @@ impl ScheduleMaker {
                                 }
                             }
                         }
-                        if requirement.component.pftype.eq("Class") {
-                            self.reqs[requirement_indice] = requirement;
+                        if self.reqs[requirement_indice].component.pftype.eq("Class") {
                             return Ok(self.reqs[requirement_indice]
                                 .class
                                 .as_ref()
@@ -440,16 +440,20 @@ impl ScheduleMaker {
         } else {
             //No logic type
             //Check this class's value
-            if requirement.component.pftype.eq("Class") {
-                return Ok(requirement.class.unwrap().credits.unwrap());
+            if self.reqs[requirement_indice].component.pftype.eq("Class") {
+                return Ok(self.reqs[requirement_indice]
+                    .class
+                    .as_ref()
+                    .unwrap()
+                    .credits
+                    .unwrap());
             }
             panic!(
                 "Requirement is NOT a class and has a logic_type of NONE: {:?}",
-                &requirement
+                &self.reqs[requirement_indice]
             );
         }
 
-        self.reqs[requirement_indice] = requirement;
         Ok(0)
     }
 
@@ -532,8 +536,15 @@ impl ScheduleMaker {
 
         for child in &self.reqs[index].children {
             match child.1 {
-                CheckedAndSelected => {}
-                _ => {}
+                CheckedAndSelected => match self.reqs[child.0].component.pftype.as_str() {
+                    "Group" => {}
+                    "Class" => {}
+                    _ => {}
+                },
+                Checked => {}
+                Unchecked => {
+                    panic!("Something wasn't checked before building the queue!!")
+                }
             }
         }
     }
