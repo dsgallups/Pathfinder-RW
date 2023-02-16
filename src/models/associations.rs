@@ -15,13 +15,13 @@ pub struct ComponentToComponent {
 
 impl ComponentToComponent {
     pub fn get_assoc_from_parent(
-        component: &Component,
+        component_id: &i32,
         conn: &mut PgConnection,
     ) -> Result<Vec<ComponentToComponent>, diesel::result::Error> {
         use crate::schema::components_to_components::dsl::*;
 
         components_to_components
-            .filter(parent_id.eq(component.id))
+            .filter(parent_id.eq(&component_id))
             .load::<ComponentToComponent>(conn)
     }
 
@@ -37,12 +37,12 @@ impl ComponentToComponent {
     }
 
     pub fn get_children(
-        component: &Component,
+        component_id: &i32,
         conn: &mut PgConnection,
     ) -> Result<Vec<Component>, diesel::result::Error> {
         use crate::schema::components::dsl::*;
 
-        let assoc = ComponentToComponent::get_assoc_from_parent(component, conn)?;
+        let assoc = ComponentToComponent::get_assoc_from_parent(component_id, conn)?;
         let child_ids = assoc
             .into_iter()
             .map(|assoc| assoc.child_id)

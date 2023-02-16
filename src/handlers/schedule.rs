@@ -68,7 +68,7 @@ impl ReqHolder {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
-                class: None,
+                class: class,
                 logic_type: component.logic_type,
                 children: Vec::new(),
                 parents: Vec::new(),
@@ -76,15 +76,23 @@ impl ReqHolder {
         );
     }
 
-    fn add_association(&mut self, parent: i32, child: i32) {
+    fn add_association(&mut self, spacing: &str, parent: i32, child: i32) {
         if let Some(parent_req) = self.reqs.get_mut(&parent) {
-            parent_req.children.push(child);
+            parent_req.children.push((child, Unchecked));
+            println!(
+                "{}Gave parent (req_id: {}) a child(req_id: {})",
+                spacing, parent, child
+            );
         } else {
             panic!("Req {} does not exist in the graph.", parent);
         }
 
         if let Some(child_req) = self.reqs.get_mut(&parent) {
-            child_req.parents.push(parent);
+            child_req.parents.push((parent, Unchecked));
+            println!(
+                "{}Gave child (req_id: {}) a parent (req_id: {})",
+                spacing, child, parent
+            );
         } else {
             panic!("Req {} does not exist in the graph.", child);
         }
@@ -250,25 +258,9 @@ impl ScheduleMaker {
                     "{}-----------------START COMPONENT (already exists, req_id: {})-----------------",
                     &spacing, req.id
                 );
-                //push the parent id to this component
-                req.parents.push((parent_id, Unchecked));
-                println!(
-                    "{}Gave self (req_id: {}) a parent (req_id: {})",
-                    &spacing, req.id, parent_id
-                );
 
-                //push this id to the parent's children
-                let parent = req_holder.get_req(parent_id).unwrap();
-                parent.children.push((req.id, Unchecked));
-                println!(
-                    "{}Gave parent (req_id: {}) a child(req_id: {})",
-                    &spacing, parent_id, req.id
-                );
+                req_holder.add_association(&spacing, parent_id, req.id);
 
-                println!(
-                    "{}Associated parent (req_id: {}) to this child (req_id: {})",
-                    &spacing, parent_id, req.id
-                );
                 println!(
                     "{}-----------------END COMPONENT (already exists, req_id: {})-----------------\n",
                     &spacing, req.id
@@ -276,47 +268,28 @@ impl ScheduleMaker {
                 //since this req exists, it has already associated its children.
                 //No need to run it again.
             } else {
+                //get the ID of this component
+                let id = component.id;
+
                 //If this component is a class...
                 let class = if component.pftype.eq("Class") {
-                    Some(Class::find_by_component_id(&component.id, &mut self.conn)?)
+                    Some(Class::find_by_component_id(&id, &mut self.conn)?)
                 } else {
                     None
                 };
 
-                let new_id = component.id;
-                //push this req to the reqs
-                req_holder.add_component(component);
-
-                //get the ID of this component
-                let id = self.reqs.len() - 1;
+                //push this component to the reqs
+                req_holder.add_component(&mut self.conn, component);
 
                 println!(
                     "{}-----------------START COMPONENT (new, req_id: {})-----------------",
                     &spacing, id
                 );
 
-                //push the parent_id to this component
-                self.reqs[id].parents.push((parent_id, Unchecked));
-                println!(
-                    "{}Gave self (req_id: {}) a parent (req_id: {})",
-                    &spacing, id, parent_id
-                );
-
-                //push this id to the parent component's children
-                self.reqs[parent_id].children.push((id, Unchecked));
-                println!(
-                    "{}Gave parent (req_id: {}) a child(req_id: {})",
-                    &spacing, parent_id, id
-                );
-
-                println!(
-                    "{}Associated parent (req_id: {}) to this child (req_id: {})",
-                    &spacing, parent_id, id
-                );
+                req_holder.add_association(&spacing, parent_id, id);
 
                 //get the children of this component
-                let children =
-                    ComponentToComponent::get_children(&self.reqs[id].component, &mut self.conn)?;
+                let children = ComponentToComponent::get_children(&id, &mut self.conn)?;
 
                 println!(
                     "{}Grabbed new children of component (req_id: {}):\n{}{}{:?}\n\n",
@@ -324,7 +297,7 @@ impl ScheduleMaker {
                 );
 
                 //recursively call this function
-                self.associate_components(id, children, nests + 1)?;
+                self.associate_components(&mut req_holder, id, children, nests + 1)?;
 
                 println!(
                     "{}------------------END COMPONENT (new, req_id: {})-----------------\n\n",
