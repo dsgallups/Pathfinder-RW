@@ -282,24 +282,18 @@ impl ScheduleMaker {
 
         println!("Now generating schedule....");
 
-        self.satisfy_requirements(&mut (0, Unchecked))?;
+        self.satisfy_requirements(0)?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
         Ok(())
     }
 
-    fn satisfy_requirements(
-        &mut self,
-        requirement_info: &mut (usize, Status),
-    ) -> Result<i32, ScheduleError> {
+    fn satisfy_requirements(&mut self, requirement_indice: usize) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
-
-        let requirement_indice = requirement_info.0;
-        let requirement_status = &mut requirement_info.1;
 
         let mut requirement = self.reqs[requirement_indice].clone();
 
@@ -319,7 +313,7 @@ impl ScheduleMaker {
 
                     //Make sure that we get a return value that will tell us if it is checked
                     for child in children {
-                        self.satisfy_requirements(child)?;
+                        self.satisfy_requirements(child.0)?;
 
                         child.1 = CheckedAndSelected;
                         for parent in &mut self.reqs[child.0].parents {
@@ -332,7 +326,7 @@ impl ScheduleMaker {
                 }
                 "GroupOR" => {
                     for (internal_indice, child) in children.into_iter().enumerate() {
-                        let result = self.satisfy_requirements(child)?;
+                        let result = self.satisfy_requirements(child.0)?;
                         println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
                             minimal_cost, child.0, result
@@ -376,6 +370,7 @@ impl ScheduleMaker {
                     }
                 }
                 "PrereqAND" => {
+                    //Return Ok ONLY IF every prereq is satisfied here.
                     for (internal_indice, child) in children.into_iter().enumerate() {
                         let result = self.evaluate_prereq(child.0);
                     }
@@ -404,9 +399,50 @@ impl ScheduleMaker {
         Ok(0)
     }
 
-    fn evaluate_prereq(&mut self, requirement_indice: usize) {
+    fn evaluate_prereq(&mut self, requirement_indice: usize) -> Result<String, ScheduleError> {
         let requirement = self.reqs[requirement_indice].clone();
 
-        //TODO work on this
+        //So we need to check its parents
+        //This is because we cannot evaluate the prereq without its parents evaluating it alongside other components
+        //in their children
+        for parent in &requirement.parents {
+            match self.reqs[parent.0].component.pftype.as_str() {
+                //Since we need to satisfy this prereq, we should go ahead and test out
+                //this group
+                //TODO: This feels like this could potentially infinitely recurse.
+                "Group" => match parent.1 {
+                    Unchecked => {
+                        //Depending on the type of parent (group or class)
+                        //We need to perform different actions
+                        /*
+                           Lets says MA 16010 has an unchecked parent of MA 16020
+                           The problem is that MA 16020 probably called this. So if
+                           we try to run the parent through the original function,
+                           this program will infinitely loop
+
+                           So, only do logic on unchecked groups
+                        */
+                        //self.satisfy_requirements(parent.0);
+                    }
+                    Checked => {}
+                    CheckedAndSelected => {}
+                },
+                "Class" => match parent.1 {
+                    //this could potentially result in a infinite loop
+                    //self.evaluate_prereq(parent.0);
+                    Unchecked => {}
+                    Checked => {}
+                    CheckedAndSelected => {}
+                },
+                &_ => {
+                    panic!("This component has no pftype!");
+                }
+            }
+        }
+
+        self.reqs[requirement_indice] = requirement;
+
+        //TODO: remove
+        Ok(String::from("Finished"))
     }
 }
