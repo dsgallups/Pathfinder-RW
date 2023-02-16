@@ -131,6 +131,9 @@ impl ReqHolder {
     fn get_req(&mut self, id: i32) -> Option<&mut Req> {
         self.reqs.get_mut(&id)
     }
+    fn get_imm_req(&self, id: i32) -> &Req {
+        self.reqs.get(&id).unwrap()
+    }
 
     fn display_graph(&self, id: i32) {
         let req = self.reqs.get(&id).unwrap();
@@ -346,51 +349,47 @@ impl ScheduleMaker {
 
         println!("Now generating schedule....");
 
-        self.satisfy_requirements(req_holder, -1)?;
+        self.satisfy_requirements(req_holder, -1, Some(String::from("GroupAND")))?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
         Ok(())
     }
-
+    #[allow(unreachable_code)]
     fn satisfy_requirements(
         &mut self,
         req_holder: &mut ReqHolder,
         req_id: i32,
+        logic_type: Option<String>,
     ) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
-        let requirement = req_holder.get_req(req_id).unwrap();
-        if let Some(logic_type) = &requirement.logic_type {
-            let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+        let mut updated_children = req_holder.get_req(req_id).unwrap().children.clone();
+        //There is no real other way to do this, because it gets made that I even try
 
-            match logic_type.as_str() {
-                "GroupAND" => {
-                    //Since all of the degrees in our catalog is GroupAND
-                    //So we want to make sure that the current requirement is satisfied
-                    //To do this, we need to store a value that tells us if the
-                    //requirement is selected.
+        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+        let mut internal_indice: usize = 0;
+        let mut can_associate = true;
+        for child in &mut updated_children {
+            let child_logic_type = req_holder.get_req(req_id).unwrap().logic_type.clone();
 
-                    //Make sure that we get a return value that will tell us if it is checked
-                    for child in requirement.children {
-                        self.satisfy_requirements(req_holder, child.0)?;
-
+            if let Some(logic_type) = &logic_type {
+                match logic_type.as_str() {
+                    "GroupAND" => {
+                        self.satisfy_requirements(req_holder, child.0, child_logic_type)?;
                         child.1 = CheckedAndSelected;
-                        for parent in req_holder.get_req(child.0).unwrap().parents {
+                        for parent in &mut req_holder.get_req(child.0).unwrap().parents {
                             if parent.0 == req_id {
                                 parent.1 = CheckedAndSelected;
                                 break;
                             }
                         }
                     }
-                }
-                "GroupOR" => {
-                    let mut internal_indice: usize = 0;
-
-                    for mut child in requirement.children {
-                        let result = self.satisfy_requirements(req_holder, child.0)?;
+                    "GroupOR" => {
+                        let result =
+                            self.satisfy_requirements(req_holder, child.0, child_logic_type)?;
                         println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
                             minimal_cost, child.0, result
@@ -403,7 +402,7 @@ impl ScheduleMaker {
 
                         child.1 = Checked;
                         //also check the parent
-                        for parent in req_holder.get_req(child.0).unwrap().parents {
+                        for parent in &mut req_holder.get_req(child.0).unwrap().parents {
                             if parent.0 == req_id {
                                 parent.1 = Checked;
                                 break;
@@ -411,33 +410,7 @@ impl ScheduleMaker {
                         }
                         internal_indice += 1;
                     }
-
-                    //now set the selected indice to checkedandselected
-                    //I wonder if we should instead provide it a path cost....hmm.
-                    /*
-                       Where the requirement would have something like
-                       (MA 16010, 5, Required),
-                       (MA 162, 3, Best)
-                    */
-                    requirement.children[minimal_cost.0].1 = CheckedAndSelected;
-
-                    //Also, on the child, make sure to add checkedandselected to its parent
-                    let child_id_in_req_holder = requirement.children[minimal_cost.0].0;
-
-                    //Note that we aren't copying this and setting the value to it. We are
-                    //going straight to the value in self.reqs and changing it.
-
-                    for parent in req_holder.get_req(child_id_in_req_holder).unwrap().parents {
-                        if parent.0 == req_id {
-                            parent.1 = CheckedAndSelected;
-                            break;
-                        }
-                    }
-                }
-                "PrereqAND" => {
-                    //Return Ok ONLY IF every prereq is satisfied here.
-                    let mut can_associate = true;
-                    for child in requirement.children {
+                    "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0) {
                             Ok(res) => {}
                             Err(e) => {
@@ -449,30 +422,55 @@ impl ScheduleMaker {
                             }
                         }
                     }
+                    "PrereqOR" => {}
+                    _ => {}
+                }
+            }
+            internal_indice = internal_indice + 1;
+        }
 
-                    /*
-                       TEST1 specific debugging
-                    */
+        //After evaluating all the children
+        if let Some(logic_type) = logic_type {
+            match logic_type.as_str() {
+                "GroupAND" => {}
+                "GroupOR" => {
+                    req_holder.get_req(req_id).unwrap().children[minimal_cost.0].1 =
+                        CheckedAndSelected;
 
-                    if req_id == 6 {
-                        println!(
-                            "\n\nEVALUATING {:?}\nCAN ASSOCIATE: {:?}\n",
-                            requirement, can_associate
-                        );
+                    //Also, on the child, make sure to add checkedandselected to its parent
+                    let child_id_in_req_holder =
+                        req_holder.get_req(req_id).unwrap().children[minimal_cost.0].0;
+
+                    //Note that we aren't copying this and setting the value to it. We are
+                    //going straight to the value in self.reqs and changing it.
+
+                    for parent in &mut req_holder.get_req(child_id_in_req_holder).unwrap().parents {
+                        if parent.0 == req_id {
+                            parent.1 = CheckedAndSelected;
+                            break;
+                        }
                     }
-
+                }
+                "PrereqAND" => {
                     if can_associate {
-                        for child in requirement.children {
+                        for child in &mut updated_children {
                             //give each child for this component a value of CheckedAndSelected
                             child.1 = CheckedAndSelected;
-                            for parent in req_holder.get_req(child.0).unwrap().parents {
+                            for parent in &mut req_holder.get_req(child.0).unwrap().parents {
                                 if parent.0 == req_id {
                                     parent.1 = CheckedAndSelected;
                                 }
                             }
                         }
-                        if requirement.pftype.eq("Class") {
-                            return Ok(requirement.class.as_ref().unwrap().credits.unwrap());
+                        if req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+                            return Ok(req_holder
+                                .get_req(req_id)
+                                .unwrap()
+                                .class
+                                .as_ref()
+                                .unwrap()
+                                .credits
+                                .unwrap());
                         }
                     }
                 }
@@ -480,21 +478,31 @@ impl ScheduleMaker {
                 _ => {
                     panic!(
                         "This component has an invalid logic_type! {:?}",
-                        requirement
+                        req_holder.get_req(req_id).unwrap()
                     )
                 }
             }
         } else {
             //No logic type
             //Check this class's value
-            if requirement.pftype.eq("Class") {
-                return Ok(requirement.class.as_ref().unwrap().credits.unwrap());
+            if req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+                return Ok(req_holder
+                    .get_req(req_id)
+                    .unwrap()
+                    .class
+                    .as_ref()
+                    .unwrap()
+                    .credits
+                    .unwrap());
             }
             panic!(
                 "Requirement is NOT a class and has a logic_type of NONE: {:?}",
-                &requirement
+                &req_holder.get_req(req_id).unwrap()
             );
         }
+
+        //finally update the req's children
+        req_holder.get_req(req_id).unwrap().children = updated_children;
 
         Ok(0)
     }
