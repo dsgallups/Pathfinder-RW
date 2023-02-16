@@ -20,8 +20,8 @@ struct Req {
     pftype: String,
     class: Option<Class>,
     logic_type: Option<String>,
-    children: Vec<i32>,
-    parents: Vec<i32>,
+    children: Vec<(i32, Status)>,
+    parents: Vec<(i32, Status)>,
 }
 
 impl Req {
@@ -44,8 +44,24 @@ impl ReqHolder {
             reqs: HashMap::new(),
         }
     }
+    fn add_degree_req(&mut self, degree: Req) {
+        self.reqs.insert(degree.id, degree);
+    }
+    fn add_component(
+        &mut self,
+        conn: &mut PooledConnection<ConnectionManager<PgConnection>>,
+        component: Component,
+    ) {
+        let class = if component.pftype.eq("Class") {
+            Some(
+                Class::find_by_component_id(&component.id, conn)
+                    .ok()
+                    .unwrap(),
+            )
+        } else {
+            None
+        };
 
-    fn add_req(&mut self, component: Component) {
         self.reqs.insert(
             component.id,
             Req {
@@ -74,12 +90,8 @@ impl ReqHolder {
         }
     }
 
-    fn get_req(&mut self, id: i32) -> &mut Req {
-        if let Some(req) = self.reqs.get_mut(&id) {
-            return req;
-        } else {
-            panic!("Req {} does not exist, cannot GET.", id);
-        }
+    fn get_req(&mut self, id: i32) -> Option<&mut Req> {
+        self.reqs.get_mut(&id)
     }
 }
 
@@ -129,7 +141,6 @@ pub struct Period {
 pub struct ScheduleMaker {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
     pub degree: Degree,
-    reqs: Vec<Req>,
     schedule: Option<Schedule>,
 }
 
@@ -140,12 +151,9 @@ impl ScheduleMaker {
     ) -> Result<Self, ScheduleError> {
         let degree = Degree::find_by_code(degree_code, &mut conn)?;
 
-        let reqs: Vec<Req> = Vec::new();
-
         Ok(Self {
             conn,
             degree,
-            reqs,
             schedule: None,
         })
     }
@@ -157,7 +165,9 @@ impl ScheduleMaker {
         //This builds our graph in an adjacency matrix stores in self.reqs
         //Note that the degree itself is modeled into a fake req
         //This degree root is at self.reqs[0]
-        self.build_requirements_graph()?;
+
+        let req_holder = ReqHolder::new();
+        self.build_requirements_graph(&mut req_holder)?;
 
         println!("\n\nbuild_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
@@ -193,38 +203,38 @@ impl ScheduleMaker {
      * which satisifes its conditions.
      *
      */
-    fn build_requirements_graph(&mut self) -> Result<(), ScheduleError> {
+    fn build_requirements_graph(
+        &mut self,
+        req_holder: &mut ReqHolder,
+    ) -> Result<(), ScheduleError> {
         //build a root node for the degree
         //TODO: this is extremely poor practice...notably giving it an id of -1.
-        let degree_component = Component {
+        let degree_req = Req {
             id: -1,
             name: self.degree.name.to_string(),
             pftype: "Degree".to_string(),
-            logic_type: Some("GroupAND".to_string()),
-        };
-        let req = Req {
-            component: degree_component,
             class: None,
+            logic_type: Some("GroupAND".to_string()),
             children: Vec::new(),
             parents: Vec::new(),
         };
 
         let root_components = DegreeToComponent::get_components(&self.degree, &mut self.conn)?;
 
-        self.reqs.push(req);
-        let id = self.reqs.len() - 1;
+        req_holder.add_degree_req(degree_req);
 
         //TODO, FIX: 0: Req { component: Component { id: -1, name: "TEST MAJOR", pftype: "Degree", logic_type: Some("GroupAND") }, class: None, children: [(0, Unchecked), (0, Unchecked)], parents: [] }
-        println!("Root component: {:?}", &self.reqs[id]);
+        println!("Root component: {:?}", &req_holder.get_req(-1));
 
-        self.associate_components(id, root_components, 0)?;
+        self.associate_components(&mut req_holder, -1, root_components, 0)?;
 
         Ok(())
     }
 
     fn associate_components(
         &mut self,
-        parent_id: usize,
+        req_holder: &mut ReqHolder,
+        parent_id: i32,
         components: Vec<Component>,
         nests: usize,
     ) -> Result<(), ScheduleError> {
@@ -235,107 +245,92 @@ impl ScheduleMaker {
             println!("{}Component: {:?}", &spacing, &component);
 
             //Determine if this component is already in reqs
-            match self
-                .reqs
-                .iter()
-                .position(|req| req.component.id == component.id)
-            {
-                Some(id) => {
-                    println!(
-                        "{}-----------------START COMPONENT (already exists, req_id: {})-----------------",
-                        &spacing, id
-                    );
-                    //push the parent id to this component
-                    self.reqs[id].parents.push((parent_id, Unchecked));
-                    println!(
-                        "{}Gave self (req_id: {}) a parent (req_id: {})",
-                        &spacing, id, parent_id
-                    );
+            if let Some(req) = req_holder.get_req(component.id) {
+                println!(
+                    "{}-----------------START COMPONENT (already exists, req_id: {})-----------------",
+                    &spacing, req.id
+                );
+                //push the parent id to this component
+                req.parents.push((parent_id, Unchecked));
+                println!(
+                    "{}Gave self (req_id: {}) a parent (req_id: {})",
+                    &spacing, req.id, parent_id
+                );
 
-                    //push this id to the parent's children
-                    self.reqs[parent_id].children.push((id, Unchecked));
-                    println!(
-                        "{}Gave parent (req_id: {}) a child(req_id: {})",
-                        &spacing, parent_id, id
-                    );
+                //push this id to the parent's children
+                let parent = req_holder.get_req(parent_id).unwrap();
+                parent.children.push((req.id, Unchecked));
+                println!(
+                    "{}Gave parent (req_id: {}) a child(req_id: {})",
+                    &spacing, parent_id, req.id
+                );
 
-                    println!(
-                        "{}Associated parent (req_id: {}) to this child (req_id: {})",
-                        &spacing, parent_id, id
-                    );
-                    println!(
-                        "{}-----------------END COMPONENT (already exists, req_id: {})-----------------\n",
-                        &spacing, id
-                    );
-                    //since this req exists, it has already associated its children.
-                    //No need to run it again.
-                }
-                None => {
-                    //If this component is a class...
-                    let class = if component.pftype.eq("Class") {
-                        Some(Class::find_by_component_id(&component.id, &mut self.conn)?)
-                    } else {
-                        None
-                    };
+                println!(
+                    "{}Associated parent (req_id: {}) to this child (req_id: {})",
+                    &spacing, parent_id, req.id
+                );
+                println!(
+                    "{}-----------------END COMPONENT (already exists, req_id: {})-----------------\n",
+                    &spacing, req.id
+                );
+                //since this req exists, it has already associated its children.
+                //No need to run it again.
+            } else {
+                //If this component is a class...
+                let class = if component.pftype.eq("Class") {
+                    Some(Class::find_by_component_id(&component.id, &mut self.conn)?)
+                } else {
+                    None
+                };
 
-                    //Create the req for this component
-                    let req = Req {
-                        component,
-                        class,
-                        children: Vec::new(),
-                        parents: Vec::new(),
-                    };
+                let new_id = component.id;
+                //push this req to the reqs
+                req_holder.add_component(component);
 
-                    //push this req to the reqs
-                    self.reqs.push(req);
+                //get the ID of this component
+                let id = self.reqs.len() - 1;
 
-                    //get the ID of this component
-                    let id = self.reqs.len() - 1;
+                println!(
+                    "{}-----------------START COMPONENT (new, req_id: {})-----------------",
+                    &spacing, id
+                );
 
-                    println!(
-                        "{}-----------------START COMPONENT (new, req_id: {})-----------------",
-                        &spacing, id
-                    );
+                //push the parent_id to this component
+                self.reqs[id].parents.push((parent_id, Unchecked));
+                println!(
+                    "{}Gave self (req_id: {}) a parent (req_id: {})",
+                    &spacing, id, parent_id
+                );
 
-                    //push the parent_id to this component
-                    self.reqs[id].parents.push((parent_id, Unchecked));
-                    println!(
-                        "{}Gave self (req_id: {}) a parent (req_id: {})",
-                        &spacing, id, parent_id
-                    );
+                //push this id to the parent component's children
+                self.reqs[parent_id].children.push((id, Unchecked));
+                println!(
+                    "{}Gave parent (req_id: {}) a child(req_id: {})",
+                    &spacing, parent_id, id
+                );
 
-                    //push this id to the parent component's children
-                    self.reqs[parent_id].children.push((id, Unchecked));
-                    println!(
-                        "{}Gave parent (req_id: {}) a child(req_id: {})",
-                        &spacing, parent_id, id
-                    );
+                println!(
+                    "{}Associated parent (req_id: {}) to this child (req_id: {})",
+                    &spacing, parent_id, id
+                );
 
-                    println!(
-                        "{}Associated parent (req_id: {}) to this child (req_id: {})",
-                        &spacing, parent_id, id
-                    );
+                //get the children of this component
+                let children =
+                    ComponentToComponent::get_children(&self.reqs[id].component, &mut self.conn)?;
 
-                    //get the children of this component
-                    let children = ComponentToComponent::get_children(
-                        &self.reqs[id].component,
-                        &mut self.conn,
-                    )?;
+                println!(
+                    "{}Grabbed new children of component (req_id: {}):\n{}{}{:?}\n\n",
+                    &spacing, id, spacing, extra_space, &children
+                );
 
-                    println!(
-                        "{}Grabbed new children of component (req_id: {}):\n{}{}{:?}\n\n",
-                        &spacing, id, spacing, extra_space, &children
-                    );
+                //recursively call this function
+                self.associate_components(id, children, nests + 1)?;
 
-                    //recursively call this function
-                    self.associate_components(id, children, nests + 1)?;
-
-                    println!(
-                        "{}------------------END COMPONENT (new, req_id: {})-----------------\n\n",
-                        &spacing, id
-                    );
-                }
-            };
+                println!(
+                    "{}------------------END COMPONENT (new, req_id: {})-----------------\n\n",
+                    &spacing, id
+                );
+            }
         }
         Ok(())
     }
