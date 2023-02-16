@@ -512,12 +512,11 @@ impl ScheduleMaker {
         req_holder: &mut ReqHolder,
         req_id: i32,
     ) -> Result<String, ScheduleError> {
-        let requirement = req_holder.get_req(req_id).unwrap();
-
         //So we need to check its parents
         //This is because we cannot evaluate the prereq without its parents evaluating it alongside other components
         //in their children
-        for parent in &requirement.parents {
+        let mut updated_parents = req_holder.get_req(req_id).unwrap().parents.clone();
+        for parent in &mut updated_parents {
             match req_holder.get_req(parent.0).unwrap().pftype.as_str() {
                 //Since we need to satisfy this prereq, we should go ahead and test out
                 //this group
@@ -552,6 +551,7 @@ impl ScheduleMaker {
                     }
                     CheckedAndSelected => {
                         //This means we're all good to use this prereq and should return ok
+                        req_holder.get_req(req_id).unwrap().parents = updated_parents;
                         return Ok(String::from("Prereq Checked and Selected"));
                     }
                 },
@@ -560,11 +560,13 @@ impl ScheduleMaker {
                 }
             }
         }
+
+        req_holder.get_req(req_id).unwrap().parents = updated_parents;
         //TODO: remove
         Ok(String::from("Finished"))
     }
 
-    pub fn build_queue(
+    fn build_queue(
         &mut self,
         req_holder: &mut ReqHolder,
     ) -> Result<Vec<(usize, i32)>, ScheduleError> {
@@ -580,11 +582,11 @@ impl ScheduleMaker {
         */
 
         //add things to queue based on their prio
-        self.check_to_add(&mut req_holder, &mut queue, -1);
+        //self.check_to_add(&mut req_holder, &mut queue, -1);
 
         Ok(queue)
     }
-    pub fn check_to_add(
+    fn check_to_add(
         &mut self,
         req_holder: &mut ReqHolder,
         queue: &mut Vec<(usize, i32)>,
