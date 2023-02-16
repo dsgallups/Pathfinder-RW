@@ -295,24 +295,21 @@ impl ScheduleMaker {
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
 
-        let mut requirement = self.reqs[requirement_indice].clone();
+        let mut requirement = &mut self.reqs[requirement_indice];
 
         if let Some(logic_type) = &requirement.component.logic_type {
-            let children = &mut requirement.children;
-
             let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
             match logic_type.as_str() {
                 "GroupAND" => {
                     //Since all of the degrees in our catalog is GroupAND, we
-                    let children = &mut requirement.children;
 
                     //So we want to make sure that the current requirement is satisfied
                     //To do this, we need to store a value that tells us if the
                     //requirement is selected.
 
                     //Make sure that we get a return value that will tell us if it is checked
-                    for child in children {
+                    for child in &mut requirement.children {
                         self.satisfy_requirements(child.0)?;
 
                         child.1 = CheckedAndSelected;
@@ -325,7 +322,8 @@ impl ScheduleMaker {
                     }
                 }
                 "GroupOR" => {
-                    for (internal_indice, child) in children.into_iter().enumerate() {
+                    let mut internal_indice = 0;
+                    for child in &mut requirement.children {
                         let result = self.satisfy_requirements(child.0)?;
                         println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
@@ -345,6 +343,7 @@ impl ScheduleMaker {
                                 break;
                             }
                         }
+                        internal_indice = internal_indice + 1;
                     }
 
                     //now set the selected indice to checkedandselected
@@ -354,10 +353,10 @@ impl ScheduleMaker {
                        (MA 16010, 5, Required),
                        (MA 162, 3, Best)
                     */
-                    children[minimal_cost.0].1 = CheckedAndSelected;
+                    requirement.children[minimal_cost.0].1 = CheckedAndSelected;
 
                     //Also, on the child, make sure to add checkedandselected to its parent
-                    let child_indice_in_reqs = children[minimal_cost.0].0;
+                    let child_indice_in_reqs = requirement.children[minimal_cost.0].0;
 
                     //Note that we aren't copying this and setting the value to it. We are
                     //going straight to the value in self.reqs and changing it.
@@ -371,7 +370,8 @@ impl ScheduleMaker {
                 }
                 "PrereqAND" => {
                     //Return Ok ONLY IF every prereq is satisfied here.
-                    for (internal_indice, child) in children.into_iter().enumerate() {
+                    let mut internal_indice = 0;
+                    for child in &mut requirement.children {
                         let result = self.evaluate_prereq(child.0);
                     }
                 }
@@ -395,7 +395,6 @@ impl ScheduleMaker {
             );
         }
 
-        self.reqs[requirement_indice] = requirement;
         Ok(0)
     }
 
