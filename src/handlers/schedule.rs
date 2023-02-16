@@ -98,8 +98,46 @@ impl ReqHolder {
         }
     }
 
+    fn try_add_association(
+        &mut self,
+        spacing: &str,
+        parent: i32,
+        child: i32,
+    ) -> Result<(), ScheduleError> {
+        //This function SHOULD ONLY BE USED when checking if the child exists.
+        //Ideally, the parent will already have existed.
+        if let Some(child_req) = self.reqs.get_mut(&child) {
+            child_req.parents.push((parent, Unchecked));
+            println!(
+                "{}Gave child (req_id: {}) a parent (req_id: {})",
+                spacing, child, parent
+            );
+        } else {
+            return Err(ScheduleError::AssociationError);
+        }
+
+        if let Some(parent_req) = self.reqs.get_mut(&parent) {
+            parent_req.children.push((child, Unchecked));
+            println!(
+                "{}Gave parent (req_id: {}) a child(req_id: {})",
+                spacing, parent, child
+            );
+        } else {
+            return Err(ScheduleError::AssociationError);
+        }
+        Ok(())
+    }
+
     fn get_req(&mut self, id: i32) -> Option<&mut Req> {
         self.reqs.get_mut(&id)
+    }
+
+    fn display_graph(&self, id: i32) {
+        let req = self.reqs.get(&id).unwrap();
+        println!("{:?}", req);
+        for child in &req.children {
+            self.display_graph(child.0);
+        }
     }
 }
 
@@ -124,6 +162,9 @@ use super::types::LogicalType;
 pub enum ScheduleError {
     #[error("Diesel Error")]
     DieselError(#[from] diesel::result::Error),
+
+    #[error("Component not found")]
+    AssociationError,
 }
 
 pub struct Schedule {
@@ -174,24 +215,21 @@ impl ScheduleMaker {
         //Note that the degree itself is modeled into a fake req
         //This degree root is at self.reqs[0]
 
-        let req_holder = ReqHolder::new();
-        self.build_requirements_graph(&mut req_holder)?;
+        let mut req_holder = ReqHolder::new();
+        let root_id = self.build_requirements_graph(&mut req_holder)?;
 
         println!("\n\nbuild_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        for (pos, req) in self.reqs.iter().enumerate() {
-            println!("{:>2}: {:?}", pos, req);
-        }
+        //TODO, show requirements graph based on degree
+        req_holder.display_graph(root_id);
         println!("------------------------------------------End Reqs------------------------------------------");
 
         //turn the requirements graph into a schedule
-        self.analyze_requirements_graph()?;
+        self.analyze_requirements_graph(&mut req_holder)?;
 
         println!("\n\nanalyze_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        for (pos, req) in self.reqs.iter().enumerate() {
-            println!("{:>2}: {}", pos, req.str().as_str());
-        }
+        req_holder.display_graph(root_id);
         println!("------------------------------------------End Reqs------------------------------------------");
 
         /*println!("\n\nLong print.");
@@ -202,7 +240,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
         */
 
-        self.build_queue()?;
+        self.build_queue(&mut req_holder)?;
         Ok(String::from("Success!"))
     }
 
@@ -214,11 +252,12 @@ impl ScheduleMaker {
     fn build_requirements_graph(
         &mut self,
         req_holder: &mut ReqHolder,
-    ) -> Result<(), ScheduleError> {
+    ) -> Result<i32, ScheduleError> {
         //build a root node for the degree
         //TODO: this is extremely poor practice...notably giving it an id of -1.
+        let root_id = -1;
         let degree_req = Req {
-            id: -1,
+            id: root_id,
             name: self.degree.name.to_string(),
             pftype: "Degree".to_string(),
             class: None,
@@ -234,9 +273,9 @@ impl ScheduleMaker {
         //TODO, FIX: 0: Req { component: Component { id: -1, name: "TEST MAJOR", pftype: "Degree", logic_type: Some("GroupAND") }, class: None, children: [(0, Unchecked), (0, Unchecked)], parents: [] }
         println!("Root component: {:?}", &req_holder.get_req(-1));
 
-        self.associate_components(&mut req_holder, -1, root_components, 0)?;
+        self.associate_components(req_holder, -1, root_components, 0)?;
 
-        Ok(())
+        Ok(root_id)
     }
 
     fn associate_components(
@@ -253,57 +292,45 @@ impl ScheduleMaker {
             println!("{}Component: {:?}", &spacing, &component);
 
             //Determine if this component is already in reqs
-            if let Some(req) = req_holder.get_req(component.id) {
-                println!(
-                    "{}-----------------START COMPONENT (already exists, req_id: {})-----------------",
-                    &spacing, req.id
-                );
+            println!(
+                "{}-----------------START COMPONENT (req_id: {})-----------------",
+                &spacing, component.id
+            );
 
-                req_holder.add_association(&spacing, parent_id, req.id);
+            match req_holder.try_add_association(&spacing, parent_id, component.id) {
+                Ok(_) => {
+                    //done
+                    println!("{} ALREADY EXISTED!", &spacing);
+                }
+                Err(_) => {
+                    //not done, so create a new component and associate
+                    //get the ID of this component
+                    let id = component.id;
 
-                println!(
-                    "{}-----------------END COMPONENT (already exists, req_id: {})-----------------\n",
-                    &spacing, req.id
-                );
-                //since this req exists, it has already associated its children.
-                //No need to run it again.
-            } else {
-                //get the ID of this component
-                let id = component.id;
+                    //If this component is a class...
+                    let class = if component.pftype.eq("Class") {
+                        Some(Class::find_by_component_id(&id, &mut self.conn)?)
+                    } else {
+                        None
+                    };
 
-                //If this component is a class...
-                let class = if component.pftype.eq("Class") {
-                    Some(Class::find_by_component_id(&id, &mut self.conn)?)
-                } else {
-                    None
-                };
+                    //push this component to the reqs
+                    req_holder.add_component(&mut self.conn, component);
 
-                //push this component to the reqs
-                req_holder.add_component(&mut self.conn, component);
+                    req_holder.add_association(&spacing, parent_id, id);
 
-                println!(
-                    "{}-----------------START COMPONENT (new, req_id: {})-----------------",
-                    &spacing, id
-                );
+                    //get the children of this component
+                    let children = ComponentToComponent::get_children(&id, &mut self.conn)?;
 
-                req_holder.add_association(&spacing, parent_id, id);
+                    println!(
+                        "{}Grabbed new children of component (req_id: {}):\n{}{}{:?}\n\n",
+                        &spacing, id, spacing, extra_space, &children
+                    );
 
-                //get the children of this component
-                let children = ComponentToComponent::get_children(&id, &mut self.conn)?;
-
-                println!(
-                    "{}Grabbed new children of component (req_id: {}):\n{}{}{:?}\n\n",
-                    &spacing, id, spacing, extra_space, &children
-                );
-
-                //recursively call this function
-                self.associate_components(&mut req_holder, id, children, nests + 1)?;
-
-                println!(
-                    "{}------------------END COMPONENT (new, req_id: {})-----------------\n\n",
-                    &spacing, id
-                );
-            }
+                    //recursively call this function
+                    self.associate_components(req_holder, id, children, nests + 1)?;
+                }
+            };
         }
         Ok(())
     }
@@ -311,27 +338,32 @@ impl ScheduleMaker {
     /**
      * This function should only be called once the graph is made in build_requirements_graph()
      */
-    fn analyze_requirements_graph(&mut self) -> Result<(), ScheduleError> {
+    fn analyze_requirements_graph(
+        &mut self,
+        req_holder: &mut ReqHolder,
+    ) -> Result<(), ScheduleError> {
         let schedule = Schedule::new();
 
         println!("Now generating schedule....");
 
-        //self.satisfy_requirements(0)?;
+        self.satisfy_requirements(req_holder, -1)?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
         Ok(())
     }
 
-    fn satisfy_requirements(&mut self, requirement_indice: usize) -> Result<i32, ScheduleError> {
+    fn satisfy_requirements(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req_id: i32,
+    ) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
-
-        //let mut requirement = &mut self.reqs[requirement_indice];
-
-        if let Some(logic_type) = &mut self.reqs[requirement_indice].component.logic_type {
+        let requirement = req_holder.get_req(req_id).unwrap();
+        if let Some(logic_type) = &requirement.logic_type {
             let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
             match logic_type.as_str() {
@@ -342,12 +374,12 @@ impl ScheduleMaker {
                     //requirement is selected.
 
                     //Make sure that we get a return value that will tell us if it is checked
-                    for child in &mut self.reqs[requirement_indice].children {
-                        self.satisfy_requirements(child.0)?;
+                    for child in requirement.children {
+                        self.satisfy_requirements(req_holder, child.0)?;
 
                         child.1 = CheckedAndSelected;
-                        for parent in &mut self.reqs[child.0].parents {
-                            if parent.0 == requirement_indice {
+                        for parent in req_holder.get_req(child.0).unwrap().parents {
+                            if parent.0 == req_id {
                                 parent.1 = CheckedAndSelected;
                                 break;
                             }
@@ -357,8 +389,8 @@ impl ScheduleMaker {
                 "GroupOR" => {
                     let mut internal_indice: usize = 0;
 
-                    for mut child in &mut self.reqs[requirement_indice].children {
-                        let result = self.satisfy_requirements(child.0)?;
+                    for mut child in requirement.children {
+                        let result = self.satisfy_requirements(req_holder, child.0)?;
                         println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
                             minimal_cost, child.0, result
@@ -371,8 +403,8 @@ impl ScheduleMaker {
 
                         child.1 = Checked;
                         //also check the parent
-                        for parent in &mut self.reqs[child.0].parents {
-                            if parent.0 == requirement_indice {
+                        for parent in req_holder.get_req(child.0).unwrap().parents {
+                            if parent.0 == req_id {
                                 parent.1 = Checked;
                                 break;
                             }
@@ -387,17 +419,16 @@ impl ScheduleMaker {
                        (MA 16010, 5, Required),
                        (MA 162, 3, Best)
                     */
-                    self.reqs[requirement_indice].children[minimal_cost.0].1 = CheckedAndSelected;
+                    requirement.children[minimal_cost.0].1 = CheckedAndSelected;
 
                     //Also, on the child, make sure to add checkedandselected to its parent
-                    let child_indice_in_reqs =
-                        self.reqs[requirement_indice].children[minimal_cost.0].0;
+                    let child_id_in_req_holder = requirement.children[minimal_cost.0].0;
 
                     //Note that we aren't copying this and setting the value to it. We are
                     //going straight to the value in self.reqs and changing it.
 
-                    for parent in &mut self.reqs[child_indice_in_reqs].parents {
-                        if parent.0 == requirement_indice {
+                    for parent in req_holder.get_req(child_id_in_req_holder).unwrap().parents {
+                        if parent.0 == req_id {
                             parent.1 = CheckedAndSelected;
                             break;
                         }
@@ -406,8 +437,8 @@ impl ScheduleMaker {
                 "PrereqAND" => {
                     //Return Ok ONLY IF every prereq is satisfied here.
                     let mut can_associate = true;
-                    for child in &mut self.reqs[requirement_indice].children {
-                        match self.evaluate_prereq(child.0) {
+                    for child in requirement.children {
+                        match self.evaluate_prereq(req_holder, child.0) {
                             Ok(res) => {}
                             Err(e) => {
                                 //If this has returned an error, this means that a better situation has been identified
@@ -423,30 +454,25 @@ impl ScheduleMaker {
                        TEST1 specific debugging
                     */
 
-                    if requirement_indice == 6 {
+                    if req_id == 6 {
                         println!(
                             "\n\nEVALUATING {:?}\nCAN ASSOCIATE: {:?}\n",
-                            &self.reqs[requirement_indice], can_associate
+                            requirement, can_associate
                         );
                     }
 
                     if can_associate {
-                        for child in &mut self.reqs[requirement_indice].children {
+                        for child in requirement.children {
                             //give each child for this component a value of CheckedAndSelected
                             child.1 = CheckedAndSelected;
-                            for parent in &mut self.reqs[child.0].parents {
-                                if parent.0 == requirement_indice {
+                            for parent in req_holder.get_req(child.0).unwrap().parents {
+                                if parent.0 == req_id {
                                     parent.1 = CheckedAndSelected;
                                 }
                             }
                         }
-                        if self.reqs[requirement_indice].component.pftype.eq("Class") {
-                            return Ok(self.reqs[requirement_indice]
-                                .class
-                                .as_ref()
-                                .unwrap()
-                                .credits
-                                .unwrap());
+                        if requirement.pftype.eq("Class") {
+                            return Ok(requirement.class.as_ref().unwrap().credits.unwrap());
                         }
                     }
                 }
@@ -454,38 +480,37 @@ impl ScheduleMaker {
                 _ => {
                     panic!(
                         "This component has an invalid logic_type! {:?}",
-                        self.reqs[requirement_indice]
+                        requirement
                     )
                 }
             }
         } else {
             //No logic type
             //Check this class's value
-            if self.reqs[requirement_indice].component.pftype.eq("Class") {
-                return Ok(self.reqs[requirement_indice]
-                    .class
-                    .as_ref()
-                    .unwrap()
-                    .credits
-                    .unwrap());
+            if requirement.pftype.eq("Class") {
+                return Ok(requirement.class.as_ref().unwrap().credits.unwrap());
             }
             panic!(
                 "Requirement is NOT a class and has a logic_type of NONE: {:?}",
-                &self.reqs[requirement_indice]
+                &requirement
             );
         }
 
         Ok(0)
     }
 
-    fn evaluate_prereq(&mut self, requirement_indice: usize) -> Result<String, ScheduleError> {
-        let requirement = self.reqs[requirement_indice].clone();
+    fn evaluate_prereq(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req_id: i32,
+    ) -> Result<String, ScheduleError> {
+        let requirement = req_holder.get_req(req_id).unwrap();
 
         //So we need to check its parents
         //This is because we cannot evaluate the prereq without its parents evaluating it alongside other components
         //in their children
         for parent in &requirement.parents {
-            match self.reqs[parent.0].component.pftype.as_str() {
+            match req_holder.get_req(parent.0).unwrap().pftype.as_str() {
                 //Since we need to satisfy this prereq, we should go ahead and test out
                 //this group
                 //TODO: This feels like this could potentially infinitely recurse.
@@ -527,14 +552,14 @@ impl ScheduleMaker {
                 }
             }
         }
-
-        self.reqs[requirement_indice] = requirement;
-
         //TODO: remove
         Ok(String::from("Finished"))
     }
 
-    pub fn build_queue(&mut self) -> Result<Vec<(usize, i32)>, ScheduleError> {
+    pub fn build_queue(
+        &mut self,
+        req_holder: &mut ReqHolder,
+    ) -> Result<Vec<(usize, i32)>, ScheduleError> {
         //contains (requirement in the graph, priority #)
 
         let mut queue: Vec<(usize, i32)> = Vec::new();
@@ -547,17 +572,23 @@ impl ScheduleMaker {
         */
 
         //add things to queue based on their prio
-        self.check_to_add(0, &mut queue);
+        self.check_to_add(&mut req_holder, &mut queue, -1);
 
         Ok(queue)
     }
-    pub fn check_to_add(&mut self, index: usize, queue: &mut Vec<(usize, i32)>) {
+    pub fn check_to_add(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        queue: &mut Vec<(usize, i32)>,
+        req_id: i32,
+    ) {
         //Since we know the classes to be added, this should be relatively easy.
         //this is a simple graph pruning problem
+        let requirement = req_holder.get_req(req_id).unwrap();
 
-        for child in &self.reqs[index].children {
+        for child in &mut requirement.children {
             match child.1 {
-                CheckedAndSelected => match self.reqs[child.0].component.pftype.as_str() {
+                CheckedAndSelected => match requirement.pftype.as_str() {
                     "Group" => {}
                     "Class" => {}
                     _ => {}
