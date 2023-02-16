@@ -21,8 +21,11 @@ struct Req {
 }
 
 impl Req {
-    pub fn satisfy_requirement(&mut self) -> Result<(), ScheduleError> {
-        Ok(())
+    pub fn str(&self) -> String {
+        format!(
+            "{:12}: logic_type: {:60?}, children:{:?}, parents: {:?}",
+            self.component.name, self.component.logic_type, self.children, self.parents
+        )
     }
 }
 
@@ -115,10 +118,19 @@ impl ScheduleMaker {
         println!("\n\nanalyze_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for (pos, req) in self.reqs.iter().enumerate() {
-            println!("{:>2}: {:?}", pos, req);
+            println!("{:>2}: {}", pos, req.str().as_str());
         }
         println!("------------------------------------------End Reqs------------------------------------------");
 
+        /*println!("\n\nLong print.");
+        println!("------------------------------------------Begin Reqs------------------------------------------");
+        for (pos, req) in self.reqs.iter().enumerate() {
+            println!("{:>2}: {:?}", pos, req);
+        }
+        println!("------------------------------------------End Reqs------------------------------------------");
+        */
+
+        self.build_queue()?;
         Ok(String::from("Success!"))
     }
 
@@ -298,21 +310,18 @@ impl ScheduleMaker {
         let mut requirement = self.reqs[requirement_indice].clone();
 
         if let Some(logic_type) = &requirement.component.logic_type {
-            let children = &mut requirement.children;
-
             let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
             match logic_type.as_str() {
                 "GroupAND" => {
-                    //Since all of the degrees in our catalog is GroupAND, we
-                    let children = &mut requirement.children;
+                    //Since all of the degrees in our catalog is GroupAND
 
                     //So we want to make sure that the current requirement is satisfied
                     //To do this, we need to store a value that tells us if the
                     //requirement is selected.
 
                     //Make sure that we get a return value that will tell us if it is checked
-                    for child in children {
+                    for child in &mut requirement.children {
                         self.satisfy_requirements(child.0)?;
 
                         child.1 = CheckedAndSelected;
@@ -325,7 +334,9 @@ impl ScheduleMaker {
                     }
                 }
                 "GroupOR" => {
-                    for (internal_indice, child) in children.into_iter().enumerate() {
+                    let mut internal_indice: usize = 0;
+
+                    for mut child in &mut requirement.children {
                         let result = self.satisfy_requirements(child.0)?;
                         println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
@@ -345,6 +356,7 @@ impl ScheduleMaker {
                                 break;
                             }
                         }
+                        internal_indice += 1;
                     }
 
                     //now set the selected indice to checkedandselected
@@ -354,10 +366,10 @@ impl ScheduleMaker {
                        (MA 16010, 5, Required),
                        (MA 162, 3, Best)
                     */
-                    children[minimal_cost.0].1 = CheckedAndSelected;
+                    requirement.children[minimal_cost.0].1 = CheckedAndSelected;
 
                     //Also, on the child, make sure to add checkedandselected to its parent
-                    let child_indice_in_reqs = children[minimal_cost.0].0;
+                    let child_indice_in_reqs = requirement.children[minimal_cost.0].0;
 
                     //Note that we aren't copying this and setting the value to it. We are
                     //going straight to the value in self.reqs and changing it.
@@ -371,8 +383,50 @@ impl ScheduleMaker {
                 }
                 "PrereqAND" => {
                     //Return Ok ONLY IF every prereq is satisfied here.
-                    for (internal_indice, child) in children.into_iter().enumerate() {
-                        let result = self.evaluate_prereq(child.0);
+                    let mut can_associate = true;
+                    for child in &mut requirement.children {
+                        match self.evaluate_prereq(child.0) {
+                            Ok(res) => {}
+                            Err(e) => {
+                                //If this has returned an error, this means that a better situation has been identified
+                                //Or this means that the algorithm is naive and has no clue that this option could be
+                                //potentially better. This will require more insight as tests are developed for the
+                                //algorithm.
+                                can_associate = false;
+                            }
+                        }
+                    }
+
+                    /*
+                       TEST1 specific debugging
+                    */
+
+                    if requirement_indice == 6 {
+                        println!(
+                            "\n\nEVALUATING {:?}\nCAN ASSOCIATE: {:?}\n",
+                            &requirement, can_associate
+                        );
+                    }
+
+                    if can_associate {
+                        for child in &mut requirement.children {
+                            //give each child for this component a value of CheckedAndSelected
+                            child.1 = CheckedAndSelected;
+                            for parent in &mut self.reqs[child.0].parents {
+                                if parent.0 == requirement_indice {
+                                    parent.1 = CheckedAndSelected;
+                                }
+                            }
+                        }
+                        if requirement.component.pftype.eq("Class") {
+                            self.reqs[requirement_indice] = requirement;
+                            return Ok(self.reqs[requirement_indice]
+                                .class
+                                .as_ref()
+                                .unwrap()
+                                .credits
+                                .unwrap());
+                        }
                     }
                 }
                 "PrereqOR" => {}
@@ -431,8 +485,17 @@ impl ScheduleMaker {
                     //this could potentially result in a infinite loop
                     //self.evaluate_prereq(parent.0);
                     Unchecked => {}
-                    Checked => {}
-                    CheckedAndSelected => {}
+                    Checked => {
+                        //This implies that it was not initially selected,
+                        //or that it, at one point, was selected and is no longer selected
+                        //This means it should be re-evaluated based on what the dependencies
+                        //of this prereq are.
+                        //TODO
+                    }
+                    CheckedAndSelected => {
+                        //This means we're all good to use this prereq and should return ok
+                        return Ok(String::from("Prereq Checked and Selected"));
+                    }
                 },
                 &_ => {
                     panic!("This component has no pftype!");
@@ -444,5 +507,34 @@ impl ScheduleMaker {
 
         //TODO: remove
         Ok(String::from("Finished"))
+    }
+
+    pub fn build_queue(&mut self) -> Result<Vec<(usize, i32)>, ScheduleError> {
+        //contains (requirement in the graph, priority #)
+
+        let mut queue: Vec<(usize, i32)> = Vec::new();
+
+        //Now that the requirements have been completely analyzed, we should see
+        //if it's possible to build a queue for a schedule
+        /*
+           Something like
+           { Component (which is a class), priority #}
+        */
+
+        //add things to queue based on their prio
+        self.check_to_add(0, &mut queue);
+
+        Ok(queue)
+    }
+    pub fn check_to_add(&mut self, index: usize, queue: &mut Vec<(usize, i32)>) {
+        //Since we know the classes to be added, this should be relatively easy.
+        //this is a simple graph pruning problem
+
+        for child in &self.reqs[index].children {
+            match child.1 {
+                CheckedAndSelected => {}
+                _ => {}
+            }
+        }
     }
 }
