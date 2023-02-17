@@ -22,6 +22,7 @@ struct Req {
     logic_type: Option<String>,
     children: Vec<(i32, Status)>,
     parents: Vec<(i32, Status)>,
+    in_analysis: bool,
 }
 
 impl Req {
@@ -72,6 +73,7 @@ impl ReqHolder {
                 logic_type: component.logic_type,
                 children: Vec::new(),
                 parents: Vec::new(),
+                in_analysis: false,
             },
         );
     }
@@ -262,6 +264,7 @@ impl ScheduleMaker {
             logic_type: Some("GroupAND".to_string()),
             children: Vec::new(),
             parents: Vec::new(),
+            in_analysis: false,
         };
 
         let root_components = DegreeToComponent::get_components(&self.degree, &mut self.conn)?;
@@ -351,17 +354,19 @@ impl ScheduleMaker {
         logic_type: Option<String>,
     ) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
+        println!("Satisfying Requirements of: \n{:?}\n", &req_holder.get_req(req_id).unwrap());
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
         let mut updated_children = req_holder.get_req(req_id).unwrap().children.clone();
+        req_holder.get_req(req_id).unwrap().in_analysis = true;
         //There is no real other way to do this, because it gets made that I even try
 
         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
         let mut internal_indice: usize = 0;
         let mut can_associate = true;
         for child in &mut updated_children {
-            let child_logic_type = req_holder.get_req(req_id).unwrap().logic_type.clone();
+            let child_logic_type = req_holder.get_req(child.0).unwrap().logic_type.clone();
 
             if let Some(logic_type) = &logic_type {
                 match logic_type.as_str() {
@@ -376,17 +381,18 @@ impl ScheduleMaker {
                         }
                     }
                     "GroupOR" => {
+                        //println!("Internal Indice = {}", internal_indice);
                         let result =
                             self.satisfy_requirements(req_holder, child.0, child_logic_type)?;
-                        println!(
-                            "Minimal cost: {:?}, result for req_id {}: {}",
-                            minimal_cost, child.0, result
-                        );
                         minimal_cost = if result < minimal_cost.1 {
                             (internal_indice, result)
                         } else {
                             minimal_cost
                         };
+                        /*println!(
+                            "Minimal cost: {:?}, result for req_id {}: {}",
+                            minimal_cost, child.0, result
+                        );*/
 
                         child.1 = Checked;
                         //also check the parent
@@ -395,8 +401,7 @@ impl ScheduleMaker {
                                 parent.1 = Checked;
                                 break;
                             }
-                        }
-                        internal_indice += 1;
+                        }    
                     }
                     "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0) {
@@ -418,10 +423,13 @@ impl ScheduleMaker {
         }
 
         //After evaluating all the children
+        //println!("Children of requirement evaluted: \n{:?}\nWith updated children of:\n{:?}\n\n", &req_holder.get_req(req_id).unwrap(), &updated_children);
         if let Some(logic_type) = logic_type {
+            //println!("Logic type: {}", &logic_type);
             match logic_type.as_str() {
                 "GroupAND" => {}
                 "GroupOR" => {
+                    //println!("Minimal Cost: {:?}", &minimal_cost);
                     req_holder.get_req(req_id).unwrap().children[minimal_cost.0].1 =
                         CheckedAndSelected;
 
@@ -491,6 +499,8 @@ impl ScheduleMaker {
 
         //finally update the req's children
         req_holder.get_req(req_id).unwrap().children = updated_children;
+        req_holder.get_req(req_id).unwrap().in_analysis = false;
+        println!("Requirement after satisfaction: \n{:?}\n", &req_holder.get_req(req_id).unwrap());
 
         Ok(0)
     }
