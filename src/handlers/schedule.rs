@@ -395,12 +395,15 @@ impl ScheduleMaker {
                     }
                     "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0) {
-                            Ok(_) => {}
-                            Err(_) => {
+                            Ok(_) => {
+
+                            }
+                            Err(e) => {
                                 //If this has returned an error, this means that a better situation has been identified
                                 //Or this means that the algorithm is naive and has no clue that this option could be
                                 //potentially better. This will require more insight as tests are developed for the
                                 //algorithm.
+                                println!("Error evaluating prereq!: {:?}", e);
                                 can_associate = false;
                             }
                         }
@@ -413,17 +416,20 @@ impl ScheduleMaker {
         }
 
         //After evaluating all the children
-        //println!("Children of requirement evaluted: \n{:?}\nWith updated children of:\n{:?}\n\n", &req_holder.get_req(req_id).unwrap(), &updated_children);
+        println!("Children of requirement partially evaluated: \n{:?}\nWith updated children of:\n{:?}\n\n", &req_holder.get_req(req_id).unwrap(), &updated_children);
         if let Some(logic_type) = logic_type {
             //println!("Logic type: {}", &logic_type);
             match logic_type.as_str() {
                 "GroupAND" => {}
                 "GroupOR" => {
-                    //println!("Minimal Cost: {:?}", &minimal_cost);
-                    req_holder.get_req(req_id).unwrap().children[minimal_cost.0].1 =
-                        CheckedAndSelected;
+                    println!("Minimal Cost: {:?}", &minimal_cost);
+                    updated_children[minimal_cost.0].1 = CheckedAndSelected;
+                    //req_holder.get_req(req_id).unwrap().children[minimal_cost.0].1 =
+                    //    CheckedAndSelected;
 
                     //Also, on the child, make sure to add checkedandselected to its parent
+                    //Note that this child should not be an active part of this recursion.
+                    //Otherwise, this will get overwritten once updated_children is called at the bottom..
                     let child_id_in_req_holder =
                         req_holder.get_req(req_id).unwrap().children[minimal_cost.0].0;
 
@@ -449,6 +455,8 @@ impl ScheduleMaker {
                             }
                         }
                         if req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+                            req_holder.get_req(req_id).unwrap().children = updated_children;
+                            req_holder.get_req(req_id).unwrap().in_analysis = false;
                             return Ok(req_holder
                                 .get_req(req_id)
                                 .unwrap()
@@ -472,6 +480,8 @@ impl ScheduleMaker {
             //No logic type
             //Check this class's value
             if req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+                req_holder.get_req(req_id).unwrap().children = updated_children;
+                req_holder.get_req(req_id).unwrap().in_analysis = false;
                 return Ok(req_holder
                     .get_req(req_id)
                     .unwrap()
@@ -486,7 +496,7 @@ impl ScheduleMaker {
                 &req_holder.get_req(req_id).unwrap()
             );
         }
-
+        println!("Children of requirement fully evaluated: \n{:?}\nWith updated children of:\n{:?}\n\n", &req_holder.get_req(req_id).unwrap(), &updated_children);
         //finally update the req's children
         req_holder.get_req(req_id).unwrap().children = updated_children;
         req_holder.get_req(req_id).unwrap().in_analysis = false;
