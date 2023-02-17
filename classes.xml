@@ -1,0 +1,3509 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl"
+                 href="DGW_Report.xsl      " ?>
+<Report
+ rptInstitutionName="Degreeworks PROD"
+ rptReportName="Student View                  "
+ rptReportCode="WEB31"
+ rptUserClass="STU"
+ rptStudentName="Gallups, Daniel S"
+ rptUsersId="030642469"
+
+ rptShowStudentSystemGPA="Y"
+
+ rptShowBlockRemarks="Y"
+ rptShowQualifierText="N"
+ rptShowBlockExceptions="N"
+ rptShowQualifierAdvice="Y"
+
+ rptShowRuleRemarks="Y"
+ rptShowRuleExceptions="Y"
+ rptShowRuleAdvice="Y"
+ rptShowRuleText="N"
+ rptShowRuleClassesApplied="Y"
+
+ rptShowFallThroughSection="Y"
+ rptShowInsufficientSection="Y"
+ rptShowOverTheLimitSection="Y"
+ rptShowInProgressSection="Y"
+ rptShowNotesSection="Y"
+ rptShowExceptionsSection="Y"
+ rptShowErrorsSection="Y"
+ rptShowSplitCreditsSection="N"
+
+ rptShowLegend = "Y"
+ rptShowDisclaimer = "Y"
+ rptShowProgressBar = "Y"
+
+ rptShowOR-ANDsInsteadOfComma-Plusses="Y"
+ rptPrereqIndicator="Y"
+ rptShowAdviceLink="Y"
+ rptShowClassCourseKeysOnly="N"
+ rptShowStudentHeader="Y"
+ rptShowStudentAlerts="Y"
+
+ rptCFG020AuditTitleStyle="A"
+ rptCFG020MaskStudentID="N"
+ rptDateFormat="MDY"
+ rptShowNoteCheckbox="Y"
+
+ rptCreditsLiteral="Credits                       "
+ rptCreditSingular="Credit                        "
+       rptCatYrLit="Catalog Term                  "
+
+ rptHideInnerGroupLabels="N"
+ rptHideSubsetLabels="N"
+ rptIncludeBlocks="N"
+
+ rptCourseLeafURL        ="                                                                                                                                                      "
+ rptInstantRapportChatURL="                                                                                                                                                      "
+ rptInstantRapportTeam   ="                    "
+
+
+
+>
+
+
+     <Audit>
+<AuditHeader Audit_id="AB97kHtC" Stu_id="030642469" AuditType="AA" Stu_name="Gallups, Daniel S" Stu_email="dgallups@purdue.edu"
+   FreezeType="" FreezeTypeDescription="" FreezeDate="" FreezeUserName="" AuditDescription="" DateYear="2023"
+   DateMonth="02" DateDay="13" TimeHour="16" TimeMinute="23" SSGPA="3.19" DWGPA="3.16" Per_complete="96"
+   Version="$Id$ OS_TYPE=Linux; Release=5.0.7.2" In_progress="Y" What_if="N" ResApp="114" ResAppInProg="12"
+   XferApp="18" ExamApp="0" ResOTL="0" ResOTLInProg="0" XferOTL="0" ExamOTL="0"/>
+<Block Req_id="RA007201" Req_type="DEGREE" Req_value="PICIT-BS" Title="Degree in Bachelor of Science"
+   Per_complete="96" Cat_yr_start="201910" Cat_yr_stop="201930" Cat_yr="201910" Cat_yrLit="Fall 2018"
+   Degree="PICIT-BS" GPA="3.16" Classes_applied="43" Credits_applied="132" Gpa_grade_pts="338.599976"
+   Gpa_credits="107">
+<Header>
+<Qualifier Node_id="1" Node_type="4121" Satisfied="Yes" Applied="132" ClassesApplied="43" CreditsApplied="132"
+   Name="CLASSESCREDITS" Credits="120">
+<Text>120 Credits</Text>
+</Qualifier>
+<Qualifier Node_id="3" Node_type="4104" Label="32 Upper Level Credits Requirement" LabelTag="UPPR" Satisfied="Yes"
+   Applied="54" Name="MINCREDIT" Credits="32">
+<SubText>CGT 24500 (With </SubText>
+<SubText>DWTERM &gt; 201730 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>25500 (With </SubText>
+<SubText>DWTERM &gt; 201730 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>ENGR 31000 (With </SubText>
+<SubText>DWTERM &gt; 201630 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>ENTR 31000 (With </SubText>
+<SubText>DWTERM &gt; 200810 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>HEBR 38000 (With </SubText>
+<SubText>DWTERM &gt; 201610 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>MGMT 25400 (With </SubText>
+<SubText>DWTERM &gt; 201730 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>PSY 33500 (With </SubText>
+<SubText>DWTERM &gt; 200810 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>34200 (With </SubText>
+<SubText>DWTERM &gt; 200810 </SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>@ 30000:69799 (With </SubText>
+<SubText>ATTRIBUTE = UPPR AND</SubText>
+<SubText>DWRESIDENT = Y AND</SubText>
+<SubText>)</SubText>
+<SubText>, </SubText>
+<SubText>30000:69799 (With </SubText>
+<SubText>DWGRADELETTER &lt;&gt; TR AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; I AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; PI AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; E AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; N AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; U AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; W AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; IF AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; IN AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; PI AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; SI AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; WF AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; WN AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; WU AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; F AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; IX AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; CR AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; EX AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; TX AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; R AND</SubText>
+<SubText>)</SubText>
+<SubText>, A3@, A4@, A5@, B3@, B4@, B5@, C3@, C4@, C5@, D3@, </SubText>
+<SubText>D4@, D5@, E3@, E4@, E5@, F3@, F4@, F5@, G3@, G4@, G5@, </SubText>
+<SubText>H3@, H4@, H5@, I3@, I4@, I5@, J3@, J4@, J5@, K3@, K4@, </SubText>
+<SubText>K5@, L3@, L4@, L5@, M3@, M4@, M5@, N3@, N4@, N5@, O3@, </SubText>
+<SubText>O4@, O5@, P3@, P4@, P5@, Q3@, Q4@, Q5@, R3@, R4@, R5@, </SubText>
+<SubText>S3@, S4@, S5@, T3@, T4@, T5@, U3@, U4@, U5@, V3@, V4@, </SubText>
+<SubText>V5@, W3@, W4@, W5@, X3@, X4@, X5@, Y3@, Y4@, Y5@, Z3@, </SubText>
+<SubText>Z4@, Z5@</SubText>
+<CrossListing DiscFrom="CGT" NumFrom="24500" DiscTo="CNIT" NumTo="30600"/>
+<CrossListing DiscFrom="CGT" NumFrom="25500" DiscTo="CNIT" NumTo="30800"/>
+<CrossListing DiscFrom="MGMT" NumFrom="25400" DiscTo="BUS" NumTo="20300"/>
+<CrossListing DiscFrom="MGMT" NumFrom="25400" DiscTo="BUSM" NumTo="35400"/>
+<EquivCourse OldDisc="ENGR" OldNum="20100" NewDisc="ENGR" NewNum="31000"/>
+<EquivCourse OldDisc="ENTR" OldNum="20100" NewDisc="ENTR" NewNum="31000"/>
+<EquivCourse OldDisc="HEBR" OldNum="28000" NewDisc="HEBR" NewNum="38000"/>
+<EquivCourse OldDisc="PSY" OldNum="22500" NewDisc="PSY" NewNum="33500"/>
+<EquivCourse OldDisc="PSY" OldNum="24200" NewDisc="PSY" NewNum="34200"/>
+<Text>MinCredits 32 in </Text>
+</Qualifier>
+<Qualifier Node_id="166" Node_type="4103" ClassesApplied="0" CreditsApplied="0" Name="MAXCREDIT" Credits="24"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWPASSFAIL = Y AND</SubText>
+<SubText>DWTERM &lt;&gt; 202020 AND</SubText>
+<SubText>)</SubText>
+<Text>MaxCredits 24 in </Text>
+</Qualifier>
+<Qualifier Node_id="172" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>BUS K2010, CIT 10700, 13600, 23500, CNIT 10700, 13600, </SubText>
+<SubText>23500, CS 11000, 23500, CSCI N1000</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="183" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="1"
+  >
+<SubText>ENGL 22700, LC 26100, 26100, SLHS 22700</SubText>
+<CrossListing DiscFrom="ENGL" NumFrom="22700" DiscTo="LC" NumTo="26100"/>
+<CrossListing DiscFrom="ENGL" NumFrom="22700" DiscTo="LING" NumTo="20100"/>
+<CrossListing DiscFrom="ENGL" NumFrom="22700" DiscTo="SLHS" NumTo="22700"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="ENGL" NumTo="22700"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="ILCS" NumTo="26100"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="LING" NumTo="20100"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="SLHS" NumTo="22700"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="ENGL" NumTo="22700"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="ILCS" NumTo="26100"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="LING" NumTo="20100"/>
+<CrossListing DiscFrom="LC" NumFrom="26100" DiscTo="SLHS" NumTo="22700"/>
+<CrossListing DiscFrom="SLHS" NumFrom="22700" DiscTo="ENGL" NumTo="22700"/>
+<CrossListing DiscFrom="SLHS" NumFrom="22700" DiscTo="LING" NumTo="20100"/>
+<EquivCourse OldDisc="FLL" OldNum="26100" NewDisc="LC" NewNum="26100"/>
+<Text>MaxClasses 1 in </Text>
+</Qualifier>
+<Qualifier Node_id="207" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>BGR @, CAND @, CIC @, CMCI @, REG @, STAR @, SA @</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="215" Node_type="4103" ClassesApplied="0" CreditsApplied="0" Name="MAXCREDIT" Credits="12"
+  >
+<SubText>@ 60000:69799</SubText>
+<Text>MaxCredits 12 in </Text>
+</Qualifier>
+<Qualifier Node_id="217" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWAGE &gt; 10 </SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="221" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWSCHOOL = GR AND</SubText>
+<SubText>DWGRADELETTER &lt;&gt; PLAN AND</SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="227" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>ATTRIBUTE = REMD </SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="231" Node_type="4101" ClassesApplied="1" CreditsApplied="3" Name="MAXCLASS" Classes="1"
+  >
+<SubText>CS 24000, CNIT 31500</SubText>
+<Text>MaxClasses 1 in </Text>
+</Qualifier>
+<Qualifier Node_id="" Node_type="4140" Applied="" Name="CHECKELECTIVES" JustAdded="TRUE">
+<ECA-Overall Credits="120" Text="Credits required by degree block"/>
+<ECA-BlocksRequired Text="RA004943 RA004931 RA006885 RA004932 "/>
+<ECA-BlocksNotRequired Text=""/>
+<ECA-BlocksRequiredIncluded Text=""/>
+<ECA-Blocksum Credits="185" Text="Sum of credits required in all *required* blocks; excludes credits in blocks included in other required blocks"
+  />
+<ECA-Shared Credits="53" Text="Credits shared between required blocks"/>
+<ECA-ECA Credits="0" Text="Credits allowed&#x2F;needed in fall-through and non-required blocks"/>
+<ECA-RequiredCreditsApplied Credits="132" Text="Credits applied to required blocks"/>
+<ECA-NonrequiredCreditsApplied Credits="0" Text="Credits applied to non-required blocks"/>
+<ECA-Overflow Credits="12" Text="Excess fall-through credits"/>
+<CREDITSAPPLIEDTOWARDSDEGREE Credits="132" Text="Credits applied minus overflow "/>
+<Text>CHECK-ELECTIVE-CREDITS-ALLOWED</Text>
+</Qualifier>
+</Header>
+<Rule Per_complete="100" Rule_id="1" Node_id="234" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>True</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="BANNERGPA" Operator="&gt;=" Right="2.0" Evaluation="1"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Overall GPA of 2.0 is met" LabelTag="GPAMET" Per_complete="100" Rule_id="1-0" Node_id="238"
+   Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="Overall GPA is below 2.0 - please see your advisor" LabelTag="GPANOTMET" Per_complete="Not Used"
+   Rule_id="1-1" Node_id="240" Node_type="4971" IndentLevel="1" RuleType="Incomplete">
+<IfElsePart>ElsePart</IfElsePart>
+<Requirement/>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Label="University Core Curriculum" LabelTag="UNIVCORE" Per_complete="100" Rule_id="2" Node_id="241"
+   Node_type="4400" IndentLevel="1" RuleType="Block">
+<Requirement>
+<NumBlocks>1</NumBlocks>
+<Type>OTHER</Type>
+<Value>UNIV-CORE</Value>
+</Requirement>
+</Rule>
+<Rule Per_complete="98" Rule_id="6" Node_id="261" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>True</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="MAJOR" Operator="=" Right="CSEC" Evaluation="1"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Major in Cybersecurity" LabelTag="CSECMAJOR" Per_complete="98" Rule_id="6-0" Node_id="265"
+   Node_type="4400" IndentLevel="1" In_prog_incomplete="Yes" RuleType="Block">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement>
+<NumBlocks>1</NumBlocks>
+<Type>MAJOR</Type>
+<Value>CSEC</Value>
+</Requirement>
+</Rule>
+</IfPart>
+</Requirement>
+</Rule>
+<Rule Per_complete="93.625" Rule_id="7" Node_id="267" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>True</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="MAJOR" Operator="=" Right="CSEC" Evaluation="1"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Other Departmental Course Requirements" LabelTag="CSECOTHER" Per_complete="93.625" Rule_id="7-0"
+   Node_id="271" Node_type="4400" IndentLevel="1" RuleType="Block">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement>
+<NumBlocks>1</NumBlocks>
+<Type>OTHER</Type>
+<Value>CSEC-OTHER</Value>
+</Requirement>
+<Advice>
+<BlockID>RA006885</BlockID>
+</Advice>
+</Rule>
+</IfPart>
+</Requirement>
+</Rule>
+<Rule Label="Globalization Requirement" LabelTag="GLOB-EXP" Per_complete="100" Rule_id="12" Node_id="297"
+   Node_type="4800" IndentLevel="1" RuleType="Noncourse">
+<NoncoursesApplied>
+<Noncourse Code="PI02" Value="Y" Id_num="0125"/>
+</NoncoursesApplied>
+<Requirement>
+<NumNoncourses>1</NumNoncourses>
+<Code>PI02</Code>
+<Operator>=</Operator>
+<Value>Y</Value>
+</Requirement>
+</Rule>
+<Rule Label="IT Professional Experience" LabelTag="IT-PROF" Per_complete="0" Rule_id="13" Node_id="300"
+   Node_type="4800" IndentLevel="1" RuleType="Noncourse" ProxyAdvice="Yes">
+<NoncoursesApplied/>
+<Requirement>
+<NumNoncourses>1</NumNoncourses>
+<Code>PU09</Code>
+<Operator>=</Operator>
+<Value>Y</Value>
+</Requirement>
+<ProxyAdvice>
+<Text>IT Professional Experience is not met.  Please see your advisor.</Text>
+</ProxyAdvice>
+</Rule>
+<Rule Label="Statewide General Transfer Core Curriculum" LabelTag="STATECORE" Per_complete="100" Rule_id="15"
+   Node_id="309" Node_type="4400" IndentLevel="1" RuleType="Block">
+<Requirement>
+<NumBlocks>1</NumBlocks>
+<Type>OTHER</Type>
+<Value>STATE-CORE</Value>
+</Requirement>
+</Rule>
+<Rule Per_complete="Not Used" Rule_id="16" Node_id="311" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="NUMMINORS" Operator="=" Right="3" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Minor Requirements" LabelTag="3MINORS" Per_complete="Not Used" Rule_id="16-0" Node_id="315"
+   Node_type="4500" IndentLevel="1" RuleType="Blocktype">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement>
+<NumBlocktypes>3</NumBlocktypes>
+<Type>MINOR</Type>
+</Requirement>
+<Advice/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Per_complete="Not Used" Rule_id="16-1" Node_id="318" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<IfElsePart>ElsePart</IfElsePart>
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="NUMMINORS" Operator="=" Right="2" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Minor Requirements" LabelTag="2MINORS" Per_complete="Not Used" Rule_id="16-1-0" Node_id="322"
+   Node_type="4500" IndentLevel="1" RuleType="Blocktype">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement>
+<NumBlocktypes>2</NumBlocktypes>
+<Type>MINOR</Type>
+</Requirement>
+<Advice/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Per_complete="Not Used" Rule_id="16-1-1" Node_id="325" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<IfElsePart>ElsePart</IfElsePart>
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="NUMMINORS" Operator="=" Right="1" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Minor Requirements" LabelTag="1MINOR" Per_complete="Not Used" Rule_id="16-1-1-0" Node_id="329"
+   Node_type="4500" IndentLevel="1" RuleType="Blocktype">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement>
+<NumBlocktypes>1</NumBlocktypes>
+<Type>MINOR</Type>
+</Requirement>
+<Advice/>
+</Rule>
+</IfPart>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+</Block>
+<Block Req_id="RA004931" Req_type="OTHER" Req_value="UNIV-CORE" Title="University Core Curriculum" Per_complete="100"
+   Cat_yr_start="201410" Cat_yr_stop="999999" Cat_yr="201910" Cat_yrLit="Fall 2018" GPA="3.22" Classes_applied="9"
+   Credits_applied="30" Gpa_grade_pts="74" Gpa_credits="23">
+<Header>
+<Qualifier Node_id="1" Node_type="4121" Satisfied="Yes" Applied="30" ClassesApplied="9" CreditsApplied="30"
+   Pseudo="Yes" Name="CLASSESCREDITS" Credits="1">
+<Text>1 Credits Pseudo</Text>
+</Qualifier>
+<Qualifier Node_id="2" Node_type="4137" Applied="" Name="STANDALONEBLOCK">
+<Text>StandAloneBlock</Text>
+</Qualifier>
+<Qualifier Node_id="3" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWGRADELETTER = DC AND</SubText>
+<SubText>DWTERM &gt;= 201510 AND</SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="9" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWGRADELETTER = EX AND</SubText>
+<SubText>DWTERM &gt;= 201510 AND</SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+</Header>
+<Rule Per_complete="100" Rule_id="1" Node_id="15" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Written Communication Completed" LabelTag="PU04" Per_complete="Not Used" Rule_id="1-0"
+   Node_id="19" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Written Communication (1 Class)" LabelTag="UCC-WC1" Per_complete="100" Rule_id="1-1"
+   Node_id="21" Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SCLA" Number="10100" Credits="3" Letter_grade="A" Id_num="0013"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="22" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC01</Value>
+</With>
+</Course>
+<Qualifier Node_id="26" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="27" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="2" Node_id="29" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Oral Communication Completed" LabelTag="PU041" Per_complete="Not Used" Rule_id="2-0"
+   Node_id="33" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Oral Communication (1 Class)" LabelTag="UCC-OC1" Per_complete="100" Rule_id="2-1" Node_id="35"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SCLA" Number="10200" Credits="3" Letter_grade="B" Id_num="0047"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="36" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC03</Value>
+</With>
+</Course>
+<Qualifier Node_id="40" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="41" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="3" Node_id="43" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Information Literacy Completed" LabelTag="PU042" Per_complete="Not Used" Rule_id="3-0"
+   Node_id="47" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Information Literacy (1 Class)" LabelTag="UCC-IL" Per_complete="100" Rule_id="3-1"
+   Node_id="49" Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="COM" Number="25100" Credits="3" Letter_grade="A" Id_num="0081"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="@" Num="@" Node_id="50" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC02</Value>
+</With>
+</Course>
+<Qualifier Node_id="54" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="55" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="4" Node_id="57" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Science Completed" LabelTag="PU043" Per_complete="Not Used" Rule_id="4-0" Node_id="61"
+   Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Science" LabelTag="UCC-SCI4" Per_complete="100" Rule_id="4-1" Node_id="63" Node_type="4600"
+   IndentLevel="1" RuleType="Group">
+<IfElsePart>ElsePart</IfElsePart>
+<Requirement NumGroups="1" NumRules="2"/>
+<Rule Label="UCC:Science (2 Classes)" LabelTag="UCC-SCI" Per_complete="100" Rule_id="4-1-0" Node_id="64"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>2</Classes_applied>
+<Credits_applied>8</Credits_applied>
+<ClassesApplied>
+<Class Discipline="PHYS" Number="17200" Credits="4" Letter_grade="B-" Id_num="0025"/>
+<Class Discipline="PHYS" Number="22100" Credits="4" Letter_grade="C+" Id_num="0073"/>
+</ClassesApplied>
+<Requirement Classes_begin="2" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="65" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC04</Value>
+</With>
+</Course>
+<Qualifier Node_id="69" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="70" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="UCC:Science" LabelTag="UCC-SCI3" Per_complete="Not Needed" Rule_id="4-1-1" Node_id="72"
+   Node_type="4600" IndentLevel="2" LastRuleInGroup="Yes" RuleType="Group">
+<Requirement NumGroups="2" NumRules="2"/>
+<Advice NumGroupsNeeded="2"/>
+<Rule Label="UCC:Science (1 Class)" LabelTag="UCC-SCI1" Per_complete="0" Rule_id="4-1-1-0" Node_id="73"
+   Node_type="4200" IndentLevel="3" RuleType="Course" ProxyAdvice="Yes">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="74" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC04</Value>
+</With>
+</Course>
+<Qualifier Node_id="73" Node_type="1218" Name="HIDERULE">
+<Text>HideRule</Text>
+</Qualifier>
+<Qualifier Node_id="78" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="79" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Qualifier Node_id="81" Node_type="4136" Applied="" Name="LOWPRIORITY">
+<Text>LowPriority</Text>
+</Qualifier>
+</Requirement>
+<ProxyAdvice>
+<Text>Click here for a list of courses that meet this requirement.</Text>
+</ProxyAdvice>
+</Rule>
+<Rule Label="UCC:Science (2 Classes)" LabelTag="UCC-SCI2" Per_complete="0" Rule_id="4-1-1-1" Node_id="82"
+   Node_type="4200" IndentLevel="3" LastRuleInGroup="Yes" RuleType="Course">
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="2" Class_cred_op="OR" Connector="+" Decide="LTRMLNUM">
+<Course Disc="ENGR" Num="16100" Node_id="83" NewDiscipline="Yes"/>
+<Course Disc="ENGR" Num="16200" Node_id="84"/>
+<Qualifier Node_id="82" Node_type="1218" Name="HIDERULE">
+<Text>HideRule</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</Rule>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="5" Node_id="85" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Humanities Completed" LabelTag="PU044" Per_complete="Not Used" Rule_id="5-0" Node_id="89"
+   Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Humanities (1 Class)" LabelTag="UCC-HUM" Per_complete="100" Rule_id="5-1" Node_id="91"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CHNS" Number="10100" Credits="3" Letter_grade="TR" Id_num="0003"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="92" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC05</Value>
+</With>
+</Course>
+<Qualifier Node_id="96" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="97" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="6" Node_id="99" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Behavioral&#x2F;Social Science Completed" LabelTag="PU045" Per_complete="Not Used"
+   Rule_id="6-0" Node_id="103" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Behavioral&#x2F;Social Science (1 Class)" LabelTag="UCC-BSS" Per_complete="100" Rule_id="6-1"
+   Node_id="105" Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="ECON" Number="21000" Credits="3" Letter_grade="A" Id_num="0077"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="106" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC06</Value>
+</With>
+</Course>
+<Qualifier Node_id="110" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="111" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="7" Node_id="113" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Quantitative Reasoning Completed" LabelTag="PU047" Per_complete="Not Used" Rule_id="7-0"
+   Node_id="117" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Quantitative Reasoning (1 Class)" LabelTag="UCC-QR" Per_complete="100" Rule_id="7-1"
+   Node_id="119" Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>4</Credits_applied>
+<ClassesApplied>
+<Class Discipline="MA" Number="16500" Credits="4" Letter_grade="TR" Id_num="0005"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="120" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC07</Value>
+</With>
+</Course>
+<Qualifier Node_id="124" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="125" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+<Rule Per_complete="100" Rule_id="8" Node_id="127" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="UCC:Science Tech and Society Completed" LabelTag="PU048" Per_complete="Not Used" Rule_id="8-0"
+   Node_id="131" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="UCC:Science, Tech &amp; Society (1 Class)" LabelTag="UCC-STS1" Per_complete="100" Rule_id="8-1"
+   Node_id="133" Node_type="4200" IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<IfElsePart>ElsePart</IfElsePart>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="TECH" Number="12000" Credits="3" Letter_grade="B" Id_num="0029"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector="," Decide="LTRMLNUM">
+<Course Disc="@" Num="@" Node_id="134" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC08</Value>
+</With>
+</Course>
+<Qualifier Node_id="138" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+<Qualifier Node_id="139" Node_type="4111" Applied="" Name="NONEXCLUSIVE">
+<SubText>(THISBLOCK)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+</Block>
+<Block Req_id="RA004943" Req_type="MAJOR" Req_value="CSEC" Title="Major in Cybersecurity" Per_complete="98"
+   Cat_yr_start="201810" Cat_yr_stop="201930" Cat_yr="201910" Cat_yrLit="Fall 2018" Major1="CSEC" GPA="3.32"
+   Classes_applied="23" Credits_applied="67" Gpa_grade_pts="182.699997" Gpa_credits="55">
+<Header>
+<Qualifier Node_id="1" Node_type="4121" Satisfied="Inprogress" Applied="67" ClassesApplied="23" CreditsApplied="67"
+   Name="CLASSESCREDITS" Credits="66">
+<Text>66 Credits</Text>
+</Qualifier>
+<Qualifier Node_id="4" Node_type="4116" Satisfied="Yes" Applied="3.33" Name="MINGPA" MinGPA="2">
+<SubText>CNIT @</SubText>
+<Text>MINGPA 2 in </Text>
+</Qualifier>
+<Qualifier Node_id="7" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWGRADELETTER = TX </SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="11" Node_type="4111" ClassesApplied="0" CreditsApplied="0" Name="NONEXCLUSIVE">
+<SubText>(MAJOR)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Qualifier Node_id="13" Node_type="4111" ClassesApplied="0" CreditsApplied="0" Name="NONEXCLUSIVE">
+<SubText>(MINOR)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Display>
+<Text>
+<Line>A minimum GPA of 2.0 in all CNIT courses is required.  Your GPA in the CNIT courses is 3.33.</Line>
+</Text>
+</Display>
+</Header>
+<Rule Label="Introduction To Software Development Concepts" LabelTag="CNIT15501" Per_complete="100"
+   Rule_id="1" Node_id="15" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>4</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CS" Number="18000" Credits="4" Letter_grade="B" Id_num="0037"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="15501" Node_id="16" NewDiscipline="Yes"/>
+<Course Disc="CNIT" Num="10500" HideFromAdvice="Yes" Node_id="17"/>
+<Course Disc="CNIT" Num="15500" HideFromAdvice="Yes" Node_id="18"/>
+<Course Disc="CNIT" Num="17500" HideFromAdvice="Yes" Node_id="19"/>
+<Course Disc="CS" Num="11400" HideFromAdvice="Yes" Node_id="20" NewDiscipline="Yes" CrossListed="Parent"
+  >
+<CrossListedCourse Disc="IST" Num="14000" HideFromAdvice="Yes" Node_id="21" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2019</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="CS" Num="12300" HideFromAdvice="Yes" Node_id="24"/>
+<Course Disc="CS" Num="12400" HideFromAdvice="Yes" Node_id="25"/>
+<Course Disc="CS" Num="15500" HideFromAdvice="Yes" Node_id="26"/>
+<Course Disc="CS" Num="15800" HideFromAdvice="Yes" Node_id="27" CrossListed="Parent">
+<CrossListedCourse Disc="CS" Num="15900" HideFromAdvice="Yes" Node_id="28" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Summer 2019</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="CS" Num="15900" HideFromAdvice="Yes" Node_id="31"/>
+<Course Disc="CS" Num="17000" HideFromAdvice="Yes" Node_id="32"/>
+<Course Disc="CS" Num="17200" HideFromAdvice="Yes" Node_id="33"/>
+<Course Disc="CS" Num="17700" HideFromAdvice="Yes" Node_id="34"/>
+<Course Disc="CS" Num="18000" HideFromAdvice="Yes" Node_id="35"/>
+<Course Disc="CS" Num="20300" HideFromAdvice="Yes" Node_id="36" CrossListed="Parent">
+<CrossListedCourse Disc="IST" Num="20300" HideFromAdvice="Yes" Node_id="37" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2019</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="CS" Num="20600" HideFromAdvice="Yes" Node_id="40" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="20600" HideFromAdvice="Yes" Node_id="41" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2021</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="CS" Num="22700" HideFromAdvice="Yes" Node_id="44"/>
+<Course Disc="CS" Num="22800" HideFromAdvice="Yes" Node_id="45"/>
+<Course Disc="CS" Num="22900" HideFromAdvice="Yes" Node_id="46"/>
+<Course Disc="CS" Num="23200" HideFromAdvice="Yes" Node_id="47"/>
+<Course Disc="CS" Num="25200" HideFromAdvice="Yes" Node_id="48"/>
+<Qualifier Node_id="49" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Information Technology Architectures" LabelTag="CNIT17600" Per_complete="100" Rule_id="2"
+   Node_id="50" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="17600" Credits="3" Letter_grade="CR" Id_num="0055"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="17600" Node_id="51" NewDiscipline="Yes"/>
+<Course Disc="CS" Num="25000" HideFromAdvice="Yes" Node_id="52" NewDiscipline="Yes">
+<With Code="DWGRADE" Operator="&gt;=" Connector="AND">
+<Value>C-</Value>
+</With>
+<With Code="DWTERM" Operator="&lt;" Connector="AND">
+<Value>Fall 2022</Value>
+</With>
+</Course>
+<Qualifier Node_id="57" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Introduction To Systems Development" LabelTag="CNIT18000" Per_complete="100" Rule_id="3"
+   Node_id="58" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="18000" Credits="3" Letter_grade="C" Id_num="0021"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="18000" Node_id="59" NewDiscipline="Yes"/>
+<Qualifier Node_id="60" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="System Administration" LabelTag="CNIT24200" Per_complete="100" Rule_id="4" Node_id="61"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="24200" Credits="3" Letter_grade="C" Id_num="0059"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="24200" Node_id="62" NewDiscipline="Yes"/>
+<Qualifier Node_id="63" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Object-Oriented Programming Introduction" LabelTag="CNIT25501" Per_complete="100" Rule_id="5"
+   Node_id="64" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="25501" Credits="3" Letter_grade="B+" Id_num="0065"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="25501" Node_id="65" NewDiscipline="Yes"/>
+<Course Disc="CNIT" Num="25500" HideFromAdvice="Yes" Node_id="66"/>
+<Qualifier Node_id="67" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Cybersecurity Fundamentals" LabelTag="CNIT27000" Per_complete="100" Rule_id="6" Node_id="68"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="27000" Credits="3" Letter_grade="A" Id_num="0085"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="27000" Node_id="69" NewDiscipline="Yes"/>
+<Qualifier Node_id="70" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Database Fundamentals" LabelTag="CNIT27200" Per_complete="100" Rule_id="7" Node_id="71"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="27200" Credits="3" Letter_grade="A" Id_num="0089"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="27200" Node_id="72" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Systems Analysis And Design Methods" LabelTag="CNIT28000" Per_complete="100" Rule_id="8"
+   Node_id="73" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="28000" Credits="3" Letter_grade="C-" Id_num="0063"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="28000" Node_id="74" NewDiscipline="Yes"/>
+<Qualifier Node_id="75" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Systems Programming" LabelTag="CNIT31500" Per_complete="100" Rule_id="9" Node_id="76" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="31500" Credits="3" Letter_grade="A" Id_num="0071"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="31500" Node_id="77" NewDiscipline="Yes"/>
+<Course Disc="CS" Num="24000" HideFromAdvice="Yes" Node_id="78" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Policy, Regulation, And Globalization In IT" LabelTag="CNIT32000" Per_complete="100" Rule_id="10"
+   Node_id="79" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="32000" Credits="3" Letter_grade="A+" Id_num="0083"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="32000" Node_id="80" NewDiscipline="Yes"/>
+<Qualifier Node_id="81" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Research Methodology And Design" LabelTag="CNIT32200" Per_complete="100" Rule_id="11" Node_id="82"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SOC" Number="38300" Credits="3" Letter_grade="A-" Id_num="0111"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="32200" Node_id="83" NewDiscipline="Yes"/>
+<Course Disc="SOC" Num="38300" Node_id="5086" NewDiscipline="Yes">
+<Exception Type="AA" Id_num="0004"/>
+</Course>
+<Qualifier Node_id="84" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="UNIX Fundamentals" LabelTag="CNIT34010" Per_complete="100" Rule_id="12" Node_id="85" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>1</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="34010" Credits="1" Letter_grade="B" Id_num="0091"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="34010" Node_id="86" NewDiscipline="Yes"/>
+<Course Disc="CNIT" Num="34000" HideFromAdvice="Yes" Node_id="87"/>
+<Qualifier Node_id="88" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Network Administration" LabelTag="CNIT34220" Per_complete="100" Rule_id="13" Node_id="89"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>2</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="34220" Credits="2" Letter_grade="B+" Id_num="0097"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="34220" Node_id="90" NewDiscipline="Yes"/>
+<Qualifier Node_id="91" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Network Engineering Fundamentals" LabelTag="NTWRK" Per_complete="100" Rule_id="14" Node_id="92"
+   Node_type="4600" IndentLevel="1" RuleType="Group">
+<Requirement NumGroups="1" NumRules="2"/>
+<Rule Label="Network Engineering Fundamentals" LabelTag="CNIT34400" Per_complete="100" Rule_id="14-0"
+   Node_id="93" Node_type="4200" IndentLevel="2" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="34400" Credits="3" Letter_grade="B" Id_num="0095"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="34400" Node_id="94" NewDiscipline="Yes"/>
+<Qualifier Node_id="95" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Network Engineering Fundamentals" LabelTag="NEF" Per_complete="Not Needed" Rule_id="14-1"
+   Node_id="96" Node_type="4200" IndentLevel="2" LastRuleInGroup="Yes" RuleType="Course">
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="3" Class_cred_op="OR" Connector="+">
+<Course Disc="CNIT" Num="24000" Node_id="97" NewDiscipline="Yes"/>
+<Course Disc="CNIT" Num="34500" Node_id="98"/>
+<Course Disc="CNIT" Num="34600" Node_id="99"/>
+<Qualifier Node_id="96" Node_type="1218" Name="HIDERULE">
+<Text>HideRule</Text>
+</Qualifier>
+<Qualifier Node_id="100" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</Rule>
+<Rule Label="Introduction To Cyptography" LabelTag="CNIT37000" Per_complete="100" Rule_id="15" Node_id="101"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="37000" Credits="3" Letter_grade="A" Id_num="0093"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="37000" Node_id="102" NewDiscipline="Yes"/>
+<Qualifier Node_id="103" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Basic Cyber Forensics" LabelTag="CNIT42000" Per_complete="100" Rule_id="16" Node_id="104"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="42000" Credits="3" Letter_grade="A" Id_num="0087"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="42000" Node_id="105" NewDiscipline="Yes" CrossListed="Parent">
+<CrossListedCourse Disc="CNIT" Num="32300" Node_id="106" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2022</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Qualifier Node_id="109" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Cyber Criminology" LabelTag="CNIT42200" Per_complete="98" Rule_id="17" Node_id="110" Node_type="4200"
+   IndentLevel="1" In_prog_incomplete="Yes" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="42200" Credits="3" Letter_grade="WIP" Id_num="0123"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="42200" Node_id="111" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Network Security" LabelTag="CNIT45500" Per_complete="100" Rule_id="18" Node_id="112" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="45500" Credits="3" Letter_grade="B" Id_num="0113"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="45500" Node_id="113" NewDiscipline="Yes"/>
+<Qualifier Node_id="114" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Incident Response Management" LabelTag="CNIT47000" Per_complete="100" Rule_id="19" Node_id="115"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="47000" Credits="3" Letter_grade="B" Id_num="0107"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="47000" Node_id="116" NewDiscipline="Yes"/>
+<Qualifier Node_id="117" Node_type="4117" Applied="" Name="MINGRADE" MinGrade="1.7">
+<Text>MINGRADE 1.7</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Vulnerability Analysis And Testing" LabelTag="CNIT47100" Per_complete="98" Rule_id="20"
+   Node_id="118" Node_type="4200" IndentLevel="1" In_prog_incomplete="Yes" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="47100" Credits="3" Letter_grade="WIP" Id_num="0117"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="47100" Node_id="119" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Managing Information Technology Projects" LabelTag="CNIT48000" Per_complete="98" Rule_id="21"
+   Node_id="120" Node_type="4200" IndentLevel="1" In_prog_incomplete="Yes" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="48000" Credits="3" Letter_grade="WIP" Id_num="0121"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="48000" Node_id="121" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Cybersecurity Selectives" LabelTag="CSEC-SELECT" Per_complete="100" Rule_id="22" Node_id="122"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>2</Classes_applied>
+<Credits_applied>6</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CNIT" Number="41500" Credits="3" Letter_grade="A" Id_num="0109"/>
+<Class Discipline="CNIT" Number="48300" Credits="3" Letter_grade="A" Id_num="0115"/>
+</ClassesApplied>
+<Requirement Credits_begin="6" Class_cred_op="OR" Connector=",">
+<Course Disc="CNIT" Num="41500" Node_id="123" NewDiscipline="Yes"/>
+<Course Disc="CNIT" Num="42100" Node_id="124"/>
+<Course Disc="CNIT" Num="45600" Node_id="125"/>
+<Course Disc="CNIT" Num="51100" Node_id="126"/>
+<Course Disc="CNIT" Num="51200" Node_id="127"/>
+<Course Disc="CNIT" Num="58100" Node_id="128">
+<With Code="DWTITLE" Operator="=" Connector="">
+<Value>Cyber Conflict&amp;Transnat Crime</Value>
+</With>
+</Course>
+<Course Disc="CNIT" Num="58100" Node_id="131">
+<With Code="DWTITLE" Operator="=" Connector="">
+<Value>Large Event Mgmt &amp; Plan HLS</Value>
+</With>
+</Course>
+<Course Disc="CNIT" Num="58100" Node_id="134">
+<With Code="DWTITLE" Operator="=" Connector="">
+<Value>Cyberforensics Of Malware</Value>
+</With>
+</Course>
+<Course Disc="CNIT" Num="58100" Node_id="137">
+<With Code="DWTITLE" Operator="=" Connector="">
+<Value>Social Engineering Info Tech</Value>
+</With>
+</Course>
+<Course Disc="CNIT" Num="48300" Node_id="5139">
+<Exception Type="AA" Id_num="0003"/>
+</Course>
+</Requirement>
+</Rule>
+</Block>
+<Block Req_id="RA006885" Req_type="OTHER" Req_value="CSEC-OTHER" Title="Other Departmental Course Requirements"
+   Per_complete="93.625" Cat_yr_start="201910" Cat_yr_stop="201930" Cat_yr="201910" Cat_yrLit="Fall 2018"
+   GPA="2.90" Classes_applied="17" Credits_applied="55" Gpa_grade_pts="122" Gpa_credits="42">
+<Header>
+<Qualifier Node_id="1" Node_type="4121" Satisfied="Inprogress" Applied="55" ClassesApplied="17" CreditsApplied="55"
+   Name="CLASSESCREDITS" Credits="54">
+<Text>54 Credits</Text>
+</Qualifier>
+<Qualifier Node_id="3" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWGRADELETTER = TX </SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="7" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWPASSFAIL = Y AND</SubText>
+<SubText>DWTERM &lt;&gt; 202020 AND</SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="13" Node_type="4111" ClassesApplied="0" CreditsApplied="0" Name="NONEXCLUSIVE">
+<SubText>(OTHER = CNIT-OTHER)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Qualifier Node_id="15" Node_type="4111" ClassesApplied="0" CreditsApplied="0" Name="NONEXCLUSIVE">
+<SubText>(OTHER = NENT-OTHER)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Qualifier Node_id="17" Node_type="4111" ClassesApplied="0" CreditsApplied="0" Name="NONEXCLUSIVE">
+<SubText>(OTHER = SAAD-OTHER)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Qualifier Node_id="19" Node_type="4111" ClassesApplied="0" CreditsApplied="0" Name="NONEXCLUSIVE">
+<SubText>(MINOR)</SubText>
+<Text>ShareWith </Text>
+</Qualifier>
+<Qualifier Node_id="21" Node_type="4101" ClassesApplied="1" CreditsApplied="3" Name="MAXCLASS" Classes="1"
+  >
+<SubText>AGEC 21700, ECON 21000</SubText>
+<CrossListing DiscFrom="AGEC" NumFrom="21700" DiscTo="AGR" NumTo="21700"/>
+<Text>MaxClasses 1 in </Text>
+</Qualifier>
+</Header>
+<Rule Label="Composition" LabelTag="ENG-SELECT" Per_complete="100" Rule_id="1" Node_id="27" Node_type="4600"
+   IndentLevel="1" RuleType="Group">
+<Requirement NumGroups="1" NumRules="4"/>
+<Rule Label="Composition" LabelTag="SCLA10100" Per_complete="100" Rule_id="1-0" Node_id="28" Node_type="4200"
+   IndentLevel="2" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SCLA" Number="10100" Credits="3" Letter_grade="A" Id_num="0013"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="SCLA" Num="10100" Node_id="29" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Composition" LabelTag="ENGL10100" Per_complete="Not Needed" Rule_id="1-1" Node_id="30"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="ENGL" Num="10100" Node_id="31" NewDiscipline="Yes"/>
+<Course Disc="ENGL" Num="10800" Node_id="32" EquivCourseDisc="ENGL" EquivCourseNum="10300"/>
+<Course Disc="ENGL" Num="10600" Node_id="33"/>
+<Course Disc="ENGL" Num="10800" Node_id="34"/>
+<Course Disc="ENG" Num="W1310" Node_id="35" NewDiscipline="Yes"/>
+<Qualifier Node_id="30" Node_type="1218" Name="HIDERULE">
+<Text>HideRule</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Composition" LabelTag="ENGL10500" Per_complete="Not Needed" Rule_id="1-2" Node_id="36"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="2" Class_cred_op="OR" Connector="+">
+<Course Disc="ENGL" Num="10400" Node_id="37" NewDiscipline="Yes"/>
+<Course Disc="ENGL" Num="10500" Node_id="38"/>
+<Qualifier Node_id="36" Node_type="1218" Name="HIDERULE">
+<Text>HideRule</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Composition" LabelTag="ENGLW1500" Per_complete="Not Needed" Rule_id="1-3" Node_id="39"
+   Node_type="4200" IndentLevel="2" LastRuleInGroup="Yes" RuleType="Course">
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="2" Class_cred_op="OR" Connector="+">
+<Course Disc="ENG" Num="W1400" Node_id="40" NewDiscipline="Yes"/>
+<Course Disc="ENG" Num="W1500" Node_id="41"/>
+<Qualifier Node_id="39" Node_type="1218" Name="HIDERULE">
+<Text>HideRule</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+</Rule>
+<Rule Label="Oral Communication" LabelTag="COM11400" Per_complete="100" Rule_id="2" Node_id="42" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SCLA" Number="10200" Credits="3" Letter_grade="B" Id_num="0047"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="SCLA" Num="10200" Node_id="43" NewDiscipline="Yes"/>
+<Course Disc="COM" Num="11400" HideFromAdvice="Yes" Node_id="44" NewDiscipline="Yes"/>
+<Course Disc="COM" Num="21700" HideFromAdvice="Yes" Node_id="45"/>
+<Course Disc="COMM" Num="21700" HideFromAdvice="Yes" Node_id="46" NewDiscipline="Yes"/>
+<Course Disc="COMM" Num="C1100" HideFromAdvice="Yes" Node_id="47"/>
+<Course Disc="COMM" Num="R1100" HideFromAdvice="Yes" Node_id="48"/>
+<Course Disc="SPCH" Num="S1210" HideFromAdvice="Yes" Node_id="49" NewDiscipline="Yes"/>
+<Course Disc="SPCH" Num="S2050" HideFromAdvice="Yes" Node_id="50"/>
+</Requirement>
+</Rule>
+<Rule Label="Technology &amp; The Individual" LabelTag="TECH12000" Per_complete="100" Rule_id="3" Node_id="51"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="TECH" Number="12000" Credits="3" Letter_grade="B" Id_num="0029"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="TECH" Num="12000" Node_id="52" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Applied Calculus I" LabelTag="MA16010" Per_complete="100" Rule_id="4" Node_id="53" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>4</Credits_applied>
+<ClassesApplied>
+<Class Discipline="MA" Number="16500" Credits="4" Letter_grade="TR" Id_num="0005"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="MA" Num="16010" Node_id="54" NewDiscipline="Yes" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="22900" Node_id="55" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 1989</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MATH" Num="16300" HideFromAdvice="Yes" Node_id="58" NewDiscipline="Yes" CrossListed="Parent"
+  >
+<CrossListedCourse Disc="MA" Num="16100" HideFromAdvice="Yes" Node_id="59" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16300" HideFromAdvice="Yes" Node_id="60" CrossListed="Child"/>
+<CrossListedCourse Disc="MA" Num="16500" HideFromAdvice="Yes" Node_id="61" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16500" HideFromAdvice="Yes" Node_id="62" NewDiscipline="Yes" CrossListed="Child"
+  />
+</Course>
+<Course Disc="MATH" Num="22100" HideFromAdvice="Yes" Node_id="63"/>
+<Course Disc="MATH" Num="M1190" HideFromAdvice="Yes" Node_id="64"/>
+<Course Disc="MATH" Num="M2080" HideFromAdvice="Yes" Node_id="65"/>
+<Course Disc="MATH" Num="M2150" HideFromAdvice="Yes" Node_id="66"/>
+<Course Disc="MATH" Num="M1610" HideFromAdvice="Yes" Node_id="67"/>
+<Course Disc="MA" Num="16100" HideFromAdvice="Yes" Node_id="68" NewDiscipline="Yes" CrossListed="Parent"
+  >
+<CrossListedCourse Disc="MA" Num="16300" HideFromAdvice="Yes" Node_id="69" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16500" HideFromAdvice="Yes" Node_id="70" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16300" HideFromAdvice="Yes" Node_id="71" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16500" HideFromAdvice="Yes" Node_id="72" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="16300" HideFromAdvice="Yes" Node_id="73" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="16100" HideFromAdvice="Yes" Node_id="74" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16500" HideFromAdvice="Yes" Node_id="75" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16300" HideFromAdvice="Yes" Node_id="76" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16500" HideFromAdvice="Yes" Node_id="77" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="16500" HideFromAdvice="Yes" Node_id="78" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="16100" HideFromAdvice="Yes" Node_id="79" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16300" HideFromAdvice="Yes" Node_id="80" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16300" HideFromAdvice="Yes" Node_id="81" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16500" HideFromAdvice="Yes" Node_id="82" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="16200" HideFromAdvice="Yes" Node_id="83" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="17300">
+<CrossListedCourse Disc="MA" Num="16400" HideFromAdvice="Yes" Node_id="84" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16600" HideFromAdvice="Yes" Node_id="85" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16400" HideFromAdvice="Yes" Node_id="86" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16600" HideFromAdvice="Yes" Node_id="87" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="16200" HideFromAdvice="Yes" Node_id="88" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="18100">
+<CrossListedCourse Disc="MA" Num="16400" HideFromAdvice="Yes" Node_id="89" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16600" HideFromAdvice="Yes" Node_id="90" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16400" HideFromAdvice="Yes" Node_id="91" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16600" HideFromAdvice="Yes" Node_id="92" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="16019" HideFromAdvice="Yes" Node_id="93" EquivCourseDisc="MA" EquivCourseNum="22100"
+  />
+<Course Disc="MA" Num="22500" HideFromAdvice="Yes" Node_id="94"/>
+<Course Disc="MA" Num="22700" HideFromAdvice="Yes" Node_id="95"/>
+<Course Disc="MA" Num="22900" HideFromAdvice="Yes" Node_id="96"/>
+<Course Disc="MA" Num="16010" HideFromAdvice="Yes" Node_id="97" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="23100">
+<CrossListedCourse Disc="MA" Num="22900" HideFromAdvice="Yes" Node_id="98" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 1989</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MA" Num="22300" HideFromAdvice="Yes" Node_id="101"/>
+</Requirement>
+</Rule>
+<Rule Label="Applied Calculus II" LabelTag="MA16020" Per_complete="100" Rule_id="5" Node_id="102" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>4</Credits_applied>
+<ClassesApplied>
+<Class Discipline="MA" Number="26100" Credits="4" Letter_grade="B" Id_num="0035"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="MA" Num="16020" Node_id="103" NewDiscipline="Yes" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="23000" Node_id="104" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 1989</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MA" Num="23000" HideFromAdvice="Yes" Node_id="107"/>
+<Course Disc="MA" Num="16020" HideFromAdvice="Yes" Node_id="108" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="23200">
+<CrossListedCourse Disc="MA" Num="23000" HideFromAdvice="Yes" Node_id="109" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 1989</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MA" Num="26100" HideFromAdvice="Yes" Node_id="112" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="26300" HideFromAdvice="Yes" Node_id="113" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="26100" HideFromAdvice="Yes" Node_id="114" NewDiscipline="Yes" CrossListed="Child"
+  />
+</Course>
+<Course Disc="MA" Num="16021" HideFromAdvice="Yes" Node_id="115"/>
+<Course Disc="MA" Num="16200" HideFromAdvice="Yes" Node_id="116" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="16400" HideFromAdvice="Yes" Node_id="117" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16600" HideFromAdvice="Yes" Node_id="118" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16400" HideFromAdvice="Yes" Node_id="119" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16600" HideFromAdvice="Yes" Node_id="120" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="16600" HideFromAdvice="Yes" Node_id="121" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="16200" HideFromAdvice="Yes" Node_id="122" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16400" HideFromAdvice="Yes" Node_id="123" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16400" HideFromAdvice="Yes" Node_id="124" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="16600" HideFromAdvice="Yes" Node_id="125" CrossListed="Child"/>
+</Course>
+<Course Disc="MA" Num="26100" HideFromAdvice="Yes" Node_id="126" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="17400">
+<CrossListedCourse Disc="MA" Num="26300" HideFromAdvice="Yes" Node_id="127" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="26100" HideFromAdvice="Yes" Node_id="128" NewDiscipline="Yes" CrossListed="Child"
+  />
+</Course>
+<Course Disc="MA" Num="26100" HideFromAdvice="Yes" Node_id="129" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="18200">
+<CrossListedCourse Disc="MA" Num="26300" HideFromAdvice="Yes" Node_id="130" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MATH" Num="26100" HideFromAdvice="Yes" Node_id="131" NewDiscipline="Yes" CrossListed="Child"
+  />
+</Course>
+<Course Disc="MA" Num="16021" HideFromAdvice="Yes" Node_id="132" EquivCourseDisc="MA" EquivCourseNum="22200"
+  />
+<Course Disc="MA" Num="22800" HideFromAdvice="Yes" Node_id="133"/>
+<Course Disc="MA" Num="16020" HideFromAdvice="Yes" Node_id="134" CrossListed="Parent" EquivCourseDisc="MA"
+   EquivCourseNum="23200">
+<CrossListedCourse Disc="MA" Num="23000" HideFromAdvice="Yes" Node_id="135" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 1989</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MATH" Num="16400" HideFromAdvice="Yes" Node_id="138" NewDiscipline="Yes" CrossListed="Parent"
+  >
+<CrossListedCourse Disc="MA" Num="16200" HideFromAdvice="Yes" Node_id="139" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="16400" HideFromAdvice="Yes" Node_id="140" CrossListed="Child"/>
+<CrossListedCourse Disc="MA" Num="16600" HideFromAdvice="Yes" Node_id="141" CrossListed="Child"/>
+<CrossListedCourse Disc="MATH" Num="16600" HideFromAdvice="Yes" Node_id="142" NewDiscipline="Yes" CrossListed="Child"
+  />
+</Course>
+<Course Disc="MATH" Num="22000" HideFromAdvice="Yes" Node_id="143"/>
+<Course Disc="MATH" Num="26100" HideFromAdvice="Yes" Node_id="144" CrossListed="Parent">
+<CrossListedCourse Disc="MA" Num="26100" HideFromAdvice="Yes" Node_id="145" NewDiscipline="Yes" CrossListed="Child"
+  />
+<CrossListedCourse Disc="MA" Num="26300" HideFromAdvice="Yes" Node_id="146" CrossListed="Child"/>
+</Course>
+<Course Disc="MATH" Num="M2090" HideFromAdvice="Yes" Node_id="147"/>
+<Course Disc="MATH" Num="M2160" HideFromAdvice="Yes" Node_id="148"/>
+<Course Disc="MATH" Num="M1620" HideFromAdvice="Yes" Node_id="149"/>
+<Course Disc="MA" Num="22400" HideFromAdvice="Yes" Node_id="150" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Foundations Of Organizational Leadership" LabelTag="TLI11200" Per_complete="100" Rule_id="6"
+   Node_id="151" Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="TLI" Number="11200" Credits="3" Letter_grade="B" Id_num="0049"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="TLI" Num="11200" Node_id="152" NewDiscipline="Yes"/>
+<Course Disc="OLS" Num="25200" HideFromAdvice="Yes" Node_id="153" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Communications Selective" LabelTag="COM-SELECT" Per_complete="100" Rule_id="7" Node_id="154"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="COM" Number="25100" Credits="3" Letter_grade="A" Id_num="0081"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="COM" Num="22400" Node_id="155" Priority="HighPriority" NewDiscipline="Yes"/>
+<Course Disc="COM" Num="25100" Node_id="156"/>
+<Course Disc="COM" Num="21000" HideFromAdvice="Yes" Node_id="157"/>
+<Course Disc="COM" Num="21200" HideFromAdvice="Yes" Node_id="158"/>
+<Course Disc="COM" Num="30300" HideFromAdvice="Yes" Node_id="159"/>
+<Course Disc="COM" Num="31400" HideFromAdvice="Yes" Node_id="160"/>
+<Course Disc="COM" Num="31500" HideFromAdvice="Yes" Node_id="161"/>
+<Course Disc="COM" Num="31800" HideFromAdvice="Yes" Node_id="162"/>
+<Course Disc="COM" Num="32000" HideFromAdvice="Yes" Node_id="163"/>
+<Course Disc="COMM" Num="C1800" HideFromAdvice="Yes" Node_id="164" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Economics Selective" LabelTag="ECON21000" Per_complete="100" Rule_id="8" Node_id="165"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="ECON" Number="21000" Credits="3" Letter_grade="A" Id_num="0077"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="AGEC" Num="21700" Node_id="166" NewDiscipline="Yes" CrossListed="Parent">
+<CrossListedCourse Disc="AGR" Num="21700" Node_id="167" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Spring 2022</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="ECON" Num="21000" Node_id="170" NewDiscipline="Yes"/>
+<Course Disc="ECON" Num="25100" Node_id="171" CrossListed="Parent">
+<CrossListedCourse Disc="ECON" Num="20101" Node_id="172" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2018</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="ECON" Num="25200" Node_id="175" CrossListed="Parent">
+<CrossListedCourse Disc="ECON" Num="20201" Node_id="176" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2018</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="ECON" Num="E1010" HideFromAdvice="Yes" Node_id="179"/>
+<Course Disc="ECON" Num="20000" HideFromAdvice="Yes" Node_id="180" EquivCourseDisc="ECON" EquivCourseNum="E2000"
+  />
+<Course Disc="ECON" Num="E2010" HideFromAdvice="Yes" Node_id="181"/>
+<Course Disc="ECON" Num="E2020" HideFromAdvice="Yes" Node_id="182"/>
+</Requirement>
+</Rule>
+<Rule Label="Science" LabelTag="UCC-SCI" Per_complete="100" Rule_id="9" Node_id="183" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<Classes_applied>2</Classes_applied>
+<Credits_applied>8</Credits_applied>
+<ClassesApplied>
+<Class Discipline="PHYS" Number="17200" Credits="4" Letter_grade="B-" Id_num="0025"/>
+<Class Discipline="PHYS" Number="22100" Credits="4" Letter_grade="C+" Id_num="0073"/>
+</ClassesApplied>
+<Requirement Credits_begin="6" Class_cred_op="OR" Connector=",">
+<Course Disc="@" Num="@" Node_id="184" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC04</Value>
+</With>
+</Course>
+<Qualifier Node_id="187" Node_type="4104" Satisfied="Yes" Applied="8" Name="MINCREDIT" Credits="3">
+<SubText>ASTR 26300, 26400, BIOL 11000, 11100, 13500, 14501, </SubText>
+<SubText>14600, 20300, 20400, BTNY 11000, CHM 11100, 11200, </SubText>
+<SubText>11500, 11600, 12500, 12600, 12901, 13600, 20000, EAPS 10200, </SubText>
+<SubText>10900, 11100, 11200, 24300, 24400, ENTM 22810, 22820, </SubText>
+<SubText>HORT 10100, PHYS 17200, 21500, 22000, 22100, 27200, </SubText>
+<SubText>SLHS 30600</SubText>
+<CrossListing DiscFrom="PHYS" NumFrom="22000" DiscTo="PHYS" NumTo="21800"/>
+<CrossListing DiscFrom="PHYS" NumFrom="22100" DiscTo="PHYS" NumTo="21900"/>
+<Text>MinCredits 3 in </Text>
+</Qualifier>
+<Qualifier Node_id="224" Node_type="4135" Applied="" Name="HIGHPRIORITY">
+<Text>HighPriority</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Accounting Selective" LabelTag="MGMT20000" Per_complete="100" Rule_id="10" Node_id="225"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Remark>
+<Text>MGMT 20000 is required for MGMT Minor.</Text>
+</Remark>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="MGMT" Number="20000" Credits="3" Letter_grade="C+" Id_num="0103"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="MGMT" Num="20000" Node_id="226" NewDiscipline="Yes" CrossListed="Parent">
+<CrossListedCourse Disc="ACC" Num="20000" Node_id="227" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Summer 2013</Value>
+</With>
+</CrossListedCourse>
+<CrossListedCourse Disc="BUS" Num="20100" Node_id="230" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2018</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MGMT" Num="21200" Node_id="233" EquivCourseDisc="MGMT" EquivCourseNum="20010"/>
+<Course Disc="ACC" Num="20000" HideFromAdvice="Yes" Node_id="234" NewDiscipline="Yes" CrossListed="Parent"
+  >
+<CrossListedCourse Disc="MGMT" Num="20000" HideFromAdvice="Yes" Node_id="235" NewDiscipline="Yes" CrossListed="Child"
+  >
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Summer 2013</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="BUS" Num="A2010" HideFromAdvice="Yes" Node_id="238" NewDiscipline="Yes"/>
+</Requirement>
+</Rule>
+<Rule Label="Statistics Selective" LabelTag="STAT22500" Per_complete="100" Rule_id="11" Node_id="239"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="STAT" Number="35000" Credits="3" Letter_grade="C" Id_num="0043"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="STAT" Num="22500" Node_id="240" NewDiscipline="Yes"/>
+<Course Disc="STAT" Num="30100" Node_id="241"/>
+<Course Disc="STAT" Num="50100" Node_id="242"/>
+<Course Disc="STAT" Num="51100" Node_id="243"/>
+<Course Disc="STAT" Num="35000" HideFromAdvice="Yes" Node_id="244"/>
+</Requirement>
+</Rule>
+<Rule Label="Professional Speaking Selective" LabelTag="COM31500" Per_complete="98" Rule_id="12" Node_id="245"
+   Node_type="4200" IndentLevel="1" In_prog_incomplete="Yes" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="COM" Number="32000" Credits="3" Letter_grade="WIP" Id_num="0119"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="COM" Num="31500" Node_id="246" NewDiscipline="Yes"/>
+<Course Disc="COM" Num="41500" Node_id="247"/>
+<Course Disc="COM" Num="32000" Node_id="5251">
+<Exception Type="AA" Id_num="0005"/>
+</Course>
+</Requirement>
+</Rule>
+<Rule Label="Professional Writing Selective" LabelTag="ENGL42000" Per_complete="100" Rule_id="13" Node_id="248"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="ENGL" Number="42100" Credits="3" Letter_grade="B-" Id_num="0105"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="ENGL" Num="41900" Node_id="249" NewDiscipline="Yes"/>
+<Course Disc="ENGL" Num="42000" Node_id="250"/>
+<Course Disc="ENGL" Num="42100" Node_id="251"/>
+<Course Disc="ENGL" Num="42400" Node_id="252"/>
+</Requirement>
+</Rule>
+<Rule Label="Humanities" LabelTag="HUM_SELECT" Per_complete="100" Rule_id="14" Node_id="253" Node_type="4200"
+   IndentLevel="1" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CHNS" Number="40100" Credits="3" Letter_grade="C" Id_num="0045"/>
+</ClassesApplied>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="@" Num="@" Node_id="254" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC05</Value>
+</With>
+</Course>
+<Qualifier Node_id="259" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="Behavioral&#x2F;Social Sciences" LabelTag="BSS-SELECT" Per_complete="0" Rule_id="15" Node_id="260"
+   Node_type="4200" IndentLevel="1" RuleType="Course" ProxyAdvice="Yes">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>0</Classes_applied>
+<Credits_applied>0</Credits_applied>
+<ClassesApplied/>
+<Requirement Classes_begin="1" Class_cred_op="OR" Connector=",">
+<Course Disc="@" Num="@" Node_id="261" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>UC06</Value>
+</With>
+</Course>
+<Qualifier Node_id="266" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+<ProxyAdvice>
+<Text>1 Class in Behavioral&#x2F;Social Sciences is needed.</Text>
+<Text>Click here for a list of courses that meet this requirement.</Text>
+</ProxyAdvice>
+</Rule>
+<Rule Label="Interdisciplinary Selectives" LabelTag="IDSC-SELECT" Per_complete="100" Rule_id="16" Node_id="267"
+   Node_type="4200" IndentLevel="1" RuleType="Course">
+<Classes_applied>2</Classes_applied>
+<Credits_applied>6</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CHNS" Number="10100" Credits="3" Letter_grade="TR" Id_num="0003"/>
+<Class Discipline="CHNS" Number="10200" Credits="3" Letter_grade="TR" Id_num="0009"/>
+</ClassesApplied>
+<Requirement Credits_begin="6" Class_cred_op="OR" Connector=",">
+<Course Disc="ECET" Num="35901" Node_id="268" NewDiscipline="Yes"/>
+<Course Disc="ENTM" Num="22810" Node_id="269" NewDiscipline="Yes"/>
+<Course Disc="MGMT" Num="25400" Node_id="270" NewDiscipline="Yes" CrossListed="Parent">
+<CrossListedCourse Disc="BUS" Num="20300" Node_id="271" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2018</Value>
+</With>
+</CrossListedCourse>
+<CrossListedCourse Disc="BUSM" Num="35400" Node_id="274" NewDiscipline="Yes" CrossListed="Child">
+<With Code="DWTERM" Operator="&gt;=" Connector="AND">
+<Value>Fall 2017</Value>
+</With>
+</CrossListedCourse>
+</Course>
+<Course Disc="MGMT" Num="45500" Node_id="277"/>
+<Course Disc="PSY" Num="27200" Node_id="278" NewDiscipline="Yes"/>
+<Course Disc="PSY" Num="31000" Node_id="279"/>
+<Course Disc="PSY" Num="34200" Node_id="280"/>
+<Course Disc="PSY" Num="35000" Node_id="281"/>
+<Course Disc="SOC" Num="32400" Node_id="282" NewDiscipline="Yes"/>
+<Course Disc="SOC" Num="32700" Node_id="283"/>
+<Course Disc="SOC" Num="32800" Node_id="284"/>
+<Course Disc="SOC" Num="33800" Node_id="285"/>
+<Course Disc="IET" Num="31300" Node_id="286" NewDiscipline="Yes" EquivCourseDisc="TLI" EquivCourseNum="31300"
+  />
+<Course Disc="CHNS" Num="10100" Node_id="5286" NewDiscipline="Yes">
+<Exception Type="AA" Id_num="0001"/>
+</Course>
+<Course Disc="CHNS" Num="10200" Node_id="5287">
+<Exception Type="AA" Id_num="0002"/>
+</Course>
+</Requirement>
+</Rule>
+</Block>
+<Block Req_id="RA004932" Req_type="OTHER" Req_value="STATE-CORE" Title="Indiana College Core" Per_complete="100"
+   Cat_yr_start="201710" Cat_yr_stop="999999" Cat_yr="201910" Cat_yrLit="Fall 2018" GPA="3.18" Classes_applied="10"
+   Credits_applied="33" Gpa_grade_pts="104.900009" Gpa_credits="33">
+<Header>
+<Qualifier Node_id="5" Node_type="4121" Satisfied="Yes" Applied="33" ClassesApplied="10" CreditsApplied="33"
+   Name="CLASSESCREDITS" Credits="30">
+<Text>30 Credits</Text>
+</Qualifier>
+<Qualifier Node_id="11" Node_type="4116" Satisfied="Yes" Applied="3.18" Name="MINGPA" MinGPA="2">
+<Text>MINGPA 2</Text>
+</Qualifier>
+<Qualifier Node_id="14" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWGRADELETTER = DC AND</SubText>
+<SubText>DWTERM &gt;= 201510 AND</SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="20" Node_type="4101" ClassesApplied="0" CreditsApplied="0" Name="MAXCLASS" Classes="0"
+  >
+<SubText>@ @ (With </SubText>
+<SubText>DWGRADELETTER = EX AND</SubText>
+<SubText>DWTERM &gt;= 201510 AND</SubText>
+<SubText>)</SubText>
+<Text>MaxClasses 0 in </Text>
+</Qualifier>
+<Qualifier Node_id="26" Node_type="4137" Applied="" Name="STANDALONEBLOCK">
+<Text>StandAloneBlock</Text>
+</Qualifier>
+<Display>
+<Text>
+<Line>Your GPA is 3.18</Line>
+</Text>
+</Display>
+</Header>
+<Rule Per_complete="100" Rule_id="1" Node_id="27" Node_type="4300" IndentLevel="1" RuleType="IfStmt"
+   Label="IF Statement">
+<BooleanEvaluation>False</BooleanEvaluation>
+<Requirement>
+<LeftCondition Connector="OR">
+<LeftCondition>
+<Rop Left="PU04" Operator="=" Right="Y" Evaluation="0"/>
+</LeftCondition>
+</LeftCondition>
+<IfPart>
+<Rule Label="Indiana College Core Completed with Transfer Credit" LabelTag="PU04" Per_complete="Not Used"
+   Rule_id="1-0" Node_id="31" Node_type="4900" IndentLevel="1" RuleType="Complete">
+<IfElsePart>IfPart</IfElsePart>
+<Requirement/>
+</Rule>
+</IfPart>
+<ElsePart>
+<Rule Label="Indiana College Core" LabelTag="STATE-CORE" Per_complete="100" Rule_id="1-1" Node_id="33"
+   Node_type="4600" IndentLevel="1" RuleType="Group">
+<IfElsePart>ElsePart</IfElsePart>
+<Requirement NumGroups="7" NumRules="7"/>
+<Rule Label="ICC:Written Communication" LabelTag="UCC-WC1" Per_complete="100" Rule_id="1-1-0" Node_id="34"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SCLA" Number="10100" Credits="3" Letter_grade="A" Id_num="0013"/>
+</ClassesApplied>
+<Requirement Credits_begin="3" Class_cred_op="OR" Connector="," Decide="BESTGRADE">
+<Course Disc="@" Num="@" Node_id="35" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC01</Value>
+</With>
+</Course>
+<Qualifier Node_id="39" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="ICC:Oral Communications" LabelTag="UCC-OC1" Per_complete="100" Rule_id="1-1-1" Node_id="40"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="SCLA" Number="10200" Credits="3" Letter_grade="B" Id_num="0047"/>
+</ClassesApplied>
+<Requirement Credits_begin="3" Class_cred_op="OR" Connector="," Decide="BESTGRADE">
+<Course Disc="@" Num="@" Node_id="41" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC02</Value>
+</With>
+</Course>
+<Qualifier Node_id="45" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="ICC:Science" LabelTag="UCC-SCI1" Per_complete="100" Rule_id="1-1-2" Node_id="46" Node_type="4200"
+   IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>4</Credits_applied>
+<ClassesApplied>
+<Class Discipline="PHYS" Number="17200" Credits="4" Letter_grade="B-" Id_num="0025"/>
+</ClassesApplied>
+<Requirement Credits_begin="3" Class_cred_op="OR" Connector="," Decide="BESTGRADE">
+<Course Disc="@" Num="@" Node_id="47" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC03</Value>
+</With>
+</Course>
+<Qualifier Node_id="51" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="ICC:Quantitative Reasoning" LabelTag="UCC-QR" Per_complete="100" Rule_id="1-1-3" Node_id="52"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="MA" Number="26500" Credits="3" Letter_grade="B+" Id_num="0079"/>
+</ClassesApplied>
+<Requirement Credits_begin="3" Class_cred_op="OR" Connector="," Decide="BESTGRADE">
+<Course Disc="@" Num="@" Node_id="53" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC04</Value>
+</With>
+</Course>
+<Qualifier Node_id="57" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="ICC:Humanistic-Artistic" LabelTag="UCC-HUM" Per_complete="100" Rule_id="1-1-4" Node_id="58"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="CHNS" Number="40100" Credits="3" Letter_grade="C" Id_num="0045"/>
+</ClassesApplied>
+<Requirement Credits_begin="3" Class_cred_op="OR" Connector=",">
+<Course Disc="@" Num="@" Node_id="59" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC05</Value>
+</With>
+</Course>
+<Qualifier Node_id="63" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="ICC:Social-Behavioral" LabelTag="UCC-BSS1" Per_complete="100" Rule_id="1-1-5" Node_id="64"
+   Node_type="4200" IndentLevel="2" RuleType="Course">
+<RuleTag Name="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"/>
+<Classes_applied>1</Classes_applied>
+<Credits_applied>3</Credits_applied>
+<ClassesApplied>
+<Class Discipline="ECON" Number="21000" Credits="3" Letter_grade="A" Id_num="0077"/>
+</ClassesApplied>
+<Requirement Credits_begin="3" Class_cred_op="OR" Connector="," Decide="BESTGRADE">
+<Course Disc="@" Num="@" Node_id="65" NewDiscipline="Yes">
+<With Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC06</Value>
+</With>
+</Course>
+<Qualifier Node_id="69" Node_type="4138" Applied="" Name="RULETAG" Code="AdviceJump" Value="https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb"
+  >
+<Text>RuleTag AdviceJump=https:&#x2F;&#x2F;tinyurl.com&#x2F;ya22gugb</Text>
+</Qualifier>
+</Requirement>
+</Rule>
+<Rule Label="ICC:Additional 12 Credits of Indiana College Core Courses" LabelTag="STATE-CORE1" Per_complete="100"
+   Rule_id="1-1-6" Node_id="70" Node_type="4200" IndentLevel="2" LastRuleInGroup="Yes" RuleType="Course"
+  >
+<Classes_applied>4</Classes_applied>
+<Credits_applied>14</Credits_applied>
+<ClassesApplied>
+<Class Discipline="COM" Number="25100" Credits="3" Letter_grade="A" Id_num="0081"/>
+<Class Discipline="ENGL" Number="23800" Credits="3" Letter_grade="A" Id_num="0011"/>
+<Class Discipline="MA" Number="16600" Credits="4" Letter_grade="B" Id_num="0031"/>
+<Class Discipline="PHYS" Number="22100" Credits="4" Letter_grade="C+" Id_num="0073"/>
+</ClassesApplied>
+<Requirement Credits_begin="12" Class_cred_op="OR" Connector="," Decide="BESTGRADE">
+<Course Disc="@" Num="@" Node_id="71" NewDiscipline="Yes">
+<With HideFromAdvice="Yes" Code="ATTRIBUTE" Operator="=" Connector="">
+<Value>TC01</Value>
+<Value>TC02</Value>
+<Value>TC03</Value>
+<Value>TC04</Value>
+<Value>TC05</Value>
+<Value>TC06</Value>
+<Value>TC07</Value>
+<Value>TC08</Value>
+</With>
+</Course>
+</Requirement>
+</Rule>
+</Rule>
+</ElsePart>
+</Requirement>
+</Rule>
+</Block>
+<Clsinfo>
+<Class Discipline="CHNS" Number="10100" Credits="3" Letter_grade="TR" Id_num="0003" Course_title="Chinese Level I"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="" School="UG" Grade_type="T" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="T" Transfer_code="TR" Transfer_type="TR  " Transfer_course="AP2828-3"
+   Transfer_school="Advance Placement - CEEB" Transfer_school_id="99ADPL" TransferTitle="Chinese" TransferGrade=""
+   TransferCredits="0000.000" WITH_data=" " Equivalence_exists=" ">
+<Loc Req_id="RA006885" Node_loc="5286" Level="6" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="92" Level="2" Rank="3,3,3,3,3,3,3,2,2,2,2,2,2,2,2" ShareAll="Yes"/>
+<Loc Req_id="RA006885" Node_loc="254" Level="2" Reason_removed="Too many classes: nfits" Reason_comparisons="CHNS 10200"
+   Rank="2,2,2,2,2,2,2,-,-,-,-,-,-,-,-">
+<ReasonRemovedList ReasonList="Too many classes: nfits">
+<ReasonRemoved Code="nfits"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="59" Level="2" Reason_removed="Too many credits: firk3-2" Reason_comparisons="CHNS 10200"
+   Rank="4,3,3,3,4,4,4,3,3,3,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: firk3-2">
+<ReasonRemoved Code="firk3-2"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: tieb" Reason_comparisons="MA 16500"
+   Rank="4,3,3,3,4,4,4,3,3,3,3,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: tieb">
+<ReasonRemoved Code="tieb"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="0101003003"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="FL11"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC05"/>
+<Attribute Code="ATTRIBUTE" Value="UC05"/>
+</Class>
+<Class Discipline="CHNS" Number="10200" Credits="3" Letter_grade="TR" Id_num="0009" Course_title="Chinese Level II"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="" School="UG" Grade_type="T" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="T" Transfer_code="TR" Transfer_type="TR  " Transfer_course="AP2828-3"
+   Transfer_school="Advance Placement - CEEB" Transfer_school_id="99ADPL" TransferTitle="Chinese" TransferGrade=""
+   TransferCredits="0000.000" WITH_data=" " Equivalence_exists=" ">
+<Loc Req_id="RA006885" Node_loc="5287" Level="6" Rank="1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="92" Level="2" Reason_removed="Too many classes: 1,d45" Reason_comparisons="1st,CHNS 10100"
+   Rank="3,3,3,3,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA006885" Node_loc="254" Level="2" Reason_removed="Too many classes: firk2-1" Reason_comparisons="ENGL 23800"
+   Rank="2,2,2,2,2,2,2,-,-,-,-">
+<ReasonRemovedList ReasonList="Too many classes: firk2-1">
+<ReasonRemoved Code="firk2-1"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="59" Level="2" Reason_removed="Too many credits: firk2-1" Reason_comparisons="ENGL 23800"
+   Rank="4,3,3,3,3,3,3,2,2,2,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: firk2-1">
+<ReasonRemoved Code="firk2-1"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: d45" Reason_comparisons="CHNS 40100"
+   Rank="4,3,3,3,3,3,3,2,2,2,2" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45">
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="0101003004"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC05"/>
+<Attribute Code="ATTRIBUTE" Value="UC05"/>
+</Class>
+<Class Discipline="CHNS" Number="40100" Credits="3" Letter_grade="C" Id_num="0045" Course_title="Chinese Level VII"
+   Term="202010" TermLit="Fall 2019" TermLitLong="Fall 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="6" Numeric_grade="2"
+   Gpa_grade_pts="6" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004931" Node_loc="92" Level="2" Reason_removed="Too many classes: 1,d45,d45,d45" Reason_comparisons="1st,ENGL 23800,CHNS 10200,CHNS 10100"
+   Rank="2,2,2,2,-,-,-,-,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45,d45,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA006885" Node_loc="254" Level="2" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004932" Node_loc="59" Level="2" Rank="3,2,2,2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: d45,d45,1f,d45,d45,d45,1f"
+   Reason_comparisons="PHYS 22100,MA 26100,MA 16600,TECH 12000,PHYS 17200,SCLA 10100,ENGL 23800" Rank="3,2,2,2,2,2,2,2,2,2,3,-,-,-,-"
+   ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45,d45,1f,d45,d45,d45,1f">
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="14604"/>
+<Attribute Code="ATTRIBUTE" Value="TC05"/>
+<Attribute Code="ATTRIBUTE" Value="UC05"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CHNS" Number="40200" Credits="0" Letter_grade="W" Id_num="0053" Course_title="Chinese Level VIII"
+   Term="202020" TermLit="Spring 2020" TermLitLong="Spring 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="WD" Stu_sys_credits="3" Reason_insuff="WD" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="Y" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="P" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="14290"/>
+<Attribute Code="ATTRIBUTE" Value="TC05"/>
+<Attribute Code="ATTRIBUTE" Value="UC05"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="17600" Credits="3" Letter_grade="CR" Id_num="0055" Course_title="Info Tech Architecture"
+   Term="202020" TermLit="Spring 2020" TermLitLong="Spring 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="4"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="" School="UG" Grade_type="C" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="51" Level="6"/>
+<Attribute Code="DWSISKEY" Value="SG001"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="18000" Credits="3" Letter_grade="C" Id_num="0021" Course_title="Intro To Systems Devel"
+   Term="201910" TermLit="Fall 2018" TermLitLong="Fall 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="6" Numeric_grade="2"
+   Gpa_grade_pts="6" Gpa_credits="3" Section="015" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="59" Level="16"/>
+<Attribute Code="DWSISKEY" Value="16263"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="24200" Credits="3" Letter_grade="C" Id_num="0059" Course_title="System Administration"
+   Term="202110" TermLit="Fall 2020" TermLitLong="Fall 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="6" Numeric_grade="2"
+   Gpa_grade_pts="6" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="62" Level="16"/>
+<Attribute Code="DWSISKEY" Value="36500"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="25501" Credits="3" Letter_grade="B+" Id_num="0065" Course_title="Obj-Oriented Prog Introduction"
+   Term="202110" TermLit="Fall 2020" TermLitLong="Fall 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9.9" Numeric_grade="3.3"
+   Gpa_grade_pts="9.9" Gpa_credits="3" Section="005" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="65" Level="6"/>
+<Attribute Code="DWSISKEY" Value="69974"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="27000" Credits="0" Letter_grade="C" Id_num="0061" Course_title="Cybersecurity Fundamentals"
+   Term="202110" TermLit="Fall 2020" TermLitLong="Fall 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="3" Reason_insuff="BR" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="2"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="008" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="15130"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="27000" Credits="0" Letter_grade="F" Id_num="0069" Course_title="Cybersecurity Fundamentals"
+   Term="202120" TermLit="Spring 2021" TermLitLong="Spring 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="3" Reason_insuff="FA" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="012" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="30393"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="27000" Credits="3" Letter_grade="A" Id_num="0085" Course_title="Cybersecurity Fundamentals"
+   Term="202210" TermLit="Fall 2021" TermLitLong="Fall 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="008" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="69" Level="16"/>
+<Attribute Code="DWSISKEY" Value="15130"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="27200" Credits="0" Letter_grade="N" Id_num="0051" Course_title="Database Fundamentals"
+   Term="202020" TermLit="Spring 2020" TermLitLong="Spring 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="3" Reason_insuff="FA" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="Y" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="P" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="13217"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="27200" Credits="0" Letter_grade="W" Id_num="0067" Course_title="Database Fundamentals"
+   Term="202110" TermLit="Fall 2020" TermLitLong="Fall 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="WD" Stu_sys_credits="3" Reason_insuff="WD" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="13415"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="27200" Credits="3" Letter_grade="A" Id_num="0089" Course_title="Database Fundamentals"
+   Term="202210" TermLit="Fall 2021" TermLitLong="Fall 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="72" Level="16"/>
+<Attribute Code="DWSISKEY" Value="13415"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="28000" Credits="0" Letter_grade="N" Id_num="0057" Course_title="Syst Analysis &amp; Design"
+   Term="202020" TermLit="Spring 2020" TermLitLong="Spring 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="3" Reason_insuff="FA" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="Y" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="002" School="UG" Grade_type="P" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="69007"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="28000" Credits="3" Letter_grade="C-" Id_num="0063" Course_title="Syst Analysis &amp; Design"
+   Term="202110" TermLit="Fall 2020" TermLitLong="Fall 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="5.1" Numeric_grade="1.7"
+   Gpa_grade_pts="5.1" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="74" Level="16"/>
+<Attribute Code="DWSISKEY" Value="64559"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CNIT" Number="31500" Credits="3" Letter_grade="A" Id_num="0071" Course_title="Systems Programming"
+   Term="202120" TermLit="Spring 2021" TermLitLong="Spring 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="002" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA007201" Node_loc="233" Level="1" HeaderFit="Yes" QualNodeLoc="231"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="77" Level="6"/>
+<Attribute Code="DWSISKEY" Value="57722"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="32000" Credits="3" Letter_grade="A+" Id_num="0083" Course_title="Pol, Reg &amp; Global Info Tech"
+   Term="202210" TermLit="Fall 2021" TermLitLong="Fall 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="80" Level="16"/>
+<Attribute Code="DWSISKEY" Value="12384"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="34010" Credits="1" Letter_grade="B" Id_num="0091" Course_title="UNIX Fundamentals"
+   Term="202210" TermLit="Fall 2021" TermLitLong="Fall 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="1" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="3" Numeric_grade="3"
+   Gpa_grade_pts="3" Gpa_credits="1" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="86" Level="6"/>
+<Attribute Code="DWSISKEY" Value="12792"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="34220" Credits="2" Letter_grade="B+" Id_num="0097" Course_title="Network Administration"
+   Term="202220" TermLit="Spring 2022" TermLitLong="Spring 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="2" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="6.6" Numeric_grade="3.3"
+   Gpa_grade_pts="6.6" Gpa_credits="2" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="90" Level="16"/>
+<Attribute Code="DWSISKEY" Value="12586"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="34400" Credits="3" Letter_grade="B" Id_num="0095" Course_title="Network Engr Fundamentals"
+   Term="202220" TermLit="Spring 2022" TermLitLong="Spring 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9" Numeric_grade="3"
+   Gpa_grade_pts="9" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="94" Level="16">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="13809"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="37000" Credits="3" Letter_grade="A" Id_num="0093" Course_title="Introduction To Cryptography"
+   Term="202220" TermLit="Spring 2022" TermLitLong="Spring 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="102" Level="16"/>
+<Attribute Code="DWSISKEY" Value="17859"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="41500" Credits="3" Letter_grade="A" Id_num="0109" Course_title="Advanced Coding Security"
+   Term="202310" TermLit="Fall 2022" TermLitLong="Fall 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="123" Level="6"/>
+<Attribute Code="DWSISKEY" Value="14825"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="42000" Credits="3" Letter_grade="A" Id_num="0087" Course_title="Basic Cyber Forensics"
+   Term="202210" TermLit="Fall 2021" TermLitLong="Fall 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="003" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="105" Level="16"/>
+<Attribute Code="DWSISKEY" Value="15704"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="42200" Credits="3" Letter_grade="WIP" Id_num="0123" Course_title="Cyber Criminology"
+   Term="202320" TermLit="Spring 2023" TermLitLong="Spring 2023" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="Y"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="111" Level="15"/>
+<Attribute Code="DWSISKEY" Value="18373"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="45500" Credits="3" Letter_grade="B" Id_num="0113" Course_title="Network Security"
+   Term="202310" TermLit="Fall 2022" TermLitLong="Fall 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9" Numeric_grade="3"
+   Gpa_grade_pts="9" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="113" Level="16"/>
+<Attribute Code="DWSISKEY" Value="13461"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="47000" Credits="3" Letter_grade="B" Id_num="0107" Course_title="Incident Response Management"
+   Term="202310" TermLit="Fall 2022" TermLitLong="Fall 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9" Numeric_grade="3"
+   Gpa_grade_pts="9" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="116" Level="16"/>
+<Attribute Code="DWSISKEY" Value="13215"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="47100" Credits="3" Letter_grade="WIP" Id_num="0117" Course_title="Vuln Analysis &amp; Testing"
+   Term="202320" TermLit="Spring 2023" TermLitLong="Spring 2023" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="Y"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="003" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="119" Level="15"/>
+<Attribute Code="DWSISKEY" Value="20155"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="48000" Credits="0" Letter_grade="W" Id_num="0101" Course_title="Manag Info Tech Projct"
+   Term="202230" TermLit="Summer 2022" TermLitLong="Summer 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="WD" Stu_sys_credits="3" Reason_insuff="WD" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="13474"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="48000" Credits="3" Letter_grade="WIP" Id_num="0121" Course_title="Manag Info Tech Projct"
+   Term="202320" TermLit="Spring 2023" TermLitLong="Spring 2023" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="Y"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="121" Level="15"/>
+<Attribute Code="DWSISKEY" Value="13263"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CNIT" Number="48300" Credits="3" Letter_grade="A" Id_num="0115" Course_title="Applied Machine Learning"
+   Term="202310" TermLit="Fall 2022" TermLitLong="Fall 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="002" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5" Level="1" HeaderFit="Yes" QualNodeLoc="4"/>
+<Loc Req_id="RA004943" Node_loc="5139" Level="6"/>
+<Attribute Code="DWSISKEY" Value="21427"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="COM" Number="25100" Credits="3" Letter_grade="A" Id_num="0081" Course_title="Comm, Info, And Society"
+   Term="202130" TermLit="Summer 2021" TermLitLong="Summer 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="002" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="156" Level="6" Reason_removed="REDEMPTION-NONEXCL" Reason_comparisons="1st,COM 32000"
+   Rank="1,1,1,1,1,1,1,-,-,-,-,-"/>
+<Loc Req_id="RA004931" Node_loc="50" Level="2" Rank="2,2,2,2,2,2,2,1,1,1,1,1" ShareAll="Yes"/>
+<Loc Req_id="RA004931" Node_loc="134" Level="2" Reason_removed="Too many classes: 1,d45" Reason_comparisons="1st,TECH 12000"
+   Rank="2,2,2,2,2,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="3,2,2,2,2,3,3,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="29868"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="S01"/>
+<Attribute Code="ATTRIBUTE" Value="TC07"/>
+<Attribute Code="ATTRIBUTE" Value="TC08"/>
+<Attribute Code="ATTRIBUTE" Value="UC02"/>
+<Attribute Code="ATTRIBUTE" Value="UC08"/>
+</Class>
+<Class Discipline="COM" Number="32000" Credits="3" Letter_grade="WIP" Id_num="0119" Course_title="Small Group Communication"
+   Term="202320" TermLit="Spring 2023" TermLitLong="Spring 2023" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="Y"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="003" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA006885" Node_loc="163" Level="5" Reason_removed="Too many fits in this block" Rank="2,2,2,2,1,1,1"
+  />
+<Loc Req_id="RA006885" Node_loc="5251" Level="5" Rank="1,1,1,1,1,1,1"/>
+<Attribute Code="DWSISKEY" Value="16601"/>
+<Attribute Code="ATTRIBUTE" Value="S01"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="CS" Number="17700" Credits="4" Letter_grade="TR" Id_num="0001" Course_title="Progrmng With MM Objs"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="" School="UG" Grade_type="T" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="T" Transfer_code="TR" Transfer_type="TR  " Transfer_course="AP3131" Transfer_school="Advance Placement - CEEB"
+   Transfer_school_id="99ADPL" TransferTitle="Computer Science A" TransferGrade="" TransferCredits="0000.000"
+   WITH_data=" " Equivalence_exists=" ">
+<Loc Req_id="RA004943" Node_loc="34" Level="6" Reason_removed="Too many classes: 1,tieb" Reason_comparisons="1st,CS 18000"
+  >
+<ReasonRemovedList ReasonList="Too many classes: 1,tieb">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="tieb"/>
+</ReasonRemovedList>
+</Loc>
+<Attribute Code="DWSISKEY" Value="0101001001"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CS" Number="18000" Credits="0" Letter_grade="C" Id_num="0023" Course_title="Prob Solving &amp; O-O Programming"
+   Term="201920" TermLit="Spring 2019" TermLitLong="Spring 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="4" Reason_insuff="BR" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="2"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="LE2" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="11064"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CS" Number="18000" Credits="4" Letter_grade="B" Id_num="0037" Course_title="Prob Solving &amp; O-O Programming"
+   Term="201930" TermLit="Summer 2019" TermLitLong="Summer 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="3"
+   Gpa_grade_pts="12" Gpa_credits="4" Section="LE1" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004943" Node_loc="35" Level="6"/>
+<Attribute Code="DWSISKEY" Value="22937"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="CS" Number="19300" Credits="1" Letter_grade="A" Id_num="0033" Course_title="Tools"
+   Term="201920" TermLit="Spring 2019" TermLitLong="Spring 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="1" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="4" Numeric_grade="4"
+   Gpa_grade_pts="4" Gpa_credits="1" Section="LE1" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="20136"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="ECON" Number="21000" Credits="3" Letter_grade="A" Id_num="0077" Course_title="Prin Of Economics"
+   Term="202130" TermLit="Summer 2021" TermLitLong="Summer 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="Y01" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="26" Level="1" HeaderFit="Yes" QualNodeLoc="21"/>
+<Loc Req_id="RA006885" Node_loc="170" Level="6" Rank="1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="106" Level="2" Rank="3,3,3,3,3,3,3,2,2,2,2,2" ShareAll="Yes"/>
+<Loc Req_id="RA006885" Node_loc="261" Level="2" Reason_removed="Too many fits in this block" Rank="2,2,2,2,2,2,2,-,-,-,-,-"
+  />
+<Loc Req_id="RA004932" Node_loc="65" Level="2" Rank="4,3,3,3,3,3,3,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many fits in this block" Rank="5,4,4,4,4,4,4,3,3,3,3,-"
+   ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="25706"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="S01"/>
+<Attribute Code="ATTRIBUTE" Value="TC06"/>
+<Attribute Code="ATTRIBUTE" Value="UC06"/>
+</Class>
+<Class Discipline="ENGL" Number="23800" Credits="3" Letter_grade="A" Id_num="0011" Course_title="Intro To Fiction"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004931" Node_loc="92" Level="2" Reason_removed="Too many classes: 1,d45,d45" Reason_comparisons="1st,CHNS 10200,CHNS 10100"
+   Rank="2,2,2,2,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA006885" Node_loc="254" Level="2" Reason_removed="Too many classes: HMinQ" Reason_comparisons="CHNS 40100"
+   Rank="1,1,1,1,1,1,1,-,-,-">
+<ReasonRemovedList ReasonList="Too many classes: HMinQ">
+<ReasonRemoved Code="HMinQ"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="59" Level="2" Reason_removed="Too many credits: HMinQ" Reason_comparisons="CHNS 40100"
+   Rank="3,2,2,2,2,2,2,1,1,1" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: HMinQ">
+<ReasonRemoved Code="HMinQ"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="3,2,2,2,2,2,2,1,1,1" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="11173"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="S01"/>
+<Attribute Code="ATTRIBUTE" Value="TC05"/>
+<Attribute Code="ATTRIBUTE" Value="UC05"/>
+</Class>
+<Class Discipline="ENGL" Number="42100" Credits="3" Letter_grade="B-" Id_num="0105" Course_title="Technical Writing"
+   Term="202230" TermLit="Summer 2022" TermLitLong="Summer 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="8.1" Numeric_grade="2.7"
+   Gpa_grade_pts="8.1" Gpa_credits="3" Section="Y01" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA006885" Node_loc="251" Level="6"/>
+<Attribute Code="DWSISKEY" Value="11830"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="GS" Number="12000" Credits="1" Letter_grade="A" Id_num="0015" Course_title="Summer Start Seminar"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="1" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="4" Numeric_grade="4"
+   Gpa_grade_pts="4" Gpa_credits="1" Section="011" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="13714"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="MA" Number="16500" Credits="4" Letter_grade="TR" Id_num="0005" Course_title="Anlytc Geomtry&amp;Calc I"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="" School="UG" Grade_type="T" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="T" Transfer_code="TR" Transfer_type="TR  " Transfer_course="AP6666" Transfer_school="Advance Placement - CEEB"
+   Transfer_school_id="99ADPL" TransferTitle="Calculus AB" TransferGrade="" TransferCredits="0000.000"
+   WITH_data=" " Equivalence_exists=" ">
+<Loc Req_id="RA006885" Node_loc="78" Level="6" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="120" Level="2" Rank="2,2,2,2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes"
+  />
+<Loc Req_id="RA004932" Node_loc="53" Level="2" Reason_removed="Too many credits: d45" Reason_comparisons="MA 26100"
+   Rank="3,2,2,2,3,3,3,3,3,3,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45">
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: firk3-2" Reason_comparisons="CHNS 10200"
+   Rank="3,2,2,2,3,3,3,3,3,3,3,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: firk3-2">
+<ReasonRemoved Code="firk3-2"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="0101002002"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="MA" Number="16600" Credits="0" Letter_grade="C+" Id_num="0017" Course_title="Analytc Geom &amp; Calc II"
+   Term="201910" TermLit="Fall 2018" TermLitLong="Fall 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="4" Reason_insuff="BR" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="2.3"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="008" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="12499"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="MA" Number="16600" Credits="4" Letter_grade="B" Id_num="0031" Course_title="Analytc Geom &amp; Calc II"
+   Term="201920" TermLit="Spring 2019" TermLitLong="Spring 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="3"
+   Gpa_grade_pts="12" Gpa_credits="4" Section="179" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="88" Level="6" Reason_removed="Too many classes: exfi" Reason_comparisons="MA 16500"
+   Rank="1,1,1,1,1,1,1,-,-,-,-">
+<ReasonRemovedList ReasonList="Too many classes: exfi">
+<ReasonRemoved Code="exfi"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA006885" Node_loc="138" Level="6" Reason_removed="Too many classes: 1,tieb" Reason_comparisons="1st,MA 26100"
+   Rank="1,1,1,1,1,1,1,1,-,-,-">
+<ReasonRemovedList ReasonList="Too many classes: 1,tieb">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="tieb"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004931" Node_loc="120" Level="2" Reason_removed="Too many classes: 1,d45" Reason_comparisons="1st,MA 16500"
+   Rank="2,2,2,2,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="53" Level="2" Reason_removed="Too many credits: d45" Reason_comparisons="MA 26500"
+   Rank="3,2,2,2,2,2,2,2,1,1,1" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45">
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="3,2,2,2,2,2,2,2,1,1,1" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="17935"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="MA" Number="26100" Credits="4" Letter_grade="B" Id_num="0035" Course_title="Multivariate Calculus"
+   Term="201930" TermLit="Summer 2019" TermLitLong="Summer 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="3"
+   Gpa_grade_pts="12" Gpa_credits="4" Section="456" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="144" Level="6" Rank="1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="120" Level="2" Reason_removed="Too many classes: 1,d45,d45" Reason_comparisons="1st,MA 16600,MA 16500"
+   Rank="2,2,2,2,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="53" Level="2" Reason_removed="Too many credits: d45,firk1-2" Reason_comparisons="MA 26500,MA 16600"
+   Rank="3,2,2,2,2,2,2,2,2,2,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45,firk1-2">
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="firk1-2"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: d45,1f,d45,1f" Reason_comparisons="MA 26500,MA 16600,SCLA 10100,ENGL 23800"
+   Rank="3,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45,1f,d45,1f">
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="21279"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="MA" Number="26500" Credits="0" Letter_grade="D" Id_num="0041" Course_title="Linear Algebra"
+   Term="202010" TermLit="Fall 2019" TermLitLong="Fall 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="3" Reason_insuff="BR" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="1"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="150" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="17973"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="MA" Number="26500" Credits="0" Letter_grade="F" Id_num="0075" Course_title="Linear Algebra"
+   Term="202120" TermLit="Spring 2021" TermLitLong="Spring 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="3" Reason_insuff="FA" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="900" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="29886"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="MA" Number="26500" Credits="3" Letter_grade="B+" Id_num="0079" Course_title="Linear Algebra"
+   Term="202130" TermLit="Summer 2021" TermLitLong="Summer 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9.9" Numeric_grade="3.3"
+   Gpa_grade_pts="9.9" Gpa_credits="3" Section="954" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA004931" Node_loc="120" Level="2" Reason_removed="Too many classes: 1,d45,d45,d45" Reason_comparisons="1st,MA 26100,MA 16600,MA 16500"
+   Rank="1,1,1,1,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: 1,d45,d45,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="53" Level="2" Rank="2,1,1,1,1,1,1,1,1" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: d45,d45,1f,d45,1f"
+   Reason_comparisons="COM 25100,ECON 21000,MA 16600,SCLA 10100,ENGL 23800" Rank="2,1,1,1,1,1,1,1,2"
+   ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45,d45,1f,d45,1f">
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="13334"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC04"/>
+<Attribute Code="ATTRIBUTE" Value="UC07"/>
+</Class>
+<Class Discipline="ME" Number="29700" Credits="2" Letter_grade="A-" Id_num="0027" Course_title="First Leadership Class"
+   Term="201920" TermLit="Spring 2019" TermLitLong="Spring 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="2" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="7.4" Numeric_grade="3.7"
+   Gpa_grade_pts="7.4" Gpa_credits="2" Section="017" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="52328"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="VART"/>
+</Class>
+<Class Discipline="MGMT" Number="20000" Credits="3" Letter_grade="C+" Id_num="0103" Course_title="Intro Accounting"
+   Term="202230" TermLit="Summer 2022" TermLitLong="Summer 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="6.9" Numeric_grade="2.3"
+   Gpa_grade_pts="6.9" Gpa_credits="3" Section="003" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="234" Level="6"/>
+<Attribute Code="DWSISKEY" Value="32027"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Class Discipline="PHYS" Number="17200" Credits="0" Letter_grade="F" Id_num="0019" Course_title="Modern Mechanics"
+   Term="201910" TermLit="Fall 2018" TermLitLong="Fall 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="4" Reason_insuff="FA" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="20928"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC03"/>
+<Attribute Code="ATTRIBUTE" Value="UC04"/>
+</Class>
+<Class Discipline="PHYS" Number="17200" Credits="4" Letter_grade="B-" Id_num="0025" Course_title="Modern Mechanics"
+   Term="201920" TermLit="Spring 2019" TermLitLong="Spring 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="10.8" Numeric_grade="2.7"
+   Gpa_grade_pts="10.8" Gpa_credits="4" Section="002" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="184" Level="7" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="65" Level="2" Rank="2,2,2,2,2,2,2,2,3,3,3,3,3" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="47" Level="2" Rank="3,3,3,3,3,3,3,3,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: d45,d45,1f" Reason_comparisons="SCLA 10200,SCLA 10100,ENGL 23800"
+   Rank="3,3,3,3,3,3,3,3,4,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45,d45,1f">
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004931" Node_loc="74" Level="-3" Reason_removed="Subrule not needed (group) - rule is less complete"
+   Rank="4,-,-,-,-,-,-,-,-,-,-,-,-" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="15038"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC03"/>
+<Attribute Code="ATTRIBUTE" Value="UC04"/>
+</Class>
+<Class Discipline="PHYS" Number="1XXXX" Credits="4" Letter_grade="TR" Id_num="0007" Course_title="Physics I"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="" School="UG" Grade_type="T" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="T" Transfer_code="TR" Transfer_type="TR  " Transfer_course="AP8383-3"
+   Transfer_school="Advance Placement - CEEB" Transfer_school_id="99ADPL" TransferTitle="Physics I"
+   TransferGrade="" TransferCredits="0000.000" WITH_data=" " Equivalence_exists=" ">
+<Attribute Code="DWSISKEY" Value="0101004005"/>
+</Class>
+<Class Discipline="PHYS" Number="22100" Credits="0" Letter_grade="D" Id_num="0039" Course_title="Gen Physics"
+   Term="202010" TermLit="Fall 2019" TermLitLong="Fall 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HE" Stu_sys_credits="4" Reason_insuff="BR" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="0" Numeric_grade="1"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="012" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="16575"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC03"/>
+<Attribute Code="ATTRIBUTE" Value="UC04"/>
+</Class>
+<Class Discipline="PHYS" Number="22100" Credits="4" Letter_grade="C+" Id_num="0073" Course_title="Gen Physics"
+   Term="202120" TermLit="Spring 2021" TermLitLong="Spring 2021" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="HI" Stu_sys_credits="4" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9.2" Numeric_grade="2.3"
+   Gpa_grade_pts="9.2" Gpa_credits="4" Section="002" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="184" Level="7" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="65" Level="2" Rank="2,2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="47" Level="2" Reason_removed="Too many credits: 1,d45" Reason_comparisons="1st,PHYS 17200"
+   Rank="3,3,3,3,3,3,3,3,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: 1,d45">
+<ReasonRemoved Code="1"/>
+<ReasonRemoved Code="d45"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="REDEMPTION-NONEXCL" Reason_comparisons="MA 26500,SCLA 10200,MA 26100,MA 16600,TECH 12000,PHYS 17200,SCLA 10100,ENGL 23800"
+   Rank="3,3,3,3,3,3,3,3,3,-,-,-,-" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004931" Node_loc="74" Level="-3" Reason_removed="Subrule not needed (group) - rule is less complete"
+   Rank="4,-,-,-,-,-,-,-,-,-,-,-,-" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="25729"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC03"/>
+<Attribute Code="ATTRIBUTE" Value="UC04"/>
+</Class>
+<Class Discipline="PSY" Number="12000" Credits="0" Letter_grade="I" Id_num="0099" Course_title="Elementary Psychology"
+   Term="202220" TermLit="Spring 2022" TermLitLong="Spring 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="FA" Force_insuff="Y" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="N" At_code="PWL" Grade_pts="0" Numeric_grade="0"
+   Gpa_grade_pts="0" Gpa_credits="0" Section="001" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Attribute Code="DWSISKEY" Value="18404"/>
+<Attribute Code="ATTRIBUTE" Value="CREX"/>
+<Attribute Code="ATTRIBUTE" Value="CTL"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="S01"/>
+<Attribute Code="ATTRIBUTE" Value="TC06"/>
+<Attribute Code="ATTRIBUTE" Value="UC06"/>
+</Class>
+<Class Discipline="SCLA" Number="10100" Credits="3" Letter_grade="A" Id_num="0013" Course_title="Crit Think &amp; Com I"
+   Term="201830" TermLit="Summer 2018" TermLitLong="Summer 2018" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="12" Numeric_grade="4"
+   Gpa_grade_pts="12" Gpa_credits="3" Section="002" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="29" Level="16" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004931" Node_loc="22" Level="2" Rank="2,2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes"/>
+<Loc Req_id="RA004931" Node_loc="50" Level="2" Reason_removed="Too many classes: firk3-2" Reason_comparisons="TECH 12000"
+   Rank="4,3,3,3,-,-,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: firk3-2">
+<ReasonRemoved Code="firk3-2"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="35" Level="2" Rank="3,2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: tieb,1f" Reason_comparisons="ECON 21000,ENGL 23800"
+   Rank="5,3,3,3,3,3,3,3,3,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: tieb,1f">
+<ReasonRemoved Code="tieb"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="14101"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC01"/>
+<Attribute Code="ATTRIBUTE" Value="TC07"/>
+<Attribute Code="ATTRIBUTE" Value="UC01"/>
+<Attribute Code="ATTRIBUTE" Value="UC02"/>
+</Class>
+<Class Discipline="SCLA" Number="10200" Credits="3" Letter_grade="B" Id_num="0047" Course_title="Crit Think &amp; Com II"
+   Term="202010" TermLit="Fall 2019" TermLitLong="Fall 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9" Numeric_grade="3"
+   Gpa_grade_pts="9" Gpa_credits="3" Section="007" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="43" Level="6" Rank="1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="36" Level="2" Rank="2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes"/>
+<Loc Req_id="RA004932" Node_loc="41" Level="2" Rank="3,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes">
+<InGroup>True</InGroup>
+</Loc>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: d45,firk2-3,1f,nfits,d45,1f"
+   Reason_comparisons="MA 26500,MA 26100,MA 16600,TECH 12000,SCLA 10100,ENGL 23800" Rank="4,3,3,3,3,3,3,3,-,-,-,-"
+   ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: d45,firk2-3,1f,nfits,d45,1f">
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="firk2-3"/>
+<ReasonRemoved Code="1f"/>
+<ReasonRemoved Code="nfits"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="20681"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC02"/>
+<Attribute Code="ATTRIBUTE" Value="UC03"/>
+</Class>
+<Class Discipline="SOC" Number="38300" Credits="3" Letter_grade="A-" Id_num="0111" Course_title="Intro Research Methods In Soc"
+   Term="202310" TermLit="Fall 2022" TermLitLong="Fall 2022" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="11.1" Numeric_grade="3.7"
+   Gpa_grade_pts="11.1" Gpa_credits="3" Section="009" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA004943" Node_loc="5086" Level="6"/>
+<Attribute Code="DWSISKEY" Value="17849"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="STAT" Number="35000" Credits="3" Letter_grade="C" Id_num="0043" Course_title="Intro To Statistics"
+   Term="202010" TermLit="Fall 2019" TermLitLong="Fall 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="6" Numeric_grade="2"
+   Gpa_grade_pts="6" Gpa_credits="3" Section="650" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA007201" Node_loc="40" Level="1" HeaderFit="Yes" QualNodeLoc="3"/>
+<Loc Req_id="RA006885" Node_loc="244" Level="6"/>
+<Attribute Code="DWSISKEY" Value="18957"/>
+<Attribute Code="ATTRIBUTE" Value="UPPR"/>
+</Class>
+<Class Discipline="TECH" Number="12000" Credits="3" Letter_grade="B" Id_num="0029" Course_title="Design Thinking In Technology"
+   Term="201920" TermLit="Spring 2019" TermLitLong="Spring 2019" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9" Numeric_grade="3"
+   Gpa_grade_pts="9" Gpa_credits="3" Section="016" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="52" Level="16" Rank="1,1,1,1,1,1,1,1,1,1,1,1,1,1"/>
+<Loc Req_id="RA004931" Node_loc="50" Level="2" Reason_removed="Too many classes: tieb" Reason_comparisons="COM 25100"
+   Rank="2,2,2,2,-,-,-,-,-,-,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many classes: tieb">
+<ReasonRemoved Code="tieb"/>
+</ReasonRemovedList>
+</Loc>
+<Loc Req_id="RA004931" Node_loc="134" Level="2" Rank="2,2,2,2,2,2,2,2,2,2,2,2,2,2" ShareAll="Yes"/>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Reason_removed="Too many credits: firk3-2,d45,1f" Reason_comparisons="MA 26100,SCLA 10100,ENGL 23800"
+   Rank="3,2,2,2,2,3,3,3,3,3,-,-,-,-" ShareAll="Yes">
+<ReasonRemovedList ReasonList="Too many credits: firk3-2,d45,1f">
+<ReasonRemoved Code="firk3-2"/>
+<ReasonRemoved Code="d45"/>
+<ReasonRemoved Code="1f"/>
+</ReasonRemovedList>
+<InGroup>True</InGroup>
+</Loc>
+<Attribute Code="DWSISKEY" Value="19533"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+<Attribute Code="ATTRIBUTE" Value="TC07"/>
+<Attribute Code="ATTRIBUTE" Value="TC08"/>
+<Attribute Code="ATTRIBUTE" Value="UC02"/>
+<Attribute Code="ATTRIBUTE" Value="UC08"/>
+</Class>
+<Class Discipline="TLI" Number="11200" Credits="3" Letter_grade="B" Id_num="0049" Course_title="Foundations Of Org Leadership"
+   Term="202020" TermLit="Spring 2020" TermLitLong="Spring 2020" Rec_type="C" Rec_seq=" " Cls_error_num=""
+   Status="A " Stu_sys_credits="3" Reason_insuff="  " Force_insuff="N" Force_fallthru="N" In_progress="N"
+   Fail_cnt_major_gpa="N" Incomplete="N" Passfail="N" Passed="Y" At_code="PWL" Grade_pts="9" Numeric_grade="3"
+   Gpa_grade_pts="9" Gpa_credits="3" Section="005" School="UG" Grade_type="G" Repeat_disc="" Repeat_num=""
+   Repeat_policy=" " Transfer="C" Transfer_code="AC" Transfer_type="AC  " WITH_data=" " Equivalence_exists=" "
+  >
+<Loc Req_id="RA006885" Node_loc="152" Level="6"/>
+<Attribute Code="DWSISKEY" Value="12741"/>
+<Attribute Code="ATTRIBUTE" Value="DPCR"/>
+<Attribute Code="ATTRIBUTE" Value="LOWR"/>
+</Class>
+<Noncourse Code="CLNR" Value="Y" Id_num="0126" Term="" TermLit="" TermLitLong="" Title="Civics Literacy Not Required"
+  />
+<Noncourse Code="PI02" Value="Y" Id_num="0125" Term="" TermLit="" TermLitLong="" Title="Globalization Portfolio"
+  />
+</Clsinfo>
+<Fallthrough Classes="5" Credits="12" Noncourses="1">
+<Class Discipline="CS" Number="17700" Credits="4" Letter_grade="TR" Id_num="0001" Code="ECA-OVERFLOW"
+  />
+<Class Discipline="CS" Number="19300" Credits="1" Letter_grade="A" Id_num="0033" Code="ECA-OVERFLOW"
+  />
+<Class Discipline="GS" Number="12000" Credits="1" Letter_grade="A" Id_num="0015" Code="ECA-OVERFLOW"
+  />
+<Class Discipline="ME" Number="29700" Credits="2" Letter_grade="A-" Id_num="0027" Code="ECA-OVERFLOW"
+  />
+<Class Discipline="PHYS" Number="1XXXX" Credits="4" Letter_grade="TR" Id_num="0007" Code="ECA-OVERFLOW"
+  />
+<Noncourse Code="CLNR" Value="Y" Id_num="0126"/>
+</Fallthrough>
+<OTL Classes="0" Credits="0"/>
+<Insufficient Classes="14" Credits="0">
+<Class Discipline="CHNS" Number="40200" Credits="0" Letter_grade="W" Id_num="0053" Reason_insuff="WD"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CNIT" Number="27000" Credits="0" Letter_grade="C" Id_num="0061" Reason_insuff="BR"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CNIT" Number="27000" Credits="0" Letter_grade="F" Id_num="0069" Reason_insuff="FA"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CNIT" Number="27200" Credits="0" Letter_grade="N" Id_num="0051" Reason_insuff="FA"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CNIT" Number="27200" Credits="0" Letter_grade="W" Id_num="0067" Reason_insuff="WD"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CNIT" Number="28000" Credits="0" Letter_grade="N" Id_num="0057" Reason_insuff="FA"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CNIT" Number="48000" Credits="0" Letter_grade="W" Id_num="0101" Reason_insuff="WD"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="CS" Number="18000" Credits="0" Letter_grade="C" Id_num="0023" Reason_insuff="BR"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="MA" Number="16600" Credits="0" Letter_grade="C+" Id_num="0017" Reason_insuff="BR"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="MA" Number="26500" Credits="0" Letter_grade="D" Id_num="0041" Reason_insuff="BR"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="MA" Number="26500" Credits="0" Letter_grade="F" Id_num="0075" Reason_insuff="FA"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="PHYS" Number="17200" Credits="0" Letter_grade="F" Id_num="0019" Reason_insuff="FA"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="PHYS" Number="22100" Credits="0" Letter_grade="D" Id_num="0039" Reason_insuff="BR"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+<Class Discipline="PSY" Number="12000" Credits="0" Letter_grade="I" Id_num="0099" Reason_insuff="FA"
+   Force_insuff="Y" Gpa_grade_pts="0" Gpa_credits="0"/>
+</Insufficient>
+<In_progress Classes="4" Credits="12">
+<Class Discipline="CNIT" Number="42200" Credits="3" Letter_grade="WIP" Id_num="0123"/>
+<Class Discipline="CNIT" Number="47100" Credits="3" Letter_grade="WIP" Id_num="0117"/>
+<Class Discipline="CNIT" Number="48000" Credits="3" Letter_grade="WIP" Id_num="0121"/>
+<Class Discipline="COM" Number="32000" Credits="3" Letter_grade="WIP" Id_num="0119"/>
+</In_progress>
+<FitList>
+<Class Discipline="CNIT" Number="48300" Credits="3" Letter_grade="A" Id_num="0115">
+<Loc Req_id="RA004943" Node_loc="5139" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="45500" Credits="3" Letter_grade="B" Id_num="0113">
+<Loc Req_id="RA004943" Node_loc="113" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="SOC" Number="38300" Credits="3" Letter_grade="A-" Id_num="0111">
+<Loc Req_id="RA004943" Node_loc="5086" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="41500" Credits="3" Letter_grade="A" Id_num="0109">
+<Loc Req_id="RA004943" Node_loc="123" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="47000" Credits="3" Letter_grade="B" Id_num="0107">
+<Loc Req_id="RA004943" Node_loc="116" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="ENGL" Number="42100" Credits="3" Letter_grade="B-" Id_num="0105">
+<Loc Req_id="RA006885" Node_loc="251" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="MGMT" Number="20000" Credits="3" Letter_grade="C+" Id_num="0103">
+<Loc Req_id="RA006885" Node_loc="234" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="34220" Credits="2" Letter_grade="B+" Id_num="0097">
+<Loc Req_id="RA004943" Node_loc="90" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="34400" Credits="3" Letter_grade="B" Id_num="0095">
+<Loc Req_id="RA004943" Node_loc="94" Level="16" Rank="1" InGroup="True"/>
+</Class>
+<Class Discipline="CNIT" Number="37000" Credits="3" Letter_grade="A" Id_num="0093">
+<Loc Req_id="RA004943" Node_loc="102" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="34010" Credits="1" Letter_grade="B" Id_num="0091">
+<Loc Req_id="RA004943" Node_loc="86" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="27200" Credits="3" Letter_grade="A" Id_num="0089">
+<Loc Req_id="RA004943" Node_loc="72" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="42000" Credits="3" Letter_grade="A" Id_num="0087">
+<Loc Req_id="RA004943" Node_loc="105" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="27000" Credits="3" Letter_grade="A" Id_num="0085">
+<Loc Req_id="RA004943" Node_loc="69" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="32000" Credits="3" Letter_grade="A+" Id_num="0083">
+<Loc Req_id="RA004943" Node_loc="80" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="COM" Number="25100" Credits="3" Letter_grade="A" Id_num="0081">
+<Loc Req_id="RA004931" Node_loc="50" Level="2" Rank="1"/>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="2" InGroup="True"/>
+<Loc Req_id="RA006885" Node_loc="156" Level="6" Rank="99"/>
+</Class>
+<Class Discipline="MA" Number="26500" Credits="3" Letter_grade="B+" Id_num="0079">
+<Loc Req_id="RA004932" Node_loc="53" Level="2" Rank="1" InGroup="True"/>
+</Class>
+<Class Discipline="ECON" Number="21000" Credits="3" Letter_grade="A" Id_num="0077">
+<Loc Req_id="RA006885" Node_loc="170" Level="6" Rank="1"/>
+<Loc Req_id="RA004931" Node_loc="106" Level="2" Rank="2"/>
+<Loc Req_id="RA004932" Node_loc="65" Level="2" Rank="2" InGroup="True"/>
+</Class>
+<Class Discipline="PHYS" Number="22100" Credits="4" Letter_grade="C+" Id_num="0073">
+<Loc Req_id="RA006885" Node_loc="184" Level="7" Rank="1"/>
+<Loc Req_id="RA004931" Node_loc="65" Level="2" Rank="2" InGroup="True"/>
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="99" InGroup="True"/>
+</Class>
+<Class Discipline="CNIT" Number="31500" Credits="3" Letter_grade="A" Id_num="0071">
+<Loc Req_id="RA004943" Node_loc="77" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="25501" Credits="3" Letter_grade="B+" Id_num="0065">
+<Loc Req_id="RA004943" Node_loc="65" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="28000" Credits="3" Letter_grade="C-" Id_num="0063">
+<Loc Req_id="RA004943" Node_loc="74" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="24200" Credits="3" Letter_grade="C" Id_num="0059">
+<Loc Req_id="RA004943" Node_loc="62" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="17600" Credits="3" Letter_grade="CR" Id_num="0055">
+<Loc Req_id="RA004943" Node_loc="51" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="TLI" Number="11200" Credits="3" Letter_grade="B" Id_num="0049">
+<Loc Req_id="RA006885" Node_loc="152" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="SCLA" Number="10200" Credits="3" Letter_grade="B" Id_num="0047">
+<Loc Req_id="RA006885" Node_loc="43" Level="6" Rank="1"/>
+<Loc Req_id="RA004931" Node_loc="36" Level="2" Rank="2"/>
+<Loc Req_id="RA004932" Node_loc="41" Level="2" Rank="2" InGroup="True"/>
+</Class>
+<Class Discipline="CHNS" Number="40100" Credits="3" Letter_grade="C" Id_num="0045">
+<Loc Req_id="RA006885" Node_loc="254" Level="2" Rank="1"/>
+<Loc Req_id="RA004932" Node_loc="59" Level="2" Rank="2" InGroup="True"/>
+</Class>
+<Class Discipline="STAT" Number="35000" Credits="3" Letter_grade="C" Id_num="0043">
+<Loc Req_id="RA006885" Node_loc="244" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="CS" Number="18000" Credits="4" Letter_grade="B" Id_num="0037">
+<Loc Req_id="RA004943" Node_loc="35" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="MA" Number="26100" Credits="4" Letter_grade="B" Id_num="0035">
+<Loc Req_id="RA006885" Node_loc="144" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="MA" Number="16600" Credits="4" Letter_grade="B" Id_num="0031">
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="1" InGroup="True"/>
+</Class>
+<Class Discipline="TECH" Number="12000" Credits="3" Letter_grade="B" Id_num="0029">
+<Loc Req_id="RA006885" Node_loc="52" Level="16" Rank="1"/>
+<Loc Req_id="RA004931" Node_loc="134" Level="2" Rank="2"/>
+</Class>
+<Class Discipline="PHYS" Number="17200" Credits="4" Letter_grade="B-" Id_num="0025">
+<Loc Req_id="RA006885" Node_loc="184" Level="7" Rank="1"/>
+<Loc Req_id="RA004932" Node_loc="47" Level="2" Rank="2" InGroup="True"/>
+<Loc Req_id="RA004931" Node_loc="65" Level="2" Rank="3" InGroup="True"/>
+</Class>
+<Class Discipline="CNIT" Number="18000" Credits="3" Letter_grade="C" Id_num="0021">
+<Loc Req_id="RA004943" Node_loc="59" Level="16" Rank="1"/>
+</Class>
+<Class Discipline="SCLA" Number="10100" Credits="3" Letter_grade="A" Id_num="0013">
+<Loc Req_id="RA006885" Node_loc="29" Level="16" Rank="1" InGroup="True"/>
+<Loc Req_id="RA004931" Node_loc="22" Level="2" Rank="2"/>
+<Loc Req_id="RA004932" Node_loc="35" Level="2" Rank="2" InGroup="True"/>
+</Class>
+<Class Discipline="ENGL" Number="23800" Credits="3" Letter_grade="A" Id_num="0011">
+<Loc Req_id="RA004932" Node_loc="71" Level="2" Rank="1" InGroup="True"/>
+</Class>
+<Class Discipline="CHNS" Number="10200" Credits="3" Letter_grade="TR" Id_num="0009">
+<Loc Req_id="RA006885" Node_loc="5287" Level="6" Rank="1"/>
+</Class>
+<Class Discipline="MA" Number="16500" Credits="4" Letter_grade="TR" Id_num="0005">
+<Loc Req_id="RA006885" Node_loc="78" Level="6" Rank="1"/>
+<Loc Req_id="RA004931" Node_loc="120" Level="2" Rank="2"/>
+</Class>
+<Class Discipline="CHNS" Number="10100" Credits="3" Letter_grade="TR" Id_num="0003">
+<Loc Req_id="RA006885" Node_loc="5286" Level="6" Rank="1"/>
+<Loc Req_id="RA004931" Node_loc="92" Level="2" Rank="2"/>
+</Class>
+<Class Discipline="CNIT" Number="42200" Credits="3" Letter_grade="WIP" Id_num="0123">
+<Loc Req_id="RA004943" Node_loc="111" Level="15" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="48000" Credits="3" Letter_grade="WIP" Id_num="0121">
+<Loc Req_id="RA004943" Node_loc="121" Level="15" Rank="1"/>
+</Class>
+<Class Discipline="COM" Number="32000" Credits="3" Letter_grade="WIP" Id_num="0119">
+<Loc Req_id="RA006885" Node_loc="5251" Level="5" Rank="1"/>
+</Class>
+<Class Discipline="CNIT" Number="47100" Credits="3" Letter_grade="WIP" Id_num="0117">
+<Loc Req_id="RA004943" Node_loc="119" Level="15" Rank="1"/>
+</Class>
+<Noncourse Code="Y" Value="PI02" Id_num="0125">
+<Loc Req_id="RA007201" Node_loc="298"/>
+</Noncourse>
+</FitList>
+<SplitCredits Classes="0" Credits="0"/>
+<Deginfo>
+<DegreeData Degree="PICIT-BS    " School="UG          " Cat_yr="201910      " Actv_term="202320" Stu_level="08"
+   Degree_term="202320" SS_cum_gr_att="0111.000" SS_cum_gr_pts="00354.00" SS_cum_gpa="003.190 " SS_cum_tot_earn="0132.000"
+   SS_cum_cr_earn="0000.000" DegreeSource="S " DegreeLit="Comp Info Tech-BS" SchoolLit="Undergraduate"
+   Stu_levelLit="Senior 105+ hours" Cat_yrLit="Fall 2018" Actv_termLit="Spring 2023"/>
+<Custom Code="ACAD_EVENT" Value="PU4"/>
+<Custom Code="ALLCOLLEGES" Value="PI"/>
+<Custom Code="ALLMAJORS" Value="CSEC"/>
+<Custom Code="ATTRIBUTE" Value="TPWL"/>
+<Custom Code="ATTRIBUTE" Value="ZZ03"/>
+<Custom Code="CAMPUS" Value="PWL"/>
+<Custom Code="CITIZEN_CODE" Value="C"/>
+<Custom Code="CLNR" Value="Y"/>
+<Custom Code="COHORT" Value="ASUMUNCON"/>
+<Custom Code="COHORT" Value="SCOVID19"/>
+<Custom Code="COHORT" Value="SEARLYSMR"/>
+<Custom Code="COHORT" Value="SVPEC"/>
+<Report Code="ACSTANDING" Value="Continued Good Standing"/>
+<Report Code="ADVRRPT" Value="Lisa Klein - Primary"/>
+<Report Code="OUTCOME_DATA" Value="202320REPICIT-BS|Spring 2023"/>
+<Goal Value="PI" Cat_yr="201910" Code="COLLEGE" ValueLit="Polytechnic Institute"/>
+<Goal Value="CSEC" Cat_yr="201910" Code="MAJOR" ValueLit="Cybersecurity"/>
+<Goal Value="BS" Cat_yr="201910" Code="PROGRAM" ValueLit="Bachelor of Science"/>
+<Goal Cat_yr="201910" Code="ADVISOR" Advisor_name="Klein, Lisa R" Advisor_email="klein85@purdue.edu"
+   AttachCode="ACAD" AttachValue=""/>
+</Deginfo>
+<ExceptionList>
+<Exception Id_num="0001" Type="AA" Label="Approved Interdisciplinary Selective - Minor" Details="" detailsHidden="true"
+   Req_id="RA006885" Node_type="4200" Node_id ="000267" Enforced="Yes" Rule_id="16" Remark="WITH:" ApplyStatus="OK"
+   LabelTag="IDSC-SELECT" Discipline="CHNS" Course_num_begin="10100" School="UG" Degree="PICIT-BS" Status="AD"
+   Text="" User_last="ADV" Date="20211117" Who="Klein, Lisa R" WhoEmail="klein85@purdue.edu"/>
+<Exception Id_num="0002" Type="AA" Label="Approved Interdisciplinary Selective - Minor" Details="" detailsHidden="true"
+   Req_id="RA006885" Node_type="4200" Node_id ="000267" Enforced="Yes" Rule_id="16" Remark="WITH:" ApplyStatus="OK"
+   LabelTag="IDSC-SELECT" Discipline="CHNS" Course_num_begin="10200" School="UG" Degree="PICIT-BS" Status="AD"
+   Text="" User_last="ADV" Date="20211117" Who="Klein, Lisa R" WhoEmail="klein85@purdue.edu"/>
+<Exception Id_num="0003" Type="AA" Label="Approved Cybersecurity Selective" Details="" detailsHidden="true"
+   Req_id="RA004943" Node_type="4200" Node_id ="000122" Enforced="Yes" Rule_id="22" Remark="WITH:" ApplyStatus="OK"
+   LabelTag="CSEC-SELECT" Discipline="CNIT" Course_num_begin="48300" School="UG" Degree="PICIT-BS" Status="AD"
+   Text="" User_last="ADV" Date="20220523" Who="Klein, Lisa R" WhoEmail="klein85@purdue.edu"/>
+<Exception Id_num="0004" Type="AA" Label="Approved Substitution by CIT Curriculum Committee" Details=""
+   detailsHidden="true" Req_id="RA004943" Node_type="4200" Node_id ="000082" Enforced="Yes" Rule_id="11"
+   Remark="WITH:" ApplyStatus="OK" LabelTag="CNIT32200" Discipline="SOC" Course_num_begin="38300" School="UG"
+   Degree="PICIT-BS" Status="AD" Text="" User_last="ADV" Date="20220523" Who="Klein, Lisa R" WhoEmail="klein85@purdue.edu"
+  />
+<Exception Id_num="0005" Type="AA" Label="Approved Prof Speaking Selective" Details="" detailsHidden="true"
+   Req_id="RA006885" Node_type="4200" Node_id ="000245" Enforced="Yes" Rule_id="12" Remark="WITH:" ApplyStatus="OK"
+   LabelTag="COM31500" Discipline="COM" Course_num_begin="32000" School="UG" Degree="PICIT-BS" Status="AD"
+   Text="" User_last="ADV" Date="20221213" Who="Klein, Lisa R" WhoEmail="klein85@purdue.edu"/>
+</ExceptionList>
+<Notes>
+<Note Note_id_num="0001" Note_date="20230213" Note_type="AP" Note_status="OK" Note_user_last="ADV "
+   Note_who="Murphy, Angela Renee" Note_access="N" Note_line_cnt="0001">
+<Text>Grad App: Incomplete Credit Pending - PSY 12000 - Incomplete Grade from </Text>
+<Text>Spring 22; will fulfill BSS                                             </Text>
+</Note>
+</Notes>
+<Placeholders/>
+<Flags>
+<CFG020DAP14>YYYY01NNYNYN003.000NNNN YYNYYJGCCCSLJGCCCSLNGCCCSLNGCCCSL YYNN2YNNNYY01Y YYYYN Y                    </CFG020DAP14>
+<CFG020TIEBREAK>01H02H03H04H05N06N07N08N09N                                                                         </CFG020TIEBREAK>
+</Flags>
+</Audit>
+
+
+<ReloadButtons when="Now">
+</ReloadButtons>
+
+<!--
+<FreezeTypes>
+  <Type Code="REGOFC" Description="Frozen by Reg Office">
+    <UserClass>REG</UserClass>
+  </Type>
+</FreezeTypes>
+-->
+
+</Report>
