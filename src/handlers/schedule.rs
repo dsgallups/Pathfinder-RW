@@ -131,9 +131,6 @@ impl ReqHolder {
     fn get_req(&mut self, id: i32) -> Option<&mut Req> {
         self.reqs.get_mut(&id)
     }
-    fn get_imm_req(&self, id: i32) -> &Req {
-        self.reqs.get(&id).unwrap()
-    }
 
     fn display_graph(&self, id: i32) {
         let req = self.reqs.get(&id).unwrap();
@@ -158,8 +155,6 @@ enum Status {
 }
 
 use Status::{Checked, CheckedAndSelected, Unchecked};
-
-use super::types::LogicalType;
 
 #[derive(Error, Debug)]
 pub enum ScheduleError {
@@ -310,13 +305,6 @@ impl ScheduleMaker {
                     //get the ID of this component
                     let id = component.id;
 
-                    //If this component is a class...
-                    let class = if component.pftype.eq("Class") {
-                        Some(Class::find_by_component_id(&id, &mut self.conn)?)
-                    } else {
-                        None
-                    };
-
                     //push this component to the reqs
                     req_holder.add_component(&mut self.conn, component);
 
@@ -345,7 +333,7 @@ impl ScheduleMaker {
         &mut self,
         req_holder: &mut ReqHolder,
     ) -> Result<(), ScheduleError> {
-        let schedule = Schedule::new();
+        //let schedule = Schedule::new();
 
         println!("Now generating schedule....");
 
@@ -412,8 +400,8 @@ impl ScheduleMaker {
                     }
                     "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0) {
-                            Ok(res) => {}
-                            Err(e) => {
+                            Ok(_) => {}
+                            Err(_) => {
                                 //If this has returned an error, this means that a better situation has been identified
                                 //Or this means that the algorithm is naive and has no clue that this option could be
                                 //potentially better. This will require more insight as tests are developed for the
