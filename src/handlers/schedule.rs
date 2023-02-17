@@ -52,6 +52,7 @@ impl ReqHolder {
         &mut self,
         conn: &mut PooledConnection<ConnectionManager<PgConnection>>,
         component: Component,
+        spacing: &String
     ) {
         let class = if component.pftype.eq("Class") {
             Some(
@@ -76,57 +77,45 @@ impl ReqHolder {
                 in_analysis: false,
             },
         );
-    }
-
-    fn add_association(&mut self, spacing: &str, parent: i32, child: i32) {
-        if let Some(parent_req) = self.reqs.get_mut(&parent) {
-            parent_req.children.push((child, Unchecked));
-            println!(
-                "{}Gave parent (req_id: {}) a child(req_id: {})",
-                spacing, parent, child
-            );
-        } else {
-            panic!("Req {} does not exist in the graph.", parent);
-        }
-
-        if let Some(child_req) = self.reqs.get_mut(&parent) {
-            child_req.parents.push((parent, Unchecked));
-            println!(
-                "{}Gave child (req_id: {}) a parent (req_id: {})",
-                spacing, child, parent
-            );
-        } else {
-            panic!("Req {} does not exist in the graph.", child);
-        }
+        println!("{}Created new requirement (req_id: {})", spacing, component.id);
     }
 
     fn try_add_association(
         &mut self,
         spacing: &str,
-        parent: i32,
-        child: i32,
+        parent_id: i32,
+        child_id: i32,
     ) -> Result<(), ScheduleError> {
         //This function SHOULD ONLY BE USED when checking if the child exists.
         //Ideally, the parent will already have existed.
-        if let Some(child_req) = self.reqs.get_mut(&child) {
-            child_req.parents.push((parent, Unchecked));
-            println!(
-                "{}Gave child (req_id: {}) a parent (req_id: {})",
-                spacing, child, parent
-            );
-        } else {
+
+        if let None = self.reqs.get_mut(&parent_id) {
+            println!("{}Error: parent (req_id: {}) doesn't exist!", spacing, parent_id);
+            return Err(ScheduleError::AssociationError);
+        }
+        if let None = self.reqs.get_mut(&child_id) {
+            println!("{}Error: child (req_id: {}) doesn't exist!", spacing, child_id);
             return Err(ScheduleError::AssociationError);
         }
 
-        if let Some(parent_req) = self.reqs.get_mut(&parent) {
-            parent_req.children.push((child, Unchecked));
+        if let Some(child_req) = self.get_req(child_id) {
+            println!(
+                "{}Gave child (req_id: {}) a parent (req_id: {})",
+                spacing, child_id, parent_id
+            );
+            child_req.parents.push((parent_id, Unchecked));
+        }
+
+        if let Some(parent_req) = self.get_req(parent_id) {
             println!(
                 "{}Gave parent (req_id: {}) a child(req_id: {})",
-                spacing, parent, child
+                spacing, parent_id, child_id
             );
-        } else {
-            return Err(ScheduleError::AssociationError);
+            parent_req.children.push((child_id, Unchecked));
         }
+
+
+        
         Ok(())
     }
 
@@ -300,22 +289,19 @@ impl ScheduleMaker {
 
             match req_holder.try_add_association(&spacing, parent_id, component.id) {
                 Ok(_) => {
-                    //done
-                    println!("{} ALREADY EXISTED!", &spacing);
+                    //done, maybe remove soon
+                    println!("{} ALREADY EXISTS!", &spacing);
                 }
                 Err(_) => {
                     //not done, so create a new component and associate
                     //get the ID of this component
                     let id = component.id;
-
                     //push this component to the reqs
-                    req_holder.add_component(&mut self.conn, component);
-
-                    req_holder.add_association(&spacing, parent_id, id);
+                    req_holder.add_component(&mut self.conn, component, &spacing);
+                    req_holder.try_add_association(&spacing, parent_id, id)?;
 
                     //get the children of this component
                     let children = ComponentToComponent::get_children(&id, &mut self.conn)?;
-
                     println!(
                         "{}Grabbed new children of component (req_id: {}):\n{}{}{:?}\n\n",
                         &spacing, id, spacing, extra_space, &children
