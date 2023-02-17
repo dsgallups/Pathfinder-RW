@@ -123,12 +123,16 @@ impl ReqHolder {
         self.reqs.get_mut(&id)
     }
 
-    fn display_graph(&self, id: i32) {
-        let req = self.reqs.get(&id).unwrap();
-        println!("{:?}", req);
-        for child in &req.children {
-            self.display_graph(child.0);
+    fn display_graph(&self, id: i32, displayed_reqs: &mut Vec<i32>) {
+        if let None = displayed_reqs.into_iter().position(|displayed_id| displayed_id.to_owned() == id) {
+            displayed_reqs.push(id);
+            let req = self.reqs.get(&id).unwrap();
+            println!("{:?}", req);
+            for child in &req.children {
+                self.display_graph(child.0, displayed_reqs);
+            }
         }
+
     }
 }
 
@@ -210,7 +214,7 @@ impl ScheduleMaker {
         println!("\n\nbuild_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         //TODO, show requirements graph based on degree
-        req_holder.display_graph(root_id);
+        req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
 
         //turn the requirements graph into a schedule
@@ -218,7 +222,7 @@ impl ScheduleMaker {
 
         println!("\n\nanalyze_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        req_holder.display_graph(root_id);
+        req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
 
         /*println!("\n\nLong print.");
