@@ -233,7 +233,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
         */
 
-        self.build_queue(&mut req_holder)?;
+        self.build_queue(&mut req_holder, root_id)?;
         Ok(String::from("Success!"))
     }
 
@@ -567,10 +567,12 @@ impl ScheduleMaker {
     fn build_queue(
         &mut self,
         req_holder: &mut ReqHolder,
-    ) -> Result<Vec<(usize, i32)>, ScheduleError> {
+        root_id: i32,
+    ) -> Result<Vec<(i32, i32)>, ScheduleError> {
         //contains (requirement in the graph, priority #)
 
-        let mut queue: Vec<(usize, i32)> = Vec::new();
+        //Contains the indice in ReqHolder and it's queue number
+        let mut queue: Vec<(i32, i32)> = Vec::new();
 
         //Now that the requirements have been completely analyzed, we should see
         //if it's possible to build a queue for a schedule
