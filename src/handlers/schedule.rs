@@ -169,6 +169,7 @@ pub enum ScheduleError {
     AssociationError,
 }
 
+#[derive(Debug)]
 pub struct Schedule {
     pub periods: Vec<Period>,
 }
@@ -181,10 +182,11 @@ impl Schedule {
     }
 }
 
+#[derive(Debug)]
 pub struct Period {
     year: u32,
     time: String,
-    classes: Vec<Component>,
+    classes: Vec<Req>,
 }
 /**
  * Uses an adjacent array to build a graph via the Req struct.
@@ -245,12 +247,20 @@ impl ScheduleMaker {
         let queue = self.build_queue(&mut req_holder, root_id, &mut Vec::new(), 0)?;
         println!("\n\nbuild_queue() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        for item in queue {
+        for item in &queue {
             println!("{:?}", item);
         }
         println!("------------------------------------------End Reqs------------------------------------------");
 
         //From the queue, build a schedule
+        let schedule = self.create_schedule_from_queue(&mut req_holder, queue);
+
+        println!("\n\ncreate_schedule_from_queue() finished.");
+        println!("------------------------------------------Begin Reqs------------------------------------------");
+        for item in &schedule.periods {
+            println!("{:?}", item);
+        }
+        println!("------------------------------------------End Reqs------------------------------------------");
 
         Ok(String::from("Success!"))
     }
@@ -679,5 +689,80 @@ impl ScheduleMaker {
                 }
             }
         }
+    }
+
+    fn create_schedule_from_queue(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        queue: Vec<(i32, i32)>,
+    ) -> Schedule {
+        //So, in order to build this schedule, we need to match queue numbers
+        //and create periods of time based on those queue numbers.
+        //So, we know that the minimum queue number will be 0.
+        //Let's iteratively work through this
+        let mut checkable_queue = queue
+            .into_iter()
+            .map(|item| (item.0, item.1, true))
+            .collect::<Vec<(i32, i32, bool)>>();
+
+        let mut max_queue_no = 0;
+
+        let mut schedule = Schedule::new();
+
+        let mut time_counter = 0;
+
+        while checkable_queue.len() > 0 {
+            let year = 2023 + (time_counter / 2);
+
+            let time = if time_counter % 2 == 0 {
+                "Spring".to_owned()
+            } else {
+                "Fall".to_owned()
+            };
+
+            let mut new_period = Period {
+                year,
+                time,
+                classes: Vec::new(),
+            };
+
+            for item in &mut checkable_queue {
+                if item.1 <= max_queue_no {
+                    new_period
+                        .classes
+                        .push(req_holder.get_req(item.0).unwrap().clone());
+                    item.2 = false;
+                }
+            }
+
+            //remove all the items whose value is false.
+            checkable_queue = checkable_queue
+                .into_iter()
+                .filter(|item| item.2 == true)
+                .collect();
+
+            //Increase the queue number by 1
+            max_queue_no = max_queue_no + 1;
+
+            //increase the time_counter by 1
+            time_counter = time_counter + 1;
+
+            //Finally, push this new period into our schedule
+            schedule.periods.push(new_period);
+        }
+
+        //self.generate_periods(req_holder, &mut queue, &mut schedule, 0);
+
+        schedule
+    }
+
+    fn generate_periods(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        queue: &mut Vec<(i32, i32)>,
+        schedule: &mut Schedule,
+        period_no: i32,
+    ) {
+        while queue.len() > 0 {}
     }
 }
