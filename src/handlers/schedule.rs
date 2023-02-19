@@ -157,6 +157,9 @@ pub enum ScheduleError {
 
     #[error("Component not found")]
     AssociationError,
+
+    #[error("Prereq is invalid for this Degree")]
+    PrereqError,
 }
 
 #[derive(Debug)]
@@ -208,7 +211,7 @@ impl ScheduleMaker {
         //This builds our graph in an adjacency matrix stores in self.reqs
         //Note that the degree itself is modeled into a fake req
         //This degree root is at self.reqs[0]
-        println!("------------------------------------------------------------------------------------Building Schedule------------------------------------------------------------------------------------\n");
+        println!("------------------------------------------------------------------------------------Begin build_schedule()------------------------------------------------------------------------------------\n");
         let mut req_holder = ReqHolder::new();
         let root_id = self.build_requirements_graph(&mut req_holder)?;
 
@@ -252,7 +255,7 @@ impl ScheduleMaker {
         }
         println!("------------------------------------------End Reqs------------------------------------------");
 
-        println!("\n------------------------------------------------------------------------------------Schedule Complete------------------------------------------------------------------------------------");
+        println!("\n------------------------------------------------------------------------------------End build_schedule()------------------------------------------------------------------------------------");
         Ok(String::from("Success!"))
     }
 
@@ -582,6 +585,14 @@ impl ScheduleMaker {
         //This is because we cannot evaluate the prereq without its parents evaluating it alongside other components
         //in their children
         let mut updated_parents = req_holder.get_req(req_id).unwrap().parents.clone();
+        
+        if updated_parents
+            .iter()
+            .filter(|parent| req_holder.get_req(req_id).unwrap().pftype == "Group")
+            .collect::<Vec<&(i32, Status)>>()
+            .is_empty() {
+            return Err(ScheduleError::PrereqError);
+        }
         for parent in &mut updated_parents {
             let parent_ref = req_holder.get_req(parent.0).unwrap();
             let parent_type = &parent_ref.logic_type;

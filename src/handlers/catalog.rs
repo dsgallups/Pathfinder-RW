@@ -266,6 +266,24 @@ impl Catalog {
                 )),
                 vec![SimpleClass("MA 16020")],
             ),
+            (
+                Degree((
+                    "TEST1REV",
+                    "TEST MAJOR",
+                    "Major",
+                    "Tests CALC1 and CALC2 Requirements",
+                )),
+                vec![Group("CALC 2"), Group("CALC 1")],
+            ),
+            (
+                Degree((
+                    "TEST2REV",
+                    "TEST MAJOR",
+                    "Major",
+                    "Tests CALC1 and MA16020 Requirements",
+                )),
+                vec![SimpleClass("MA 16020"), Group("CALC 1")],
+            ),
         ];
 
         self.parse_initial_catalog(catalog);
