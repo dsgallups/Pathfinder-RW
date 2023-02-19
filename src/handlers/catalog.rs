@@ -240,12 +240,31 @@ impl Catalog {
 
         let degree_requirements = vec![
             (
-                Degree(("TEST1", "TEST MAJOR", "Major")),
+                Degree((
+                    "TEST1",
+                    "TEST MAJOR",
+                    "Major",
+                    "Tests CALC1 and CALC 2 Requirements",
+                )),
                 vec![Group("CALC 1"), Group("CALC 2")],
             ),
             (
-                Degree(("TEST2", "Test major with some quirks", "Major")),
+                Degree((
+                    "TEST2",
+                    "TEST MAJOR",
+                    "Major",
+                    "Tests CALC1 and MA16020 Requirements",
+                )),
                 vec![Group("CALC 1"), SimpleClass("MA 16020")],
+            ),
+            (
+                Degree((
+                    "TEST3",
+                    "Test MAJOR",
+                    "Major",
+                    "Tests only MA 16020 as a Requirement. THIS SHOULD NOT BUILD",
+                )),
+                vec![SimpleClass("MA 16020")],
             ),
         ];
 
@@ -405,7 +424,12 @@ impl Catalog {
 
         let degree_requirements = vec![
             (
-                Degree(("CNIT", "Computer and Information Technology", "Major")),
+                Degree((
+                    "CNIT",
+                    "Computer and Information Technology",
+                    "Major",
+                    "Do things in polytech",
+                )),
                 vec![
                     Group("CNIT CORE"),
                     Group("CNIT DB PROGRAMMING"),
@@ -418,7 +442,7 @@ impl Catalog {
                 ],
             ),
             (
-                Degree(("CSEC", "Cybersecurity", "Major")),
+                Degree(("CSEC", "Cybersecurity", "Major", "Do hacking things")),
                 vec![
                     Group("CNIT CORE"),
                     SimpleClass("CNIT 31500"),
@@ -438,7 +462,12 @@ impl Catalog {
                 ],
             ),
             (
-                Degree(("NENT", "Network Engineering Technology", "Major")),
+                Degree((
+                    "NENT",
+                    "Network Engineering Technology",
+                    "Major",
+                    "Do networking and be super happy absolutely",
+                )),
                 vec![
                     Group("CNIT CORE"),
                     SimpleClass("CNIT 31500"),
@@ -456,7 +485,12 @@ impl Catalog {
                 ],
             ),
             (
-                Degree(("SAAD", "Systems Analysis and Design", "Major")),
+                Degree((
+                    "SAAD",
+                    "Systems Analysis and Design",
+                    "Major",
+                    "dont be SAAD be happy",
+                )),
                 vec![
                     Group("CNIT CORE"),
                     SimpleClass("CNIT 39200"),
@@ -526,7 +560,7 @@ impl Catalog {
                     code: Some(degree_strs.0.to_string()),
                     name: Some(degree_strs.1.to_string()),
                     pftype: Some(degree_strs.2.to_string()),
-                    description: None,
+                    description: Some(degree_strs.3.to_string()),
                 };
 
                 let degree = new_degree.create(&mut self.conn).unwrap();

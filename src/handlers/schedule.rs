@@ -93,29 +93,21 @@ impl ReqHolder {
         //Ideally, the parent will already have existed.
 
         if self.reqs.get_mut(&parent_id).is_none() {
-            println!(
-                "{spacing}Error: parent (req_id: {parent_id}) doesn't exist!"
-            );
+            println!("{spacing}Error: parent (req_id: {parent_id}) doesn't exist!");
             return Err(ScheduleError::AssociationError);
         }
         if self.reqs.get_mut(&child_id).is_none() {
-            println!(
-                "{spacing}Error: child (req_id: {child_id}) doesn't exist!"
-            );
+            println!("{spacing}Error: child (req_id: {child_id}) doesn't exist!");
             return Err(ScheduleError::AssociationError);
         }
 
         if let Some(child_req) = self.get_req(child_id) {
-            println!(
-                "{spacing}Gave child (req_id: {child_id}) a parent (req_id: {parent_id})"
-            );
+            println!("{spacing}Gave child (req_id: {child_id}) a parent (req_id: {parent_id})");
             child_req.parents.push((parent_id, Unchecked));
         }
 
         if let Some(parent_req) = self.get_req(parent_id) {
-            println!(
-                "{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})"
-            );
+            println!("{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})");
             parent_req.children.push((child_id, Unchecked));
         }
 
@@ -128,7 +120,8 @@ impl ReqHolder {
 
     fn display_graph(&self, id: i32, displayed_reqs: &mut Vec<i32>) {
         if !displayed_reqs
-            .iter_mut().any(|displayed_id| *displayed_id == id)
+            .iter_mut()
+            .any(|displayed_id| *displayed_id == id)
         {
             displayed_reqs.push(id);
             let req = self.reqs.get(&id).unwrap();
@@ -150,10 +143,12 @@ struct Cost<'a> {
 enum Status {
     Unchecked,
     Checked,
-    CheckedAndSelected,
+    //Unsuitable,
+    Desirable,
+    Selected,
 }
 
-use Status::{Checked, CheckedAndSelected, Unchecked};
+use Status::{Checked, Desirable, Selected, Unchecked};
 
 #[derive(Error, Debug)]
 pub enum ScheduleError {
@@ -213,7 +208,7 @@ impl ScheduleMaker {
         //This builds our graph in an adjacency matrix stores in self.reqs
         //Note that the degree itself is modeled into a fake req
         //This degree root is at self.reqs[0]
-
+        println!("------------------------------------------------------------------------------------Building Schedule------------------------------------------------------------------------------------\n");
         let mut req_holder = ReqHolder::new();
         let root_id = self.build_requirements_graph(&mut req_holder)?;
 
@@ -257,6 +252,7 @@ impl ScheduleMaker {
         }
         println!("------------------------------------------End Reqs------------------------------------------");
 
+        println!("\n------------------------------------------------------------------------------------Schedule Complete------------------------------------------------------------------------------------");
         Ok(String::from("Success!"))
     }
 
@@ -353,7 +349,7 @@ impl ScheduleMaker {
 
         println!("Now generating schedule....");
 
-        self.satisfy_requirements(req_holder, -1, Some(String::from("GroupAND")))?;
+        self.satisfy_requirements(req_holder, -1, Some(String::from("GroupAND")), 0)?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
@@ -365,10 +361,17 @@ impl ScheduleMaker {
         req_holder: &mut ReqHolder,
         req_id: i32,
         logic_type: Option<String>,
+        nests: usize,
     ) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+
         println!(
-            "Satisfying Requirements of: \n{:?}\n",
+            "{}Satisfying Requirements of: \n{}{:?}",
+            &spacing,
+            &spacing,
             &req_holder.get_req(req_id).unwrap()
         );
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
@@ -387,19 +390,28 @@ impl ScheduleMaker {
             if let Some(logic_type) = &logic_type {
                 match logic_type.as_str() {
                     "GroupAND" => {
-                        self.satisfy_requirements(req_holder, child.0, child_logic_type)?;
-                        child.1 = CheckedAndSelected;
+                        self.satisfy_requirements(
+                            req_holder,
+                            child.0,
+                            child_logic_type,
+                            nests + 1,
+                        )?;
+                        child.1 = Selected;
                         for parent in &mut req_holder.get_req(child.0).unwrap().parents {
                             if parent.0 == req_id {
-                                parent.1 = CheckedAndSelected;
+                                parent.1 = Selected;
                                 break;
                             }
                         }
                     }
                     "GroupOR" => {
                         //println!("Internal Indice = {}", internal_indice);
-                        let result =
-                            self.satisfy_requirements(req_holder, child.0, child_logic_type)?;
+                        let result = self.satisfy_requirements(
+                            req_holder,
+                            child.0,
+                            child_logic_type,
+                            nests + 1,
+                        )?;
                         minimal_cost = if result < minimal_cost.1 {
                             (internal_indice, result)
                         } else {
@@ -427,7 +439,7 @@ impl ScheduleMaker {
                                 //Or this means that the algorithm is naive and has no clue that this option could be
                                 //potentially better. This will require more insight as tests are developed for the
                                 //algorithm.
-                                println!("Error evaluating prereq!: {e:?}");
+                                println!("{}Error evaluating prereq!: {e:?}", &spacing);
                                 can_associate = false;
                             }
                         }
@@ -439,14 +451,20 @@ impl ScheduleMaker {
         }
 
         //After evaluating all the children
-        println!("Children of requirement partially evaluated: \n{:?}\nWith updated children of:\n{:?}\n\n", &req_holder.get_req(req_id).unwrap(), &updated_children);
+        println!("{}Children of requirement (req_id: {}) partially evaluated: \n{}With updated children of:\n{}{:?}\n\n", 
+            &spacing,
+            &req_id,
+            &spacing,
+            &spacing,
+            &updated_children
+        );
         if let Some(logic_type) = logic_type {
             //println!("Logic type: {}", &logic_type);
             match logic_type.as_str() {
                 "GroupAND" => {}
                 "GroupOR" => {
-                    println!("Minimal Cost: {:?}", &minimal_cost);
-                    updated_children[minimal_cost.0].1 = CheckedAndSelected;
+                    println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
+                    updated_children[minimal_cost.0].1 = Selected;
                     //req_holder.get_req(req_id).unwrap().children[minimal_cost.0].1 =
                     //    CheckedAndSelected;
 
@@ -461,7 +479,7 @@ impl ScheduleMaker {
 
                     for parent in &mut req_holder.get_req(child_id_in_req_holder).unwrap().parents {
                         if parent.0 == req_id {
-                            parent.1 = CheckedAndSelected;
+                            parent.1 = Selected;
                             break;
                         }
                     }
@@ -470,10 +488,10 @@ impl ScheduleMaker {
                     if can_associate {
                         for child in &mut updated_children {
                             //give each child for this component a value of CheckedAndSelected
-                            child.1 = CheckedAndSelected;
+                            child.1 = Selected;
                             for parent in &mut req_holder.get_req(child.0).unwrap().parents {
                                 if parent.0 == req_id {
-                                    parent.1 = CheckedAndSelected;
+                                    parent.1 = Selected;
                                 }
                             }
                         }
@@ -515,20 +533,27 @@ impl ScheduleMaker {
                     .unwrap());
             }
             panic!(
-                "Requirement is NOT a class and has a logic_type of NONE: {:?}",
+                "{}Requirement is NOT a class and has a logic_type of NONE: {:?}",
+                &spacing,
                 &req_holder.get_req(req_id).unwrap()
             );
         }
         println!(
-            "Children of requirement fully evaluated: \n{:?}\nWith updated children of:\n{:?}\n\n",
+            "{}Children of requirement fully evaluated: \n{}{:?}\n{}With updated children of:\n{}{:?}\n\n",
+            &spacing,
+            &spacing,
             &req_holder.get_req(req_id).unwrap(),
+            &spacing,
+            &spacing,
             &updated_children
         );
         //finally update the req's children
         req_holder.get_req(req_id).unwrap().children = updated_children;
         req_holder.get_req(req_id).unwrap().in_analysis = false;
         println!(
-            "Requirement after satisfaction: \n{:?}\n",
+            "{}Requirement after satisfaction: \n{}{:?}\n",
+            &spacing,
+            &spacing,
             &req_holder.get_req(req_id).unwrap()
         );
 
@@ -564,7 +589,8 @@ impl ScheduleMaker {
                         //self.satisfy_requirements(parent.0);
                     }
                     Checked => {}
-                    CheckedAndSelected => {}
+                    Selected => {}
+                    Desirable => {}
                 },
                 "Class" => match parent.1 {
                     //this could potentially result in a infinite loop
@@ -577,11 +603,12 @@ impl ScheduleMaker {
                         //of this prereq are.
                         //TODO
                     }
-                    CheckedAndSelected => {
+                    Selected => {
                         //This means we're all good to use this prereq and should return ok
                         req_holder.get_req(req_id).unwrap().parents = updated_parents;
                         return Ok(String::from("Prereq Checked and Selected"));
                     }
+                    Desirable => {}
                 },
                 &_ => {
                     panic!("This component has no pftype!");
@@ -623,7 +650,7 @@ impl ScheduleMaker {
             //See if the class has selected children
 
             for child in current_req.children {
-                if child.1 == CheckedAndSelected {
+                if child.1 == Selected {
                     let mut _result =
                         self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
                     //parent_queue.append(&mut result);
@@ -652,7 +679,7 @@ impl ScheduleMaker {
 
         //IF THIS IS NOT A CLASS
         for child in current_req.children {
-            if child.1 == CheckedAndSelected {
+            if child.1 == Selected {
                 let mut _new_queue =
                     self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
             }
@@ -672,7 +699,7 @@ impl ScheduleMaker {
 
         for child in &mut requirement.children {
             match child.1 {
-                CheckedAndSelected => match requirement.pftype.as_str() {
+                Selected => match requirement.pftype.as_str() {
                     "Group" => {}
                     "Class" => {}
                     _ => {}
@@ -681,6 +708,7 @@ impl ScheduleMaker {
                 Unchecked => {
                     panic!("Something wasn't checked before building the queue!!")
                 }
+                Desirable => {}
             }
         }
     }

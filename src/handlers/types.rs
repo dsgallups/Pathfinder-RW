@@ -43,7 +43,7 @@ pub enum InstantiationType<'a> {
     SimpleClass(&'a str),
     Class((&'a str, i32)),
     Group(&'a str),
-    Degree((&'a str, &'a str, &'a str)),
+    Degree((&'a str, &'a str, &'a str, &'a str)),
 }
 
 #[derive(Debug)]
