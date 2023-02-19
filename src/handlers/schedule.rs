@@ -816,7 +816,12 @@ impl ScheduleMaker {
 
         //check to see if this req is in the queue
         if let Some(i) = parent_queue.iter_mut().position(|item| item.0 == id) {
-            return Ok(Vec::new());
+            //If it's in the queue, it should return a copy of itself as a vector
+            let self_in_queue = parent_queue[i].clone();
+            let mut self_vector: Vec<(i32, i32)> = Vec::new();
+            self_vector.push(self_in_queue);
+            
+            return Ok(self_vector);
         }
 
         //Otherwise, we just want classes.
@@ -824,17 +829,29 @@ impl ScheduleMaker {
 
         if let Some(_class) = current_req.class {
             //See if the class has selected children
+            //So what are we doing here
+            //If this is a class, we want to get its children.
 
+            //So first, let's take ezclass 1. 
+            //No prereqs, so so we give it a 0
+            //Then we look at ezclass 2.
+            //No prereqs, so we give it a 0
+            //Then we look at normalclass
+            //Since this has children, we append the minimum queue no of its prereqs + 1 to it in the queue.
+            
+            
+            let mut children_in_parent_queue = Vec::new();
             for child in current_req.children {
                 if child.1 == Selected {
-                    let mut _result =
-                        self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
-                    //parent_queue.append(&mut result);
+                    let mut result = self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
+                    children_in_parent_queue.append(&mut result);
                 }
             }
 
+
             let mut minimum_queue_no = i32::MAX;
-            for item in parent_queue.clone() {
+            //get the minimum queue number of the child
+            for item in children_in_parent_queue.clone() {
                 minimum_queue_no = if item.1 < minimum_queue_no {
                     item.1
                 } else {
@@ -842,13 +859,21 @@ impl ScheduleMaker {
                 }
             }
 
+            //Classes with no children will have i32::MAX as the number.
             if minimum_queue_no == i32::MAX {
-                //there is no children of this
+                //If minimum_queue is STILL i32::MAX, then we push 0 to parent_queue.
+                //new_queue will be discarded because if this is the case, do nothing with it
                 parent_queue.push((id, 0));
+
+                //Additionally, we will want to push a copy of itself to our return value
+                let mut self_vector: Vec<(i32, i32)> = Vec::new();
+                self_vector.push((id, 0));
+                
+                return Ok(self_vector);
             } else {
                 parent_queue.push((id, minimum_queue_no + 1));
             }
-
+            
             println!("{}This queue (class): {:?}\n\n", &spacing, &parent_queue);
             return Ok(parent_queue.clone());
         };

@@ -1,0 +1,5 @@
+degree(GroupAND) -|-> Req1(GroupOR) -|-> TwoClasses(GroupAND) -----|-> ezclass1(None, 1 cred)
+                  |                  |                             |-> ezclass2(None, 1 cred)
+                  |                  |-> Normal(None, 3 cred)
+                  |
+                  |-> Req2t2(GroupAND)-> Normal2t2(PrereqAND([TwoClasses])) 
