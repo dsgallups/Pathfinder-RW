@@ -52,7 +52,7 @@ impl ReqHolder {
         &mut self,
         conn: &mut PooledConnection<ConnectionManager<PgConnection>>,
         component: Component,
-        spacing: &String
+        spacing: &String,
     ) {
         let class = if component.pftype.eq("Class") {
             Some(
@@ -77,7 +77,10 @@ impl ReqHolder {
                 in_analysis: false,
             },
         );
-        println!("{}Created new requirement (req_id: {})", spacing, component.id);
+        println!(
+            "{}Created new requirement (req_id: {})",
+            spacing, component.id
+        );
     }
 
     fn try_add_association(
@@ -90,11 +93,17 @@ impl ReqHolder {
         //Ideally, the parent will already have existed.
 
         if let None = self.reqs.get_mut(&parent_id) {
-            println!("{}Error: parent (req_id: {}) doesn't exist!", spacing, parent_id);
+            println!(
+                "{}Error: parent (req_id: {}) doesn't exist!",
+                spacing, parent_id
+            );
             return Err(ScheduleError::AssociationError);
         }
         if let None = self.reqs.get_mut(&child_id) {
-            println!("{}Error: child (req_id: {}) doesn't exist!", spacing, child_id);
+            println!(
+                "{}Error: child (req_id: {}) doesn't exist!",
+                spacing, child_id
+            );
             return Err(ScheduleError::AssociationError);
         }
 
@@ -114,8 +123,6 @@ impl ReqHolder {
             parent_req.children.push((child_id, Unchecked));
         }
 
-
-        
         Ok(())
     }
 
@@ -124,7 +131,10 @@ impl ReqHolder {
     }
 
     fn display_graph(&self, id: i32, displayed_reqs: &mut Vec<i32>) {
-        if let None = displayed_reqs.into_iter().position(|displayed_id| displayed_id.to_owned() == id) {
+        if let None = displayed_reqs
+            .into_iter()
+            .position(|displayed_id| displayed_id.to_owned() == id)
+        {
             displayed_reqs.push(id);
             let req = self.reqs.get(&id).unwrap();
             println!("{:?}", req);
@@ -132,7 +142,6 @@ impl ReqHolder {
                 self.display_graph(child.0, displayed_reqs);
             }
         }
-
     }
 }
 
@@ -142,7 +151,7 @@ struct Cost<'a> {
     path_cost: Vec<(Vec<&'a Req>, i32)>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 enum Status {
     Unchecked,
     Checked,
@@ -233,7 +242,16 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
         */
 
-        self.build_queue(&mut req_holder, root_id)?;
+        let queue = self.build_queue(&mut req_holder, root_id, &mut Vec::new(), 0)?;
+        println!("\n\nbuild_queue() finished.");
+        println!("------------------------------------------Begin Reqs------------------------------------------");
+        for item in queue {
+            println!("{:?}", item);
+        }
+        println!("------------------------------------------End Reqs------------------------------------------");
+
+        //From the queue, build a schedule
+
         Ok(String::from("Success!"))
     }
 
@@ -344,7 +362,10 @@ impl ScheduleMaker {
         logic_type: Option<String>,
     ) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
-        println!("Satisfying Requirements of: \n{:?}\n", &req_holder.get_req(req_id).unwrap());
+        println!(
+            "Satisfying Requirements of: \n{:?}\n",
+            &req_holder.get_req(req_id).unwrap()
+        );
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
@@ -391,13 +412,11 @@ impl ScheduleMaker {
                                 parent.1 = Checked;
                                 break;
                             }
-                        }    
+                        }
                     }
                     "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0) {
-                            Ok(_) => {
-
-                            }
+                            Ok(_) => {}
                             Err(e) => {
                                 //If this has returned an error, this means that a better situation has been identified
                                 //Or this means that the algorithm is naive and has no clue that this option could be
@@ -496,11 +515,18 @@ impl ScheduleMaker {
                 &req_holder.get_req(req_id).unwrap()
             );
         }
-        println!("Children of requirement fully evaluated: \n{:?}\nWith updated children of:\n{:?}\n\n", &req_holder.get_req(req_id).unwrap(), &updated_children);
+        println!(
+            "Children of requirement fully evaluated: \n{:?}\nWith updated children of:\n{:?}\n\n",
+            &req_holder.get_req(req_id).unwrap(),
+            &updated_children
+        );
         //finally update the req's children
         req_holder.get_req(req_id).unwrap().children = updated_children;
         req_holder.get_req(req_id).unwrap().in_analysis = false;
-        println!("Requirement after satisfaction: \n{:?}\n", &req_holder.get_req(req_id).unwrap());
+        println!(
+            "Requirement after satisfaction: \n{:?}\n",
+            &req_holder.get_req(req_id).unwrap()
+        );
 
         Ok(0)
     }
@@ -567,24 +593,68 @@ impl ScheduleMaker {
     fn build_queue(
         &mut self,
         req_holder: &mut ReqHolder,
-        root_id: i32,
+        id: i32,
+        parent_queue: &mut Vec<(i32, i32)>,
+        nests: usize,
     ) -> Result<Vec<(i32, i32)>, ScheduleError> {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
         //contains (requirement in the graph, priority #)
+        println!("{}Now evaluating {:?}", &spacing, &req_holder.get_req(id));
+        println!("{}Parent queue: {:?}\n\n", &spacing, &parent_queue);
 
         //Contains the indice in ReqHolder and it's queue number
-        let mut queue: Vec<(i32, i32)> = Vec::new();
+        //let mut queue: Vec<(i32, i32)> = Vec::new();
 
-        //Now that the requirements have been completely analyzed, we should see
-        //if it's possible to build a queue for a schedule
-        /*
-           Something like
-           { Component (which is a class), priority #}
-        */
+        //check to see if this req is in the queue
+        if let Some(i) = parent_queue.into_iter().position(|item| item.0 == id) {
+            return Ok(Vec::new());
+        }
 
-        //add things to queue based on their prio
-        //self.check_to_add(&mut req_holder, &mut queue, -1);
+        //Otherwise, we just want classes.
+        let current_req = req_holder.get_req(id).unwrap().clone();
 
-        Ok(queue)
+        if let Some(_class) = current_req.class {
+            //See if the class has selected children
+
+            for child in current_req.children {
+                if child.1 == CheckedAndSelected {
+                    let mut _result =
+                        self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
+                    //parent_queue.append(&mut result);
+                }
+            }
+
+            let mut minimum_queue_no = i32::MAX;
+            for item in parent_queue.clone() {
+                minimum_queue_no = if item.1 < minimum_queue_no {
+                    item.1
+                } else {
+                    minimum_queue_no
+                }
+            }
+
+            if minimum_queue_no == i32::MAX {
+                //there is no children of this
+                parent_queue.push((id, 0));
+            } else {
+                parent_queue.push((id, minimum_queue_no + 1));
+            }
+
+            println!("{}This queue (class): {:?}\n\n", &spacing, &parent_queue);
+            return Ok(parent_queue.clone());
+        };
+
+        //IF THIS IS NOT A CLASS
+        for child in current_req.children {
+            if child.1 == CheckedAndSelected {
+                let mut _new_queue =
+                    self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
+            }
+        }
+        println!("{}This queue (group): {:?}\n\n", &spacing, &parent_queue);
+        Ok(parent_queue.clone())
     }
     fn check_to_add(
         &mut self,
