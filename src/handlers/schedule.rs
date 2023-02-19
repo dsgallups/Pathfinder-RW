@@ -143,12 +143,12 @@ struct Cost<'a> {
 enum Status {
     Unchecked,
     Checked,
-    //Unsuitable,
+    Unsuitable,
     Desirable,
     Selected,
 }
 
-use Status::{Checked, Desirable, Selected, Unchecked};
+use Status::{Checked, Desirable, Unsuitable, Selected, Unchecked};
 
 #[derive(Error, Debug)]
 pub enum ScheduleError {
@@ -247,8 +247,7 @@ impl ScheduleMaker {
 
         //From the queue, build a schedule
         let schedule = self.create_schedule_from_queue(&mut req_holder, queue);
-
-        println!("\n\ncreate_schedule_from_queue() finished.");
+        println!("\n\nFor Degree {:?}\ncreate_schedule_from_queue() finished.", &self.degree.code);
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for item in &schedule.periods {
             println!("{item:?}");
@@ -350,7 +349,7 @@ impl ScheduleMaker {
     ) -> Result<(), ScheduleError> {
         //let schedule = Schedule::new();
 
-        println!("Now generating schedule....");
+        println!("Now analyzing graph....");
 
         self.satisfy_requirements(req_holder, -1, Some(String::from("GroupAND")), true, 0)?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
@@ -371,7 +370,7 @@ impl ScheduleMaker {
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
-
+        let mut carried_result: Result<i32, ScheduleError> = Ok(0);
         println!(
             "\n{}Satisfying Requirements of: \n{}{:?}",
             &spacing,
@@ -394,49 +393,89 @@ impl ScheduleMaker {
             if let Some(logic_type) = &logic_type {
                 match logic_type.as_str() {
                     "GroupAND" => {
-                        self.satisfy_requirements(
+                        match self.satisfy_requirements(
                             req_holder,
                             child.0,
                             child_logic_type,
                             required,
                             nests + 1,
                             
-                        )?;
-                        child.1 = Selected;
-                        for parent in &mut req_holder.get_req(child.0).unwrap().parents {
-                            if parent.0 == req_id {
-                                parent.1 = Selected;
-                                break;
+                        ) {
+                            Ok(_) => {
+                                child.1 = Selected;
+                                for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                                    if parent.0 == req_id {
+                                        parent.1 = Selected;
+                                        break;
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                match e {
+                                    ScheduleError::PrereqError => {
+                                        //If a single child in this GroupAND has a prereqError, the whole
+                                        //group must be thrown away.
+                                        println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
+                                        &spacing, req_id, child.0);
+
+                                        child.1 = Unsuitable;
+                                        carried_result = Err(e);
+                                        break;
+
+                                    }
+                                    _ => panic!("GroupAND recieved a child with an invalid error!")
+                                }
                             }
                         }
+                        
                     }
                     "GroupOR" => {
                         //println!("Internal Indice = {}", internal_indice);
-                        let result = self.satisfy_requirements(
+                        match self.satisfy_requirements(
                             req_holder,
                             child.0,
                             child_logic_type,
                             false,
                             nests + 1,
-                        )?;
-                        minimal_cost = if result < minimal_cost.1 {
-                            (internal_indice, result)
-                        } else {
-                            minimal_cost
-                        };
+                        ) {
+                            Ok(result) => {
+                                minimal_cost = if result < minimal_cost.1 {
+                                    (internal_indice, result)
+                                } else {
+                                    minimal_cost
+                                };
+
+                                child.1 = Checked;
+                                //also check the parent
+                                for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                                    if parent.0 == req_id {
+                                        parent.1 = Checked;
+                                        break;
+                                    }
+                                }
+                            },
+                            Err(e) => {
+                                //This means that something was wrong with this particular requirement
+                                //and therefore should be labeled as unsuitable
+
+                                match e {
+                                    ScheduleError::PrereqError => {
+                                        //this means that this child is not suitable for use
+                                        //however since this is OR logic, we can keep evaluating children.
+                                        //unlike groupAND.
+                                        child.1 = Unsuitable;
+                                    }
+                                    _ => panic!("GroupOR recieved a child with an invalid error!")
+                                }
+                            }
+                        }
+
                         /*println!(
                             "Minimal cost: {:?}, result for req_id {}: {}",
                             minimal_cost, child.0, result
                         );*/
 
-                        child.1 = Checked;
-                        //also check the parent
-                        for parent in &mut req_holder.get_req(child.0).unwrap().parents {
-                            if parent.0 == req_id {
-                                parent.1 = Checked;
-                                break;
-                            }
-                        }
+
                     }
                     "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0, required, nests + 1) {
@@ -449,8 +488,14 @@ impl ScheduleMaker {
                                 //Or this means that the algorithm is naive and has no clue that this option could be
                                 //potentially better. This will require more insight as tests are developed for the
                                 //algorithm.
+
+                                //At the moment, the only error that can be returned is a prereq error.
+                                //If this happens, the degree cannot be completed.
+                                child.1 = Unsuitable;
                                 println!("{}Error evaluating prereq!: {e:?}", &spacing);
-                                can_associate = false;
+                                carried_result = Err(e);
+                                break;
+                                //The children for this 
                             }
                         }
                     }
@@ -505,18 +550,8 @@ impl ScheduleMaker {
                                 }
                             }
                         }
-                        if req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
-                            req_holder.get_req(req_id).unwrap().children = updated_children;
-                            req_holder.get_req(req_id).unwrap().in_analysis = false;
-                            return Ok(req_holder
-                                .get_req(req_id)
-                                .unwrap()
-                                .class
-                                .as_ref()
-                                .unwrap()
-                                .credits
-                                .unwrap());
-                        }
+                    } else {
+                        //This means an error has occured. This means that this
                     }
                 }
                 "PrereqOR" => {}
@@ -530,23 +565,14 @@ impl ScheduleMaker {
         } else {
             //No logic type
             //Check this class's value
-            if req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
-                req_holder.get_req(req_id).unwrap().children = updated_children;
-                req_holder.get_req(req_id).unwrap().in_analysis = false;
-                return Ok(req_holder
-                    .get_req(req_id)
-                    .unwrap()
-                    .class
-                    .as_ref()
-                    .unwrap()
-                    .credits
-                    .unwrap());
+            if !req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+                panic!(
+                    "{}Requirement is NOT a class and has a logic_type of NONE: {:?}",
+                    &spacing,
+                    &req_holder.get_req(req_id).unwrap()
+                );
             }
-            panic!(
-                "{}Requirement is NOT a class and has a logic_type of NONE: {:?}",
-                &spacing,
-                &req_holder.get_req(req_id).unwrap()
-            );
+            
         }
         println!(
             "{}Children of requirement fully evaluated: \n{}{:?}\n{}With updated children of:\n{}{:?}\n\n",
@@ -558,8 +584,23 @@ impl ScheduleMaker {
             &updated_children
         );
         //finally update the req's children
-        req_holder.get_req(req_id).unwrap().children = updated_children;
-        req_holder.get_req(req_id).unwrap().in_analysis = false;
+        let requirement = req_holder.get_req(req_id).unwrap();
+        requirement.children = updated_children;
+        requirement.in_analysis = false;
+
+        if requirement.pftype.eq("Class") {
+            carried_result = match carried_result {
+                Ok(_) => Ok(req_holder
+                    .get_req(req_id)
+                    .unwrap()
+                    .class
+                    .as_ref()
+                    .unwrap()
+                    .credits
+                    .unwrap()),
+                Err(_) => carried_result
+            } 
+        }
         println!(
             "{}Requirement after satisfaction: \n{}{:?}\n",
             &spacing,
@@ -567,7 +608,7 @@ impl ScheduleMaker {
             &req_holder.get_req(req_id).unwrap()
         );
 
-        Ok(0)
+        carried_result
     }
 
     fn evaluate_prereq(
@@ -588,11 +629,12 @@ impl ScheduleMaker {
         
         if updated_parents
             .iter()
-            .filter(|parent| req_holder.get_req(req_id).unwrap().pftype == "Group")
+            .filter(|parent| req_holder.get_req(parent.0).unwrap().pftype.eq("Group"))
             .collect::<Vec<&(i32, Status)>>()
             .is_empty() {
             return Err(ScheduleError::PrereqError);
         }
+
         for parent in &mut updated_parents {
             let parent_ref = req_holder.get_req(parent.0).unwrap();
             let parent_type = &parent_ref.logic_type;
@@ -608,6 +650,7 @@ impl ScheduleMaker {
                 match parent_logic_type.as_str() {
                     "GroupAND" => {
                         match parent.1 {
+                            Unsuitable => {}
                             Unchecked => {
                                 //Depending on the type of parent (group or class)
                                 //We need to perform different actions
@@ -642,6 +685,7 @@ impl ScheduleMaker {
                                                 //something
                                                 
                                             }
+                                            Unsuitable => {}
                                         }
                                     }
                                     
@@ -666,6 +710,7 @@ impl ScheduleMaker {
                                 */
                                 //self.satisfy_requirements(parent.0);
                             }
+                            Unsuitable => {}
                             Checked => {
                                 //If this component has a parent value of checked
                                 //This mean it has run through logic already.
@@ -695,6 +740,7 @@ impl ScheduleMaker {
                                                 }
                                                 
                                             }
+                                            Unsuitable => {}
                                         }
                                     }
                                     if child.0 == req_id && parent_required {
@@ -839,6 +885,7 @@ impl ScheduleMaker {
                     panic!("Something wasn't checked before building the queue!!")
                 }
                 Desirable => {}
+                Unsuitable => {}
             }
         }
     }
