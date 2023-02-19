@@ -229,6 +229,30 @@ impl Catalog {
                 GroupOR(vec![Class(("MA 16020", 5)), Class(("MA 16600", 4))]),
             ),
             (
+                Group("Req1"),
+                GroupOR(vec![Group("TwoClasses"), Class(("Normal", 3))]),
+            ),
+            (
+                Group("TwoClasses"),
+                GroupAND(vec![Class(("ezclass1", 1)), Class(("ezclass2", 2))]),
+            ),
+            (
+                Group("Req2t1"),
+                GroupAND(vec![Class(("NormalClass2t1", 3))]),
+            ),
+            (
+                Group("Req2t2"),
+                GroupAND(vec![Class(("NormalClass2t2", 3))]),
+            ),
+            (
+                SimpleClass("Normal2t2"),
+                PrereqAND(vec![Group("TwoClasses")]),
+            ),
+            (
+                SimpleClass("Normal2t1"),
+                PrereqAND(vec![SimpleClass("Normal")]),
+            ),
+            (
                 SimpleClass("MA 16020"),
                 PrereqAND(vec![SimpleClass("MA 16010")]),
             ),
@@ -283,6 +307,14 @@ impl Catalog {
                     "Tests CALC1 and MA16020 Requirements",
                 )),
                 vec![SimpleClass("MA 16020"), Group("CALC 1")],
+            ),
+            (
+                Degree(("TEST4", "New stuff", "Major", "Tests Req1 and Req2t1")),
+                vec![Group("Req1"), Group("Req2t1")],
+            ),
+            (
+                Degree(("TEST5", "New stuff", "Major", "Tests Req1 and Req2t2")),
+                vec![Group("Req1"), Group("Req2t2")],
             ),
         ];
 
