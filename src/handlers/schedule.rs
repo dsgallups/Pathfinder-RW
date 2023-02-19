@@ -755,14 +755,4 @@ impl ScheduleMaker {
 
         schedule
     }
-
-    fn generate_periods(
-        &mut self,
-        req_holder: &mut ReqHolder,
-        queue: &mut Vec<(i32, i32)>,
-        schedule: &mut Schedule,
-        period_no: i32,
-    ) {
-        while queue.len() > 0 {}
-    }
 }
