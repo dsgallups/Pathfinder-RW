@@ -17,3 +17,15 @@ test4(GroupAND) --|-> Req1(GroupOR) -|-> TwoClasses(GroupAND) -----|-> ezclass1(
 Expected Output:
     - Normal, 0
     - Normal2t1, 1
+
+
+Fix this:
+
+    Prereq (req_id: 57) has no group parent, as displayed below:
+    Req { id: 57, name: "NETWORK ENGR GROUPED 455 PREREQ", pftype: "Group", class: None, logic_type: Some("GroupOR"), children: [(46, Unchecked), (54, Unchecked)], parents: [(53, Unchecked)], in_analysis: false }
+
+    Parents:
+    Req { id: 53, name: "CNIT 45500", pftype: "Class", class: Some(Class { id: 47, name: "CNIT 45500", description: None, credits: Some(3), pftype: "class", subject: None, course_no: None, options: None, component_id: Some(53) }), logic_type: Some("PrereqAND"), children: [(49, Unchecked), (57, Unchecked)], parents: [(52, Selected), (-1, Unchecked)], in_analysis: true }
+
+
+    

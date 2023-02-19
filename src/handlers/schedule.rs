@@ -273,7 +273,7 @@ impl ScheduleMaker {
         let degree_req = Req {
             id: root_id,
             name: self.degree.name.to_string(),
-            pftype: "Degree".to_string(),
+            pftype: "Group".to_string(),
             class: None,
             logic_type: Some("GroupAND".to_string()),
             children: Vec::new(),
@@ -372,7 +372,7 @@ impl ScheduleMaker {
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
         let mut carried_result: Result<i32, ScheduleError> = Ok(0);
         println!(
-            "\n{}Satisfying Requirements of: \n{}{:?}",
+            "\n{}Evaluating requirements of: \n{}{:?}",
             &spacing,
             &spacing,
             &req_holder.get_req(req_id).unwrap()
@@ -574,15 +574,7 @@ impl ScheduleMaker {
             }
             
         }
-        println!(
-            "{}Children of requirement fully evaluated: \n{}{:?}\n{}With updated children of:\n{}{:?}\n\n",
-            &spacing,
-            &spacing,
-            &req_holder.get_req(req_id).unwrap(),
-            &spacing,
-            &spacing,
-            &updated_children
-        );
+        
         //finally update the req's children
         let requirement = req_holder.get_req(req_id).unwrap();
         requirement.children = updated_children;
@@ -602,7 +594,7 @@ impl ScheduleMaker {
             } 
         }
         println!(
-            "{}Requirement after satisfaction: \n{}{:?}\n",
+            "{}Children of requirement fully evaluated: \n{}{:?}\n",
             &spacing,
             &spacing,
             &req_holder.get_req(req_id).unwrap()
@@ -627,11 +619,26 @@ impl ScheduleMaker {
         //in their children
         let mut updated_parents = req_holder.get_req(req_id).unwrap().parents.clone();
         
+        //If this prereq isn't part of a larger component
+        //And only if this prereq in question is a class
+        //This doesn't work because this class could be part of a group not directly
+        //tied to the major. Then what are ya gonna do?
         if updated_parents
             .iter()
             .filter(|parent| req_holder.get_req(parent.0).unwrap().pftype.eq("Group"))
             .collect::<Vec<&(i32, Status)>>()
-            .is_empty() {
+            .is_empty() &&
+            req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+            println!("{}Prereq (req_id: {}) has no group parent, as displayed below:\n{}{:?}\n\n{}Parents:",
+                &spacing, 
+                req_id, 
+                &spacing, 
+                &req_holder.get_req(req_id).unwrap(),
+                &spacing
+            );
+            for parent in updated_parents {
+                println!("{}{:?}", &spacing, req_holder.get_req(parent.0).unwrap());
+            }
             return Err(ScheduleError::PrereqError);
         }
 
