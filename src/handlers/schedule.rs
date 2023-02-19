@@ -379,9 +379,9 @@ impl ScheduleMaker {
         //There is no real other way to do this, because it gets made that I even try
 
         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
-        let mut internal_indice: usize = 0;
+        //let mut internal_indice: usize = 0;
         let mut can_associate = true;
-        for child in &mut updated_children {
+        for (internal_indice, child) in updated_children.iter_mut().enumerate() {
             let child_logic_type = req_holder.get_req(child.0).unwrap().logic_type.clone();
 
             if let Some(logic_type) = &logic_type {
@@ -436,7 +436,6 @@ impl ScheduleMaker {
                     _ => {}
                 }
             }
-            internal_indice += 1;
         }
 
         //After evaluating all the children
@@ -664,7 +663,7 @@ impl ScheduleMaker {
     fn check_to_add(
         &mut self,
         req_holder: &mut ReqHolder,
-        queue: &mut Vec<(usize, i32)>,
+        queue: &mut [(usize, i32)],
         req_id: i32,
     ) {
         //Since we know the classes to be added, this should be relatively easy.
