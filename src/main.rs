@@ -1,3 +1,4 @@
+#![allow(dead_code, unused_variables)]
 pub mod db_connection;
 pub mod handlers;
 pub mod models;
