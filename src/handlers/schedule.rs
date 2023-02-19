@@ -349,7 +349,7 @@ impl ScheduleMaker {
 
         println!("Now generating schedule....");
 
-        self.satisfy_requirements(req_holder, -1, Some(String::from("GroupAND")), 0)?;
+        self.satisfy_requirements(req_holder, -1, Some(String::from("GroupAND")), true, 0)?;
         //since this root component has a logic type of GroupAND, all of its requirements MUST
         //be fulfilled
 
@@ -361,6 +361,7 @@ impl ScheduleMaker {
         req_holder: &mut ReqHolder,
         req_id: i32,
         logic_type: Option<String>,
+        required: bool,
         nests: usize,
     ) -> Result<i32, ScheduleError> {
         //println!("called satisfy_requirements");
@@ -369,7 +370,7 @@ impl ScheduleMaker {
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
 
         println!(
-            "{}Satisfying Requirements of: \n{}{:?}",
+            "\n{}Satisfying Requirements of: \n{}{:?}",
             &spacing,
             &spacing,
             &req_holder.get_req(req_id).unwrap()
@@ -394,7 +395,9 @@ impl ScheduleMaker {
                             req_holder,
                             child.0,
                             child_logic_type,
+                            required,
                             nests + 1,
+                            
                         )?;
                         child.1 = Selected;
                         for parent in &mut req_holder.get_req(child.0).unwrap().parents {
@@ -410,6 +413,7 @@ impl ScheduleMaker {
                             req_holder,
                             child.0,
                             child_logic_type,
+                            false,
                             nests + 1,
                         )?;
                         minimal_cost = if result < minimal_cost.1 {
@@ -432,8 +436,11 @@ impl ScheduleMaker {
                         }
                     }
                     "PrereqAND" => {
-                        match self.evaluate_prereq(req_holder, child.0) {
-                            Ok(_) => {}
+                        match self.evaluate_prereq(req_holder, child.0, required, nests + 1) {
+                            Ok(_) => {
+                                //If all went well, then these should all be checked.
+                                child.1 = Selected
+                            }
                             Err(e) => {
                                 //If this has returned an error, this means that a better situation has been identified
                                 //Or this means that the algorithm is naive and has no clue that this option could be
@@ -564,59 +571,171 @@ impl ScheduleMaker {
         &mut self,
         req_holder: &mut ReqHolder,
         req_id: i32,
+        parent_required: bool,
+        nests: usize,
     ) -> Result<String, ScheduleError> {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+        println!("{}Evaluating prereq (req_id: {})", &spacing, req_id);
         //So we need to check its parents
         //This is because we cannot evaluate the prereq without its parents evaluating it alongside other components
         //in their children
         let mut updated_parents = req_holder.get_req(req_id).unwrap().parents.clone();
         for parent in &mut updated_parents {
-            match req_holder.get_req(parent.0).unwrap().pftype.as_str() {
+            let parent_ref = req_holder.get_req(parent.0).unwrap();
+            let parent_type = &parent_ref.logic_type;
+            println!(
+                "{}Evaluating parent (req_id: {}) of prereq",
+                &spacing, parent.0
+            );
+
+            if let Some(parent_logic_type) = parent_type {
                 //Since we need to satisfy this prereq, we should go ahead and test out
                 //this group
                 //TODO: This feels like this could potentially infinitely recurse.
-                "Group" => match parent.1 {
-                    Unchecked => {
-                        //Depending on the type of parent (group or class)
-                        //We need to perform different actions
-                        /*
-                           Lets says MA 16010 has an unchecked parent of MA 16020
-                           The problem is that MA 16020 probably called this. So if
-                           we try to run the parent through the original function,
-                           this program will infinitely loop
+                match parent_logic_type.as_str() {
+                    "GroupAND" => {
+                        match parent.1 {
+                            Unchecked => {
+                                //Depending on the type of parent (group or class)
+                                //We need to perform different actions
+                                /*
+                                Lets says MA 16010 has an unchecked parent of MA 16020
+                                The problem is that MA 16020 probably called this. So if
+                                we try to run the parent through the original function,
+                                this program will infinitely loop
 
-                           So, only do logic on unchecked groups
-                        */
-                        //self.satisfy_requirements(parent.0);
+                                So, only do logic on unchecked groups
+                                */
+                                //self.satisfy_requirements(parent.0);
+                            }
+                            Checked => {
+                                //If this component has a parent value of checked
+                                //This mean it has run through logic already.
+                                //In this case, we want our parent to reconsider
+                                for child in parent_ref.children.iter_mut() {
+                                    //Now we re-evalute each child's status of the parent.
+                                    //This is where we get our reasoning.
+                                    if child.0 != req_id {
+                                        match child.1 {
+                                            Unchecked => panic!("Parent's child not checked, even though this child has been!"),
+                                            Checked => {
+                                                //something
+                                            }
+                                            Desirable => {
+                                                //something
+
+                                            }
+                                            Selected => {
+                                                //something
+                                                
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                            Selected => {}
+                            Desirable => {}
+                        }
                     }
-                    Checked => {}
-                    Selected => {}
-                    Desirable => {}
-                },
-                "Class" => match parent.1 {
-                    //this could potentially result in a infinite loop
-                    //self.evaluate_prereq(parent.0);
-                    Unchecked => {}
-                    Checked => {
-                        //This implies that it was not initially selected,
-                        //or that it, at one point, was selected and is no longer selected
-                        //This means it should be re-evaluated based on what the dependencies
-                        //of this prereq are.
-                        //TODO
+                    "GroupOR" => {
+                        match parent.1 {
+                            Unchecked => {
+                                //Depending on the type of parent (group or class)
+                                //We need to perform different actions
+                                /*
+                                Lets says MA 16010 has an unchecked parent of MA 16020
+                                The problem is that MA 16020 probably called this. So if
+                                we try to run the parent through the original function,
+                                this program will infinitely loop
+
+                                So, only do logic on unchecked groups
+                                */
+                                //self.satisfy_requirements(parent.0);
+                            }
+                            Checked => {
+                                //If this component has a parent value of checked
+                                //This mean it has run through logic already.
+                                //In this case, we want our parent to reconsider
+                                for child in parent_ref.children.iter_mut() {
+                                    //Now we re-evalute each child's status of the parent.
+                                    //This is where we get our reasoning.
+                                    if child.0 != req_id {
+                                        match child.1 {
+                                            Unchecked => panic!("Parent's child not checked, even though this child has been!"),
+                                            Checked => {
+                                                //Here we do nothing because this child is irrelevant to us
+                                            }
+                                            Desirable => {
+                                                //something
+                                                //Here we also don't do anything yet...but I imagine this will change
+                                                //and the entire parent will have to be re-evaluated
+                                            }
+                                            Selected => {
+                                                //this is where it gets interesting. A class that doesn't fulfill our requirement
+                                                //is selected by a parent with a groupOR value. 
+
+                                                //So if the parent MUST be included in the degree requirement, this selected value
+                                                //must become checked.
+                                                if parent_required {
+                                                    child.1 = Checked;
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
+                                    if child.0 == req_id && parent_required {
+                                        child.1 = Selected;
+                                    }
+                                    
+                                }
+                            }
+                            Selected => {}
+                            Desirable => {}
+                        }
                     }
-                    Selected => {
-                        //This means we're all good to use this prereq and should return ok
-                        req_holder.get_req(req_id).unwrap().parents = updated_parents;
-                        return Ok(String::from("Prereq Checked and Selected"));
+                    "PrereqAND" | "PrereqOR" => {
+                        //Do nothing. This could be the original caller of this evaluate (its children)
+                        println!("{}Req (req_id: {}) is a class and is not being evaluated yet!", &spacing, &req_id);
+                        //return Ok(String::from("Not tested"))
+                    },
+                    
+                    /*match parent.1 {
+                        panic!("PrereqOR has not yet been implemented for evaluating prereqs!");
+                        //this could potentially result in a infinite loop
+                        //self.evaluate_prereq(parent.0);
+                        Unchecked => {}
+                        Checked => {
+                            //This implies that it was not initially selected,
+                            //or that it, at one point, was selected and is no longer selected
+                            //This means it should be re-evaluated based on what the dependencies
+                            //of this prereq are.
+                            //TODO
+                        }
+                        Selected => {
+                            //This means we're all good to use this prereq and should return ok
+                            req_holder.get_req(req_id).unwrap().parents = updated_parents;
+                            return Ok(String::from("Prereq Checked and Selected"));
+                        }
+                        Desirable => {}
+                    },*/
+                    &_ => {
+                        panic!("This component has no pftype!");
                     }
-                    Desirable => {}
-                },
-                &_ => {
-                    panic!("This component has no pftype!");
                 }
+            } else {
+                //No parent logic type...so it's a class without a prereq
             }
         }
 
         req_holder.get_req(req_id).unwrap().parents = updated_parents;
+        println!("{}Updated parents: {:?}", &spacing, &req_holder.get_req(req_id).unwrap().parents);
+        println!("{}Children of the updated parents:", &spacing);
+        for parent in req_holder.get_req(req_id).unwrap().parents.clone() {
+            println!("{}{}{:?}", &spacing, &extra_space, req_holder.get_req(parent.0));
+        }
         //TODO: remove
         Ok(String::from("Finished"))
     }
