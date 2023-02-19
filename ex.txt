@@ -1,5 +1,19 @@
-degree(GroupAND) -|-> Req1(GroupOR) -|-> TwoClasses(GroupAND) -----|-> ezclass1(None, 1 cred)
+test5(GroupAND) --|-> Req1(GroupOR) -|-> TwoClasses(GroupAND) -----|-> ezclass1(None, 1 cred)
                   |                  |                             |-> ezclass2(None, 1 cred)
                   |                  |-> Normal(None, 3 cred)
                   |
                   |-> Req2t2(GroupAND)-> Normal2t2(PrereqAND([TwoClasses])) 
+Expected Output:
+    - ezclass1, 0
+    - ezclass2, 0
+    - Normal2t2, 1
+
+
+test4(GroupAND) --|-> Req1(GroupOR) -|-> TwoClasses(GroupAND) -----|-> ezclass1(None, 1 cred)
+                  |                  |                             |-> ezclass2(None, 1 cred)
+                  |                  |-> Normal(None, 3 cred)
+                  |
+                  |-> Req2t1(GroupAND)-> Normal2t1(PrereqAND([Normal])) 
+Expected Output:
+    - Normal, 0
+    - Normal2t1, 1
