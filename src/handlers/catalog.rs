@@ -105,7 +105,7 @@ impl Catalog {
                                 );
                             }
                             Err(e) => {
-                                println!("ERROR UPDATING COMPONENT LOGIC TYPE: {:?}", e);
+                                println!("ERROR UPDATING COMPONENT LOGIC TYPE: {e:?}");
                             }
                         }
                     }
@@ -138,7 +138,7 @@ impl Catalog {
                 self.components.len() - 1
             }
             Err(e) => {
-                panic!("Error: {}", e)
+                panic!("Error: {e}")
             }
         }
     }
@@ -156,7 +156,7 @@ impl Catalog {
 
         match class::Class::find_by_name(name, &mut self.conn) {
             Ok(class) => {
-                println!("Found existing class: {:?}", class);
+                println!("Found existing class: {class:?}");
             }
             Err(_) => {
                 let comp = &self.components[new_component_indice];
@@ -174,10 +174,10 @@ impl Catalog {
 
                 match new_class.create(&mut self.conn) {
                     Ok(class) => {
-                        println!("Created Class: {:?}", class)
+                        println!("Created Class: {class:?}")
                     }
                     Err(e) => {
-                        panic!("Error creating class: {}", e)
+                        panic!("Error creating class: {e}")
                     }
                 }
             }
@@ -207,10 +207,10 @@ impl Catalog {
                     };
                     match new_component_assoc.create(&mut self.conn) {
                         Ok(new_assoc) => {
-                            println!("Created component association: {:?}\n\nParent: {:?}\nChild: {:?}\n\n", new_assoc, parent, child);
+                            println!("Created component association: {new_assoc:?}\n\nParent: {parent:?}\nChild: {child:?}\n\n");
                         }
                         Err(e) => {
-                            panic!("Error creating component association: {}", e)
+                            panic!("Error creating component association: {e}")
                         }
                     }
                 }
@@ -550,10 +550,10 @@ impl Catalog {
             };
             match degree_to_component_assoc.create(&mut self.conn) {
                 Ok(new_assoc) => {
-                    println!("Created degree to component association: {:?}", new_assoc);
+                    println!("Created degree to component association: {new_assoc:?}");
                 }
                 Err(e) => {
-                    panic!("Error creating degree to component association: {}", e)
+                    panic!("Error creating degree to component association: {e}")
                 }
             }
         }

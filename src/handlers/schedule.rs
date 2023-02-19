@@ -70,7 +70,7 @@ impl ReqHolder {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
-                class: class,
+                class,
                 logic_type: component.logic_type,
                 children: Vec::new(),
                 parents: Vec::new(),
@@ -92,33 +92,29 @@ impl ReqHolder {
         //This function SHOULD ONLY BE USED when checking if the child exists.
         //Ideally, the parent will already have existed.
 
-        if let None = self.reqs.get_mut(&parent_id) {
+        if self.reqs.get_mut(&parent_id).is_none() {
             println!(
-                "{}Error: parent (req_id: {}) doesn't exist!",
-                spacing, parent_id
+                "{spacing}Error: parent (req_id: {parent_id}) doesn't exist!"
             );
             return Err(ScheduleError::AssociationError);
         }
-        if let None = self.reqs.get_mut(&child_id) {
+        if self.reqs.get_mut(&child_id).is_none() {
             println!(
-                "{}Error: child (req_id: {}) doesn't exist!",
-                spacing, child_id
+                "{spacing}Error: child (req_id: {child_id}) doesn't exist!"
             );
             return Err(ScheduleError::AssociationError);
         }
 
         if let Some(child_req) = self.get_req(child_id) {
             println!(
-                "{}Gave child (req_id: {}) a parent (req_id: {})",
-                spacing, child_id, parent_id
+                "{spacing}Gave child (req_id: {child_id}) a parent (req_id: {parent_id})"
             );
             child_req.parents.push((parent_id, Unchecked));
         }
 
         if let Some(parent_req) = self.get_req(parent_id) {
             println!(
-                "{}Gave parent (req_id: {}) a child(req_id: {})",
-                spacing, parent_id, child_id
+                "{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})"
             );
             parent_req.children.push((child_id, Unchecked));
         }
@@ -131,13 +127,12 @@ impl ReqHolder {
     }
 
     fn display_graph(&self, id: i32, displayed_reqs: &mut Vec<i32>) {
-        if let None = displayed_reqs
-            .into_iter()
-            .position(|displayed_id| displayed_id.to_owned() == id)
+        if !displayed_reqs
+            .iter_mut().any(|displayed_id| *displayed_id == id)
         {
             displayed_reqs.push(id);
             let req = self.reqs.get(&id).unwrap();
-            println!("{:?}", req);
+            println!("{req:?}");
             for child in &req.children {
                 self.display_graph(child.0, displayed_reqs);
             }
@@ -248,7 +243,7 @@ impl ScheduleMaker {
         println!("\n\nbuild_queue() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for item in &queue {
-            println!("{:?}", item);
+            println!("{item:?}");
         }
         println!("------------------------------------------End Reqs------------------------------------------");
 
@@ -258,7 +253,7 @@ impl ScheduleMaker {
         println!("\n\ncreate_schedule_from_queue() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for item in &schedule.periods {
-            println!("{:?}", item);
+            println!("{item:?}");
         }
         println!("------------------------------------------End Reqs------------------------------------------");
 
@@ -432,7 +427,7 @@ impl ScheduleMaker {
                                 //Or this means that the algorithm is naive and has no clue that this option could be
                                 //potentially better. This will require more insight as tests are developed for the
                                 //algorithm.
-                                println!("Error evaluating prereq!: {:?}", e);
+                                println!("Error evaluating prereq!: {e:?}");
                                 can_associate = false;
                             }
                         }
@@ -441,7 +436,7 @@ impl ScheduleMaker {
                     _ => {}
                 }
             }
-            internal_indice = internal_indice + 1;
+            internal_indice += 1;
         }
 
         //After evaluating all the children
@@ -618,7 +613,7 @@ impl ScheduleMaker {
         //let mut queue: Vec<(i32, i32)> = Vec::new();
 
         //check to see if this req is in the queue
-        if let Some(i) = parent_queue.into_iter().position(|item| item.0 == id) {
+        if let Some(i) = parent_queue.iter_mut().position(|item| item.0 == id) {
             return Ok(Vec::new());
         }
 
@@ -711,7 +706,7 @@ impl ScheduleMaker {
 
         let mut time_counter = 0;
 
-        while checkable_queue.len() > 0 {
+        while !checkable_queue.is_empty() {
             let year = 2023 + (time_counter / 2);
 
             let time = if time_counter % 2 == 0 {
@@ -736,16 +731,13 @@ impl ScheduleMaker {
             }
 
             //remove all the items whose value is false.
-            checkable_queue = checkable_queue
-                .into_iter()
-                .filter(|item| item.2 == true)
-                .collect();
+            checkable_queue.retain(|item| item.2);
 
             //Increase the queue number by 1
-            max_queue_no = max_queue_no + 1;
+            max_queue_no += 1;
 
             //increase the time_counter by 1
-            time_counter = time_counter + 1;
+            time_counter += 1;
 
             //Finally, push this new period into our schedule
             schedule.periods.push(new_period);
