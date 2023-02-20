@@ -225,6 +225,92 @@ impl Catalog {
                 GroupOR(vec![Class(("MA 16010", 5)), Class(("MA 16200", 4))]),
             ),
             (
+                Group("CNIT CORE"),
+                GroupAND(vec![
+                    SimpleClass("CNIT 18000"),
+                    SimpleClass("CNIT 15501"),
+                    SimpleClass("CNIT 17600"),
+                    SimpleClass("CNIT 24200"),
+                    SimpleClass("CNIT 25501"),
+                    SimpleClass("CNIT 27000"),
+                    SimpleClass("CNIT 27200"),
+                    SimpleClass("CNIT 28000"),
+                    SimpleClass("CNIT 32000"),
+                    SimpleClass("CNIT 48000"),
+                ]),
+            ),
+            (
+                SimpleClass("CNIT 25501"),
+                PrereqAND(vec![SimpleClass("CNIT 15501")]),
+            ),
+            (
+                SimpleClass("CNIT 24200"),
+                PrereqAND(vec![SimpleClass("CNIT 17600")]),
+            ),
+            (
+                Class(("CNIT 34010", 1)),
+                PrereqAND(vec![SimpleClass("CNIT 24200")]),
+            ),
+            (
+                SimpleClass("CNIT 34400"),
+                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
+            ),
+            (
+                SimpleClass("CNIT 32000"),
+                PrereqAND(vec![SimpleClass("TECH 12000")]),
+            ),
+            (
+                SimpleClass("CNIT 37000"),
+                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
+            ),
+            (
+                SimpleClass("CNIT 32200"),
+                PrereqAND(vec![SimpleClass("CNIT 27000")]),
+            ),
+            (
+                SimpleClass("CNIT 31500"),
+                PrereqAND(vec![SimpleClass("CNIT 25501")]),
+            ),
+            (
+                SimpleClass("CNIT 34220"),
+                PrereqOR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
+            ),
+            (
+                SimpleClass("CNIT 47000"),
+                PrereqAND(vec![SimpleClass("CNIT 32000")]),
+            ),
+            (
+                SimpleClass("CNIT 47100"),
+                PrereqAND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
+            ),
+            (
+                SimpleClass("CNIT 48000"),
+                PrereqAND(vec![SimpleClass("CNIT 28000")]),
+            ),
+            (
+                SimpleClass("CNIT 34000"),
+                PrereqAND(vec![SimpleClass("CNIT 24200")]),
+            ),
+            (
+                SimpleClass("CNIT 27000"),
+                PrereqAND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
+            ),
+            (
+                SimpleClass("CNIT 28000"),
+                PrereqAND(vec![SimpleClass("CNIT 18000")]),
+            ),
+            (
+                Group("NETWORK ENGR GROUPED 455 PREREQ"),
+                GroupOR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
+            ),
+            (
+                SimpleClass("CNIT 45500"),
+                PrereqOR(vec![
+                    SimpleClass("CNIT 34220"),
+                    Group("NETWORK ENGR GROUPED 455 PREREQ"),
+                ]),
+            ),
+            (
                 Group("CALC 2"),
                 GroupOR(vec![Class(("MA 16020", 5)), Class(("MA 16600", 4))]),
             ),
@@ -309,6 +395,24 @@ impl Catalog {
             (
                 Degree(("TEST5", "TEST5", "Major", "Tests Req1 and Req2t2")),
                 vec![Group("Req1"), Group("Req2t2")],
+            ),
+            (
+                Degree(("CNITC", "CNITC", "Major", "Tests CNIT CORE")),
+                vec![
+                    Group("CNIT CORE"),
+                    SimpleClass("TECH 12000"),
+                    SimpleClass("CNIT 31500"),
+                    SimpleClass("CNIT 32200"),
+                    SimpleClass("CNIT 34400"),
+                    SimpleClass("CNIT 34010"),
+                    SimpleClass("CNIT 34220"),
+                    SimpleClass("CNIT 37000"),
+                    SimpleClass("CNIT 42000"),
+                    SimpleClass("CNIT 42200"),
+                    SimpleClass("CNIT 45500"),
+                    SimpleClass("CNIT 47000"),
+                    SimpleClass("CNIT 47100"),
+                ],
             ),
         ];
 

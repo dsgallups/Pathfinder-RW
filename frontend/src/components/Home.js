@@ -5,11 +5,46 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from "@mui/material/Button";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
+// Add this in your component file
+require('react-dom');
+window.React2 = require('react');
+console.log(window.React1 === window.React2);
+
+const HomeButton = ({degree}) => {
+    const navigate = useNavigate;
+
+    function buttonClick() {
+        navigate("/schedule/" + degree);
+    }
+
+    return <Button variant="contained" onClick={buttonClick}>Submit</Button>
+
+
+}
 const Home = () => {
-    const [age, setAge] = React.useState('');
+    const [degree, setDegree] = React.useState('');
+    const [degrees, setDegrees] = useState([]);
+
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8080/degrees`)
+            .then(res => {
+                const retdegrees = res.data;
+                //<MenuItem value={degree.code}>{degree.code}</MenuItem>
+                //setDegrees(retdegrees.map(degree => degree.code));
+                setDegrees(retdegrees.map(degree => <MenuItem value={degree.code}>{degree.code}</MenuItem>));
+                console.log("response: ", retdegrees);
+                console.log("degrees: ", degrees);
+            })
+    }, []);
 
     const handleChange = (e) => {
-      setAge(e.target.value);
+      setDegree(e.target.value);
     };
   
     return (
@@ -29,15 +64,13 @@ const Home = () => {
           <Select
             labelId="degree-input-select"
             id="degree-select"
-            value={age}
-            label="Age"
+            value={degree}
+            label="Select Degree"
             onChange={handleChange}
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {degrees}
           </Select>
-          <Button variant="contained">Submit</Button>
+          <HomeButton degree={degree}/>
         </FormControl>
       </Box>
     );

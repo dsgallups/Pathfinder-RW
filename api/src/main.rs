@@ -13,7 +13,7 @@ extern crate serde_json;
 extern crate serde_derive;
 
 //test
-
+use actix_cors::Cors;
 use actix_web::{
     get, post,
     web::{self, Data},
@@ -79,11 +79,17 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allowed_methods(vec!["GET", "POST"]);
+
         App::new()
             .app_data(Data::new(establish_connection()))
+            .wrap(cors)
             .service(hello)
             .service(echo)
             .service(get_schedule)
+            .route("/degrees", web::get().to(handlers::degrees::index))
             .route(
                 "/universities",
                 web::get().to(handlers::universities::index),

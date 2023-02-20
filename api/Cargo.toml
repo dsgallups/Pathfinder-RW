@@ -19,6 +19,7 @@ thiserror = "1.0"
 strum = "0.24"
 strum_macros = "0.24"
 derive_more = "0.99.17"
+actix-cors = "0.6.4"
 
 [profile.release]
 strip = true

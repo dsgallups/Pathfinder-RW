@@ -66,10 +66,7 @@ impl DegreeList {
     pub fn list(conn: &mut PgConnection) -> Self {
         use crate::schema::degrees::dsl::*;
 
-        let result = degrees
-            .limit(10)
-            .load::<Degree>(conn)
-            .expect("Error loading degrees");
+        let result = degrees.load::<Degree>(conn).expect("Error loading degrees");
 
         DegreeList(result)
     }

@@ -2,6 +2,13 @@ import {useState} from 'react';
 
 const Schedule = () => {
     const [degree, setDegree] = useState('');
+    //axios.get(`http://127.0.0.1:8080/schedule/` + degree)
+    /*.then(res => {
+        console.log(res);
+        //Show this on a router page
+    })
+    console.log("degrees: ", degrees);
+    //Grab the value of the */
 
     return (
         <>
