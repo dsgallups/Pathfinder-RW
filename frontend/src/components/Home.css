@@ -1,0 +1,45 @@
+html, body {
+    background-color: rgb(53, 53, 53);
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+
+.registerForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    width: 50%;
+    height: 50%;
+    background-color: #1A1A1D;
+    border-radius: 10px;
+    margin-top:60px;
+    margin-bottom:60px;
+    max-width: 500px;
+}
+
+.registerInput {
+    border-radius: 0;
+    padding: 15px 20px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 100%;
+    border: none;
+    font-size:1em;
+    background-color:#1A1A1D;
+    color: white;
+}
+.registerInput:focus {
+    outline: none;
+}
+.registerButton {
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: none;
+    background-color: #DA0037;
+    color: white;
+    width: 100px;
+}
