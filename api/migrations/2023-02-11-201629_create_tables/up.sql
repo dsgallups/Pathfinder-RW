@@ -43,7 +43,7 @@ CREATE TABLE components_to_components (
 );
 CREATE TABLE degrees (
     id SERIAL PRIMARY KEY,
-    name CHARACTER VARYING (50) NOT NULL,
+    name CHARACTER VARYING (150) NOT NULL,
     pftype CHARACTER VARYING (50) NOT NULL,
     code CHARACTER VARYING (50) NOT NULL,
     description TEXT,

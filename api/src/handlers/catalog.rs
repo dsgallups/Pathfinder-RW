@@ -382,7 +382,7 @@ impl Catalog {
             (
                 Degree((
                     "TEST2REV",
-                    "TEST MAJOR",
+                    "TEST 2 REVERSE MAJOR",
                     "Major",
                     "Tests CALC1 and MA16020 Requirements",
                 )),
@@ -397,7 +397,7 @@ impl Catalog {
                 vec![Group("Req1"), Group("Req2t2")],
             ),
             (
-                Degree(("CNITC", "CNITC", "Major", "Tests CNIT CORE")),
+                Degree(("CSECC", "CSEC Core", "Major", "Tests CNIT CORE")),
                 vec![
                     Group("CNIT CORE"),
                     SimpleClass("TECH 12000"),

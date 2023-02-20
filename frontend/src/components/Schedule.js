@@ -84,7 +84,6 @@ const Schedule = (props) => {
                         container 
                         sx={{
                             width: "90%",
-                            justifyContent: "center"
                         }}
                         spacing={2}
                     >
