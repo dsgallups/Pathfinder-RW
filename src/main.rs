@@ -15,8 +15,17 @@ extern crate serde_derive;
 use actix_web::{
     get, post,
     web::{self, Data},
-    App, HttpResponse, HttpServer, Responder,
+    App, HttpRequest, HttpResponse, HttpServer, Responder, Result,
 };
+use serde_json::json;
+use std::process::{Command, Output};
+use std::str;
+
+use crate::handlers::{
+    catalog::Catalog, pg_pool_handler, schedule::ScheduleMaker, types::ScheduleError,
+};
+use crate::{db_connection::PgPool, handlers::types::Schedule};
+
 use db_connection::establish_connection;
 
 #[get("/")]
@@ -33,6 +42,33 @@ async fn echo(req_body: String) -> impl Responder {
 async fn manual_hello() -> impl Responder {
     HttpResponse::Ok().body("Hey there!")
 }
+//.route("/schedule/{id}", web::get().to(handlers::dev::get_schedule))
+#[get("/schedule/{id}")]
+pub async fn get_schedule(
+    degree_name: web::Path<String>,
+    pool: web::Data<PgPool>,
+) -> Result<web::Json<Schedule>, ScheduleError> {
+    println!("GET Request to get_schedule/");
+    let pg_pool = match pg_pool_handler(pool) {
+        Ok(p) => p,
+        Err(e) => {
+            panic!("pool bad!")
+        }
+    };
+
+    let mut schedule = ScheduleMaker::new(pg_pool, &degree_name)?;
+
+    match schedule.build_schedule() {
+        Ok(res) => {
+            println!("built schedule");
+            return Ok(web::Json(res));
+        }
+        Err(e) => {
+            println!("Error building schedule: {}", e);
+            return Err(e);
+        }
+    }
+}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -45,6 +81,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(establish_connection()))
             .service(hello)
             .service(echo)
+            .service(get_schedule)
             .route(
                 "/universities",
                 web::get().to(handlers::universities::index),
@@ -78,7 +115,6 @@ async fn main() -> std::io::Result<()> {
                 "/reset_and_pop_db",
                 web::get().to(handlers::dev::reset_and_pop_db),
             )
-            .route("/schedule/{id}", web::get().to(handlers::dev::get_schedule))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

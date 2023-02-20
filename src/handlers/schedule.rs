@@ -4,7 +4,6 @@ use diesel::{
 };
 
 use std::collections::HashMap;
-use thiserror::Error;
 
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
@@ -12,27 +11,14 @@ use crate::models::{
     component::Component,
     degree::Degree,
 };
+use crate::handlers::types::{
+    Schedule,
+    Period,
+    Req,
+    Status::{self, Unchecked, Checked, Unsuitable, Desirable, Selected},
+    ScheduleError
+};
 
-#[derive(Debug, Clone)]
-struct Req {
-    id: i32,
-    name: String,
-    pftype: String,
-    class: Option<Class>,
-    logic_type: Option<String>,
-    children: Vec<(i32, Status)>,
-    parents: Vec<(i32, Status)>,
-    in_analysis: bool,
-}
-
-impl Req {
-    pub fn str(&self) -> String {
-        format!(
-            "{:12}: logic_type: {:60?}, children:{:?}, parents: {:?}",
-            self.name, self.logic_type, self.children, self.parents
-        )
-    }
-}
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
@@ -139,48 +125,8 @@ struct Cost<'a> {
     path_cost: Vec<(Vec<&'a Req>, i32)>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-enum Status {
-    Unchecked,
-    Checked,
-    Unsuitable,
-    Desirable,
-    Selected,
-}
 
-use Status::{Checked, Desirable, Unsuitable, Selected, Unchecked};
 
-#[derive(Error, Debug)]
-pub enum ScheduleError {
-    #[error("Diesel Error")]
-    DieselError(#[from] diesel::result::Error),
-
-    #[error("Component not found")]
-    AssociationError,
-
-    #[error("Prereq is invalid for this Degree")]
-    PrereqError,
-}
-
-#[derive(Debug)]
-pub struct Schedule {
-    pub periods: Vec<Period>,
-}
-
-impl Schedule {
-    pub fn new() -> Self {
-        Schedule {
-            periods: Vec::new(),
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct Period {
-    year: u32,
-    time: String,
-    classes: Vec<Req>,
-}
 /**
  * Uses an adjacent array to build a graph via the Req struct.
  */
@@ -204,7 +150,7 @@ impl ScheduleMaker {
         })
     }
 
-    pub fn build_schedule(&mut self) -> Result<String, ScheduleError> {
+    pub fn build_schedule(&mut self) -> Result<Schedule, ScheduleError> {
         //get the degree root components
         //all of these components must be satisfied for the schedule
 
@@ -255,7 +201,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
 
         println!("\n------------------------------------------------------------------------------------End build_schedule()------------------------------------------------------------------------------------");
-        Ok(String::from("Success!"))
+        Ok(schedule)
     }
 
     /**
