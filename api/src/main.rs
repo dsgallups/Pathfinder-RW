@@ -91,6 +91,10 @@ async fn main() -> std::io::Result<()> {
             .service(get_schedule)
             .route("/degrees", web::get().to(handlers::degrees::index))
             .route(
+                "/degree/{code}",
+                web::get().to(handlers::degrees::show_code),
+            )
+            .route(
                 "/universities",
                 web::get().to(handlers::universities::index),
             )

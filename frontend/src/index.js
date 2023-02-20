@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     element: <Home/>,
   },
   {
-    path: "/schedule",
+    path: "/schedule/:code",
     element: <Schedule/>
   }
 ]);

@@ -19,7 +19,8 @@ const HomeButton = ({degree}) => {
     const navigate = useNavigate;
 
     function buttonClick() {
-        navigate("/schedule/" + degree);
+        //navigate("/schedule/" + degree);
+        document.location = "/schedule/" + degree;
     }
 
     return <Button variant="contained" onClick={buttonClick}>Submit</Button>
@@ -37,7 +38,7 @@ const Home = () => {
                 const retdegrees = res.data;
                 //<MenuItem value={degree.code}>{degree.code}</MenuItem>
                 //setDegrees(retdegrees.map(degree => degree.code));
-                setDegrees(retdegrees.map(degree => <MenuItem value={degree.code}>{degree.code}</MenuItem>));
+                setDegrees(retdegrees.map(degree => <MenuItem key={degree.code} value={degree.code}>{degree.code}</MenuItem>));
                 console.log("response: ", retdegrees);
                 console.log("degrees: ", degrees);
             })

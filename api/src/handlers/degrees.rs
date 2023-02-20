@@ -39,7 +39,19 @@ pub async fn show(id: web::Path<i32>, pool: web::Data<PgPool>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
     }
 }
+pub async fn show_code(code: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
+    let mut pg_pool = match pg_pool_handler(pool) {
+        Ok(p) => p,
+        Err(e) => {
+            return e;
+        }
+    };
 
+    match Degree::find_by_code(&code, &mut pg_pool) {
+        Ok(univ) => HttpResponse::Ok().json(univ),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
+    }
+}
 pub async fn destroy(id: web::Path<i32>, pool: web::Data<PgPool>) -> HttpResponse {
     let mut pg_pool = match pg_pool_handler(pool) {
         Ok(p) => p,
