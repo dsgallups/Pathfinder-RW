@@ -240,6 +240,22 @@ impl Catalog {
                 ]),
             ),
             (
+                Group("CNIT TEST"),
+                GroupAND(vec![
+                    SimpleClass("CNIT 15501"),
+                    SimpleClass("CNIT 17600"),
+                    SimpleClass("CNIT 24200"),
+                    SimpleClass("CNIT 27000"),
+                    SimpleClass("CNIT 47100"),
+                    SimpleClass("TECH 12000"),
+                    SimpleClass("CNIT 45500"),
+                    SimpleClass("CNIT 37000"),
+                    SimpleClass("CNIT 32000"),
+                    SimpleClass("CNIT 47000"),
+                    SimpleClass("CNIT 34400")
+                ]),
+            ),
+            (
                 SimpleClass("CNIT 25501"),
                 PrereqAND(vec![SimpleClass("CNIT 15501")]),
             ),
@@ -378,6 +394,15 @@ impl Catalog {
                     "Tests CALC1 and CALC2 Requirements",
                 )),
                 vec![Group("CALC 2"), Group("CALC 1")],
+            ),
+            (
+                Degree((
+                    "CNITTEST",
+                    "CNIT TEST CLASSES",
+                    "Major",
+                    "Testing the schedule for lots of prereqs"
+                )),
+                vec![Group("CNIT TEST")]
             ),
             (
                 Degree((
