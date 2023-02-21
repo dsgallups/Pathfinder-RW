@@ -5,20 +5,16 @@ use diesel::{
 
 use std::collections::HashMap;
 
+use crate::handlers::types::{
+    Period, Req, Schedule, ScheduleError,
+    Status::{self, Checked, Desirable, Selected, Unchecked, Unsuitable},
+};
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
     class::Class,
     component::Component,
     degree::Degree,
 };
-use crate::handlers::types::{
-    Schedule,
-    Period,
-    Req,
-    Status::{self, Unchecked, Checked, Unsuitable, Desirable, Selected},
-    ScheduleError
-};
-
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
@@ -125,8 +121,6 @@ struct Cost<'a> {
     path_cost: Vec<(Vec<&'a Req>, i32)>,
 }
 
-
-
 /**
  * Uses an adjacent array to build a graph via the Req struct.
  */
@@ -193,7 +187,10 @@ impl ScheduleMaker {
 
         //From the queue, build a schedule
         let schedule = self.create_schedule_from_queue(&mut req_holder, queue);
-        println!("\n\nFor Degree {:?}\ncreate_schedule_from_queue() finished.", &self.degree.code);
+        println!(
+            "\n\nFor Degree {:?}\ncreate_schedule_from_queue() finished.",
+            &self.degree.code
+        );
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for item in &schedule.periods {
             println!("{item:?}");
@@ -345,7 +342,6 @@ impl ScheduleMaker {
                             child_logic_type,
                             required,
                             nests + 1,
-                            
                         ) {
                             Ok(_) => {
                                 child.1 = Selected;
@@ -367,13 +363,11 @@ impl ScheduleMaker {
                                         child.1 = Unsuitable;
                                         carried_result = Err(e);
                                         break;
-
                                     }
-                                    _ => panic!("GroupAND recieved a child with an invalid error!")
+                                    _ => panic!("GroupAND recieved a child with an invalid error!"),
                                 }
                             }
                         }
-                        
                     }
                     "GroupOR" => {
                         //println!("Internal Indice = {}", internal_indice);
@@ -399,7 +393,7 @@ impl ScheduleMaker {
                                         break;
                                     }
                                 }
-                            },
+                            }
                             Err(e) => {
                                 //This means that something was wrong with this particular requirement
                                 //and therefore should be labeled as unsuitable
@@ -411,7 +405,7 @@ impl ScheduleMaker {
                                         //unlike groupAND.
                                         child.1 = Unsuitable;
                                     }
-                                    _ => panic!("GroupOR recieved a child with an invalid error!")
+                                    _ => panic!("GroupOR recieved a child with an invalid error!"),
                                 }
                             }
                         }
@@ -420,8 +414,6 @@ impl ScheduleMaker {
                             "Minimal cost: {:?}, result for req_id {}: {}",
                             minimal_cost, child.0, result
                         );*/
-
-
                     }
                     "PrereqAND" => {
                         match self.evaluate_prereq(req_holder, child.0, required, nests + 1) {
@@ -441,7 +433,7 @@ impl ScheduleMaker {
                                 println!("{}Error evaluating prereq!: {e:?}", &spacing);
                                 carried_result = Err(e);
                                 break;
-                                //The children for this 
+                                //The children for this
                             }
                         }
                     }
@@ -518,9 +510,8 @@ impl ScheduleMaker {
                     &req_holder.get_req(req_id).unwrap()
                 );
             }
-            
         }
-        
+
         //finally update the req's children
         let requirement = req_holder.get_req(req_id).unwrap();
         requirement.children = updated_children;
@@ -536,8 +527,8 @@ impl ScheduleMaker {
                     .unwrap()
                     .credits
                     .unwrap()),
-                Err(_) => carried_result
-            } 
+                Err(_) => carried_result,
+            }
         }
         println!(
             "{}Children of requirement fully evaluated: \n{}{:?}\n",
@@ -564,7 +555,7 @@ impl ScheduleMaker {
         //This is because we cannot evaluate the prereq without its parents evaluating it alongside other components
         //in their children
         let mut updated_parents = req_holder.get_req(req_id).unwrap().parents.clone();
-        
+
         //If this prereq isn't part of a larger component
         //And only if this prereq in question is a class
         //This doesn't work because this class could be part of a group not directly
@@ -573,8 +564,9 @@ impl ScheduleMaker {
             .iter()
             .filter(|parent| req_holder.get_req(parent.0).unwrap().pftype.eq("Group"))
             .collect::<Vec<&(i32, Status)>>()
-            .is_empty() &&
-            req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
+            .is_empty()
+            && req_holder.get_req(req_id).unwrap().pftype.eq("Class")
+        {
             println!("{}Prereq (req_id: {}) has no group parent, as displayed below:\n{}{:?}\n\n{}Parents:",
                 &spacing, 
                 req_id, 
@@ -641,7 +633,6 @@ impl ScheduleMaker {
                                             Unsuitable => {}
                                         }
                                     }
-                                    
                                 }
                             }
                             Selected => {}
@@ -699,7 +690,6 @@ impl ScheduleMaker {
                                     if child.0 == req_id && parent_required {
                                         child.1 = Selected;
                                     }
-                                    
                                 }
                             }
                             Selected => {}
@@ -708,10 +698,13 @@ impl ScheduleMaker {
                     }
                     "PrereqAND" | "PrereqOR" => {
                         //Do nothing. This could be the original caller of this evaluate (its children)
-                        println!("{}Req (req_id: {}) is a class and is not being evaluated yet!", &spacing, &req_id);
+                        println!(
+                            "{}Req (req_id: {}) is a class and is not being evaluated yet!",
+                            &spacing, &req_id
+                        );
                         //return Ok(String::from("Not tested"))
-                    },
-                    
+                    }
+
                     /*match parent.1 {
                         panic!("PrereqOR has not yet been implemented for evaluating prereqs!");
                         //this could potentially result in a infinite loop
@@ -741,10 +734,19 @@ impl ScheduleMaker {
         }
 
         req_holder.get_req(req_id).unwrap().parents = updated_parents;
-        println!("{}Updated parents: {:?}", &spacing, &req_holder.get_req(req_id).unwrap().parents);
+        println!(
+            "{}Updated parents: {:?}",
+            &spacing,
+            &req_holder.get_req(req_id).unwrap().parents
+        );
         println!("{}Children of the updated parents:", &spacing);
         for parent in req_holder.get_req(req_id).unwrap().parents.clone() {
-            println!("{}{}{:?}", &spacing, &extra_space, req_holder.get_req(parent.0));
+            println!(
+                "{}{}{:?}",
+                &spacing,
+                &extra_space,
+                req_holder.get_req(parent.0)
+            );
         }
         //TODO: remove
         Ok(String::from("Finished"))
@@ -762,7 +764,7 @@ impl ScheduleMaker {
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
         //contains (requirement in the graph, priority #)
         println!("{}Now evaluating {:?}", &spacing, &req_holder.get_req(id));
-        println!("{}Parent queue: {:?}\n\n", &spacing, &parent_queue);
+        println!("{}Parent queue: {:?}", &spacing, &parent_queue);
 
         //Contains the indice in ReqHolder and it's queue number
         //let mut queue: Vec<(i32, i32)> = Vec::new();
@@ -773,7 +775,10 @@ impl ScheduleMaker {
             let self_in_queue = parent_queue[i].clone();
             let mut self_vector: Vec<(i32, i32)> = Vec::new();
             self_vector.push(self_in_queue);
-            
+            println!(
+                "{}this component is already in queue and is returning self as vector\n\n",
+                &spacing
+            );
             return Ok(self_vector);
         }
 
@@ -785,52 +790,54 @@ impl ScheduleMaker {
             //So what are we doing here
             //If this is a class, we want to get its children.
 
-            //So first, let's take ezclass 1. 
+            //So first, let's take ezclass 1.
             //No prereqs, so so we give it a 0
             //Then we look at ezclass 2.
             //No prereqs, so we give it a 0
             //Then we look at normalclass
             //Since this has children, we append the minimum queue no of its prereqs + 1 to it in the queue.
-            
-            
+            println!("{}This component is a class\n\n", &spacing);
+
             let mut children_in_parent_queue = Vec::new();
             for child in current_req.children {
                 if child.1 == Selected {
-                    let mut result = self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
+                    let mut result =
+                        self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
                     children_in_parent_queue.append(&mut result);
                 }
             }
+            println!("{}This component (req_id: {}) has returned from evaluating children. The children in parent_queue are:\n{}{:?}\n{}With parent queue as\n{}{:?}", 
+                &spacing, &id, &spacing, &children_in_parent_queue, &spacing, &spacing, &parent_queue);
 
-
-            let mut minimum_queue_no = i32::MAX;
+            let mut max_queue_no = -1;
             //get the minimum queue number of the child
             for item in children_in_parent_queue.clone() {
-                minimum_queue_no = if item.1 < minimum_queue_no {
+                max_queue_no = if item.1 > max_queue_no {
                     item.1
                 } else {
-                    minimum_queue_no
+                    max_queue_no
                 }
             }
 
-            //Classes with no children will have i32::MAX as the number.
-            if minimum_queue_no == i32::MAX {
-                //If minimum_queue is STILL i32::MAX, then we push 0 to parent_queue.
+            //Classes with no children will have -1 as the number.
+            /*if max_queue_no == -1 {
+                //If minimum_queue is STILL -1, then we push 0 to parent_queue.
                 //new_queue will be discarded because if this is the case, do nothing with it
                 parent_queue.push((id, 0));
 
                 //Additionally, we will want to push a copy of itself to our return value
                 let mut self_vector: Vec<(i32, i32)> = Vec::new();
                 self_vector.push((id, 0));
-                
+
                 return Ok(self_vector);
-            } else {
-                parent_queue.push((id, minimum_queue_no + 1));
-            }
-            
+            } else {*/
+            parent_queue.push((id, max_queue_no + 1));
+            //}
+
             println!("{}This queue (class): {:?}\n\n", &spacing, &parent_queue);
             return Ok(parent_queue.clone());
         };
-
+        println!("{}This component (req_id: {}) is not a class.", &spacing, &id);
         //IF THIS IS NOT A CLASS
         for child in current_req.children {
             if child.1 == Selected {

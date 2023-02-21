@@ -252,7 +252,7 @@ impl Catalog {
                     SimpleClass("CNIT 37000"),
                     SimpleClass("CNIT 32000"),
                     SimpleClass("CNIT 47000"),
-                    SimpleClass("CNIT 34400")
+                    SimpleClass("CNIT 34400"),
                 ]),
             ),
             (
@@ -400,9 +400,9 @@ impl Catalog {
                     "CNITTEST",
                     "CNIT TEST CLASSES",
                     "Major",
-                    "Testing the schedule for lots of prereqs"
+                    "Testing the schedule for lots of prereqs",
                 )),
-                vec![Group("CNIT TEST")]
+                vec![Group("CNIT TEST")],
             ),
             (
                 Degree((
