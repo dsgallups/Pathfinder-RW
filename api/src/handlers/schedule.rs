@@ -344,6 +344,7 @@ impl ScheduleMaker {
 
         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
         //let mut internal_indice: usize = 0;
+        //TODO: determine what this variable is supposed to do
         let mut can_associate = true;
         for (internal_indice, child) in updated_children.iter_mut().enumerate() {
             let child_logic_type = req_holder.get_req(child.0).unwrap().logic_type.clone();
@@ -494,6 +495,7 @@ impl ScheduleMaker {
                                 //This means that this prereq cannot be assigned.
                                 //However, there may be other alternatives to this.
                                 //TODO: We'll want to do something based on the type of error returned here. 
+                                println!("In this prereqOR block, an error was returned: {:?}", e);
                             }
                         }
 
@@ -635,12 +637,15 @@ impl ScheduleMaker {
         //And only if this prereq in question is a class
         //This doesn't work because this class could be part of a group not directly
         //tied to the major. Then what are ya gonna do?
-        if updated_parents
+        //Alternatively, what about classes tied to a GroupOR that's not part of the degree requirement? Well, that degree requirement should absolutely be part of the degree requirements, but for now it will not be evaluated. TODO.
+        let this_pftype = req_holder.get_req(req_id).unwrap().pftype.clone();
+        let this_logic_type = req_holder.get_req(req_id).unwrap().logic_type.clone();
+
+        if this_pftype.eq("Class") && updated_parents
             .iter()
             .filter(|parent| req_holder.get_req(parent.0).unwrap().pftype.eq("Group"))
             .collect::<Vec<&(i32, Status)>>()
             .is_empty()
-            && req_holder.get_req(req_id).unwrap().pftype.eq("Class")
         {
             println!("{}Prereq (req_id: {}) has no group parent, as displayed below:\n{}{:?}\n\n{}Parents:",
                 &spacing, 
@@ -654,6 +659,26 @@ impl ScheduleMaker {
             }
             return Err(ScheduleError::PrereqError);
         }
+
+        //This kinda makes sense for a class, but not for a group passed
+        //into this function. This will require a rewrite.
+
+        //Let's take NETWORK ENGR GROUP 455 PREREQ
+        //GroupOR, children are CNIT 34400 (in degree), and CNIT 345 (not in degree)
+        if let Some(this_logic) = this_logic_type {
+            //Don't execute the logic past this if statement, because that's for a class.
+            //So, we need to evaluate two classes, one in the degree, and one that isn't. It's possible that 
+            match this_logic.as_str() {
+                "GroupAND" => {}
+                "GroupOR" => {
+                    //Evaluate these like they are prereqs for the parent.
+                    //this just should repeat the logic as if the prereqs were flat. TODO.
+                }
+                _ => {}
+            };
+        }
+
+
 
         for parent in &mut updated_parents {
             let parent_ref = req_holder.get_req(parent.0).unwrap();
