@@ -75,11 +75,11 @@ impl ReqHolder {
         //Ideally, the parent will already have existed.
 
         if self.reqs.get_mut(&parent_id).is_none() {
-            println!("{spacing}Error: parent (req_id: {parent_id}) doesn't exist!");
+            println!("{spacing}Error: parent (req_id: {parent_id}) doesn't exist, association failed.");
             return Err(ScheduleError::AssociationError);
         }
         if self.reqs.get_mut(&child_id).is_none() {
-            println!("{spacing}Error: child (req_id: {child_id}) doesn't exist!");
+            println!("{spacing}Error: child (req_id: {child_id}) doesn't exist!, association failed.");
             return Err(ScheduleError::AssociationError);
         }
 
@@ -160,7 +160,7 @@ impl ScheduleMaker {
         //TODO, show requirements graph based on degree
         req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
-
+        //return Ok(Schedule::new());
         //turn the requirements graph into a schedule
         self.analyze_requirements_graph(&mut req_holder)?;
 
@@ -168,7 +168,8 @@ impl ScheduleMaker {
         println!("------------------------------------------Begin Reqs------------------------------------------");
         req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
-
+        
+        return Ok(Schedule::new());
         /*println!("\n\nLong print.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for (pos, req) in self.reqs.iter().enumerate() {
@@ -184,7 +185,7 @@ impl ScheduleMaker {
             println!("{item:?}");
         }
         println!("------------------------------------------End Reqs------------------------------------------");
-
+        
         //From the queue, build a schedule
         let schedule = self.create_schedule_from_queue(&mut req_holder, queue);
         println!(
@@ -198,6 +199,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
 
         println!("\n------------------------------------------------------------------------------------End build_schedule()------------------------------------------------------------------------------------");
+        
         Ok(schedule)
     }
 
@@ -320,6 +322,19 @@ impl ScheduleMaker {
             &spacing,
             &req_holder.get_req(req_id).unwrap()
         );
+        /*
+        
+         Evaluating requirements of: 
+         Req { id: 18, name: "CNIT 45500", pftype: "Class", class: Some(Class { id: 15, name: "CNIT 45500", description: None, credits: Some(3), pftype: "class", subject: None, course_no: None, options: None, component_id: Some(18) }), logic_type: Some("PrereqOR"), children: [(25, Unchecked), (27, Unchecked)], parents: [(16, Selected), (15, Unchecked)], in_analysis: false }
+         Children of requirement (req_id: 18) partially evaluated: 
+         With updated children of:
+         [(25, Unchecked), (27, Unchecked)]
+
+
+         Children of requirement fully evaluated: 
+         Req { id: 18, name: "CNIT 45500", pftype: "Class", class: Some(Class { id: 15, name: "CNIT 45500", description: None, credits: Some(3), pftype: "class", subject: None, course_no: None, options: None, component_id: Some(18) }), logic_type: Some("PrereqOR"), children: [(25, Unchecked), (27, Unchecked)], parents: [(16, Selected), (15, Unchecked)], in_analysis: false }
+        
+         */
         //borrow checker doesn't like that I'm mutating its memory and also calling it.
         //The easiest way to fix this is to make a clone of it and then set the requirement to that
         //clone after manipulation. This will decrease performance but is guaranteed to be safe
@@ -437,7 +452,39 @@ impl ScheduleMaker {
                             }
                         }
                     }
-                    "PrereqOR" => {}
+                    "PrereqOR" => {
+                        //Alright, so we need to evaluate the cost of its prereqs. This is where it gets kinda fucked. 
+                        //So let's take CNIT 455. It's got two PrereqOR components.
+                        //The first one is CNIT 34010. So, we're going to evaluate that one first. 
+                        //The problem in our scenario is that even though CNIT 34010 is 1 credit, it's not in our degree requirements, so it's not
+                        //desirable. It's simply checked.
+                        //So for each child, we need to evaluate this prereq
+                        match self.evaluate_prereq(req_holder, child.0, false, nests) {
+                            Ok(_) => {
+                                //So this will return the additional credit cost
+                                //So for example, if a prereq here is already selected by
+                                //another situation, then we return a credit value of zero.
+                                //The problem is that later on, the evaluation we made here may change because a better situation has occured.
+                                //In that case, we need to make that decision when that situation occurs. It needs to perform a cost benefit analysis of what is selected here, as opposed to its alternatives. So for simplicity's sake
+                                //This will return the value of ADDITIONAL credit cost.
+
+                                //Take the following scenario where this is the first evaluation.
+                                //Since none of this req's children has been added to the queue, the one with the minimal cost gets selected. This is completely fine.
+                                
+                                //In another situation, we have a situation where another class has been selected (5) credits here, but there's another class that can satisfy this for (3) credits.
+                                //Since it's already been selected, we can say, well alright. the 5 credits is actually 0 because it's already been selected.
+                                //But what if when that 5 credit requirement was selected, It wasn't the best option overall? Well really, at the time it was selected, this analysis was performed within its scope, including its parents. So we need to trust that we made the perfect decision when it was first ran.
+                                //Let's say that 3 credit scenario fulfills other requirements as well. Well, this situation will require more testing. TODO.
+
+                            }
+                            Err(e) => {
+                                //This means that this prereq cannot be assigned.
+                                //However, there may be other alternatives to this.
+                                //TODO: We'll want to do something based on the type of error returned here. 
+                            }
+                        }
+
+                    }
                     _ => {}
                 }
             }
@@ -546,7 +593,7 @@ impl ScheduleMaker {
         req_id: i32,
         parent_required: bool,
         nests: usize,
-    ) -> Result<String, ScheduleError> {
+    ) -> Result<i32, ScheduleError> {
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
@@ -748,8 +795,8 @@ impl ScheduleMaker {
                 req_holder.get_req(parent.0)
             );
         }
-        //TODO: remove
-        Ok(String::from("Finished"))
+        //TODO: this is -1 because it should not reach this point for now.
+        Ok(-1)
     }
 
     fn build_queue(
