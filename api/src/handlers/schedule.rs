@@ -460,7 +460,7 @@ impl ScheduleMaker {
                         //desirable. It's simply checked.
                         //So for each child, we need to evaluate this prereq
                         match self.evaluate_prereq(req_holder, child.0, false, nests) {
-                            Ok(_) => {
+                            Ok(cost) => {
                                 //So this will return the additional credit cost
                                 //So for example, if a prereq here is already selected by
                                 //another situation, then we return a credit value of zero.
@@ -474,8 +474,21 @@ impl ScheduleMaker {
                                 //In another situation, we have a situation where another class has been selected (5) credits here, but there's another class that can satisfy this for (3) credits.
                                 //Since it's already been selected, we can say, well alright. the 5 credits is actually 0 because it's already been selected.
                                 //But what if when that 5 credit requirement was selected, It wasn't the best option overall? Well really, at the time it was selected, this analysis was performed within its scope, including its parents. So we need to trust that we made the perfect decision when it was first ran.
-                                //Let's say that 3 credit scenario fulfills other requirements as well. Well, this situation will require more testing. TODO.
+                                //Let's say that 3 credit scenario fulfills other requirements as well. Well, this situation will require more testing. I will need to get this right in an isolated test environment. TODO.
+                                minimal_cost = if cost < minimal_cost.1 {
+                                    (internal_indice, cost)
+                                } else {
+                                    minimal_cost
+                                };
+                                child.1 = Checked;
 
+                                //also check the parent
+                                for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                                    if parent.0 == req_id {
+                                        parent.1 = Checked;
+                                        break;
+                                    }
+                                }
                             }
                             Err(e) => {
                                 //This means that this prereq cannot be assigned.
@@ -539,7 +552,22 @@ impl ScheduleMaker {
                         //This means an error has occured. This means that this
                     }
                 }
-                "PrereqOR" => {}
+                "PrereqOR" => {
+                    //Per the comments (Line ~475), we just take the value with the minimal cost. Note, this is the exact same code for GroupOR. It's possible that we should merge these into one code block for this match statement.
+                    println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
+                    updated_children[minimal_cost.0].1 = Selected;
+
+                    let child_id_in_req_holder =
+                        req_holder.get_req(req_id).unwrap().children[minimal_cost.0].0;
+
+
+                    for parent in &mut req_holder.get_req(child_id_in_req_holder).unwrap().parents {
+                        if parent.0 == req_id {
+                            parent.1 = Selected;
+                            break;
+                        }
+                    }
+                }
                 _ => {
                     panic!(
                         "This component has an invalid logic_type! {:?}",
