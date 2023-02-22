@@ -676,6 +676,22 @@ impl ScheduleMaker {
                 "GroupOR" => {
                     //Evaluate these like they are prereqs for the parent.
                     //this just should repeat the logic as if the prereqs were flat. TODO.
+                    //The thing is that this groupOR basically serves as the "head" for the prereq, no matter whether it was a child of GroupAND or of class. Whether it was one of these two,
+                    //GroupOR will execute the logic here. For GroupOR to evaluate its children, it needs to get the additional cost of each of its children dependent on what was selected. So this will be like as described in the satisfy_requirements function. To reiterate here because I'm rambling a lot and am super tired, we calculate the value of each item in a prereq. Remember, only parents with a value of prereqOR or prereqAND can lead to this logical scenario, so don't expect there to be conflicts between the groupor logic in satisfy_requirements and evaluate_prereqs here.
+
+                    //NOTE: this code has been replicated in like three areas. This should become its own function called Perform_or_logic.
+                    let children = req_holder.get_req(req_id).unwrap().children.clone();
+
+                    let mut minimal_cost = i32::MAX;
+
+
+                    for child in children {
+                        //We should handle the error here. Again, this code has been duplicated like three times so we should isolate this lgoic into its own function. This is the same regardless of whether or not this is a prereq
+                        
+                        let cost = self.evaluate_prereq(req_holder, child.0, false, nests + 1);
+                        minimal_cost = if cost < minimal_cost { cost } else { minimal_cost }
+                    }
+
                 }
                 _ => {}
             };
