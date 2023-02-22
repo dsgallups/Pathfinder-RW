@@ -169,7 +169,7 @@ impl ScheduleMaker {
         req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
         
-        return Ok(Schedule::new());
+        //return Ok(Schedule::new());
         /*println!("\n\nLong print.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for (pos, req) in self.reqs.iter().enumerate() {
