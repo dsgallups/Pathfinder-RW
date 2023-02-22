@@ -556,6 +556,9 @@ impl ScheduleMaker {
                 }
                 "PrereqOR" => {
                     //Per the comments (Line ~475), we just take the value with the minimal cost. Note, this is the exact same code for GroupOR. It's possible that we should merge these into one code block for this match statement.
+
+                    //Consider the scenario in which we've got a groupor that contains two other groupor degree requirements. How do we evaluated which path for the parent group or to take? WEll, the evaluate prereq should be infinitely recursive until we can reach a GroupAND component, even if that becomes the degree head. It has to make sure that some specific code is run at the parent GroupOR component to re-evaluate its checks. Going up a single parent is not enough. There are a lot of flaws in the code that has been written, we should consider working more on this.
+                    
                     println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
                     updated_children[minimal_cost.0].1 = Selected;
 
