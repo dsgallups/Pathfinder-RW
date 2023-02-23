@@ -14,7 +14,7 @@ use crate::{
 };
 
 use InstantiationType::{Class, Degree, Group, SimpleClass};
-use LogicalType::{GroupAND, GroupOR, PrereqAND, PrereqOR};
+use LogicalType::{AND, OR};
 pub struct Catalog {
     conn: PooledConnection<ConnectionManager<PgConnection>>,
     components: Vec<Component>,
@@ -194,10 +194,7 @@ impl Catalog {
         let parent = &self.components[parent_indice];
 
         match parsed_children_indices {
-            ParsedLogicType::PrereqAND(children_indices)
-            | ParsedLogicType::PrereqOR(children_indices)
-            | ParsedLogicType::GroupAND(children_indices)
-            | ParsedLogicType::GroupOR(children_indices) => {
+            ParsedLogicType::AND(children_indices) | ParsedLogicType::OR(children_indices) => {
                 for child_i in children_indices {
                     let child = &self.components[child_i];
 
@@ -222,11 +219,11 @@ impl Catalog {
         let catalog = vec![
             (
                 Group("CALC 1"),
-                GroupOR(vec![Class(("MA 16010", 5)), Class(("MA 16200", 4))]),
+                OR(vec![Class(("MA 16010", 5)), Class(("MA 16200", 4))]),
             ),
             (
                 Group("CNIT CORE"),
-                GroupAND(vec![
+                AND(vec![
                     SimpleClass("CNIT 18000"),
                     SimpleClass("CNIT 15501"),
                     SimpleClass("CNIT 17600"),
@@ -241,7 +238,7 @@ impl Catalog {
             ),
             (
                 Group("CNIT TEST"),
-                GroupAND(vec![
+                AND(vec![
                     SimpleClass("CNIT 15501"),
                     SimpleClass("CNIT 17600"),
                     SimpleClass("CNIT 24200"),
@@ -257,104 +254,109 @@ impl Catalog {
             ),
             (
                 SimpleClass("CNIT 25501"),
-                PrereqAND(vec![SimpleClass("CNIT 15501")]),
+                AND(vec![SimpleClass("CNIT 15501")]),
             ),
             (
                 SimpleClass("CNIT 24200"),
-                PrereqAND(vec![SimpleClass("CNIT 17600")]),
+                AND(vec![SimpleClass("CNIT 17600")]),
             ),
             (
                 Class(("CNIT 34010", 1)),
-                PrereqAND(vec![SimpleClass("CNIT 24200")]),
+                AND(vec![SimpleClass("CNIT 24200")]),
             ),
             (
                 SimpleClass("CNIT 34400"),
-                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
+                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 32000"),
-                PrereqAND(vec![SimpleClass("TECH 12000")]),
+                AND(vec![SimpleClass("TECH 12000")]),
             ),
             (
                 SimpleClass("CNIT 37000"),
-                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
+                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 32200"),
-                PrereqAND(vec![SimpleClass("CNIT 27000")]),
+                AND(vec![SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 31500"),
-                PrereqAND(vec![SimpleClass("CNIT 25501")]),
+                AND(vec![SimpleClass("CNIT 25501")]),
             ),
             (
                 SimpleClass("CNIT 34220"),
-                PrereqOR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
+                OR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
             ),
             (
                 SimpleClass("CNIT 47000"),
-                PrereqAND(vec![SimpleClass("CNIT 32000")]),
+                AND(vec![SimpleClass("CNIT 32000")]),
             ),
             (
                 SimpleClass("CNIT 47100"),
-                PrereqAND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
+                AND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
             ),
             (
                 SimpleClass("CNIT 48000"),
-                PrereqAND(vec![SimpleClass("CNIT 28000")]),
+                AND(vec![SimpleClass("CNIT 28000")]),
             ),
             (
                 SimpleClass("CNIT 34000"),
-                PrereqAND(vec![SimpleClass("CNIT 24200")]),
+                AND(vec![SimpleClass("CNIT 24200")]),
             ),
             (
                 SimpleClass("CNIT 27000"),
-                PrereqAND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
+                AND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
             ),
             (
                 SimpleClass("CNIT 28000"),
-                PrereqAND(vec![SimpleClass("CNIT 18000")]),
+                AND(vec![SimpleClass("CNIT 18000")]),
             ),
             (
                 Group("NETWORK ENGR GROUPED 455 PREREQ"),
-                GroupOR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
+                OR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
             ),
             (
                 SimpleClass("CNIT 45500"),
-                PrereqOR(vec![
+                OR(vec![
                     SimpleClass("CNIT 34220"),
                     Group("NETWORK ENGR GROUPED 455 PREREQ"),
                 ]),
             ),
             (
                 Group("CALC 2"),
-                GroupOR(vec![Class(("MA 16020", 5)), Class(("MA 16600", 4))]),
+                OR(vec![Class(("MA 16020", 5)), Class(("MA 16600", 4))]),
             ),
             (
                 Group("Req1"),
-                GroupOR(vec![Group("TwoClasses"), Class(("Normal", 3))]),
+                OR(vec![Group("TwoClasses"), Class(("Normal", 3))]),
             ),
             (
                 Group("TwoClasses"),
-                GroupAND(vec![Class(("ezclass1", 1)), Class(("ezclass2", 2))]),
+                AND(vec![Class(("ezclass1", 1)), Class(("ezclass2", 2))]),
             ),
-            (Group("Req2t1"), GroupAND(vec![Class(("Normal2t1", 3))])),
-            (Group("Req2t2"), GroupAND(vec![Class(("Normal2t2", 3))])),
+            (Group("Req2t1"), AND(vec![Class(("Normal2t1", 3))])),
+            (Group("Req2t2"), AND(vec![Class(("Normal2t2", 3))])),
+            (SimpleClass("Normal2t2"), AND(vec![Group("TwoClasses")])),
+            (SimpleClass("Normal2t1"), AND(vec![SimpleClass("Normal")])),
+            (SimpleClass("MA 16020"), AND(vec![SimpleClass("MA 16010")])),
+            (SimpleClass("MA 16600"), AND(vec![SimpleClass("MA 16200")])),
             (
-                SimpleClass("Normal2t2"),
-                PrereqAND(vec![Group("TwoClasses")]),
+                Group("Test1"),
+                AND(vec![
+                    Class(("1class.1", 3)),
+                    Class(("1class.2", 3)),
+                    Class(("2class.1", 4)),
+                ]),
+            ),
+            (Group("Test2"), AND(vec![Class(("2class.2", 3))])),
+            (
+                Group("2class.2 prereqs"),
+                OR(vec![SimpleClass("3class.1"), SimpleClass("2class.1")]),
             ),
             (
-                SimpleClass("Normal2t1"),
-                PrereqAND(vec![SimpleClass("Normal")]),
-            ),
-            (
-                SimpleClass("MA 16020"),
-                PrereqAND(vec![SimpleClass("MA 16010")]),
-            ),
-            (
-                SimpleClass("MA 16600"),
-                PrereqAND(vec![SimpleClass("MA 16200")]),
+                SimpleClass("2class.2"),
+                OR(vec![SimpleClass("dont pick me"), Group("2class.2 prereqs")]),
             ),
         ];
 
@@ -367,6 +369,15 @@ impl Catalog {
                     "Tests CALC1 and CALC 2 Requirements",
                 )),
                 vec![Group("CALC 1"), Group("CALC 2")],
+            ),
+            (
+                Degree((
+                    "COMP1",
+                    "Complex Test1",
+                    "Major",
+                    "Tests a complex scenario",
+                )),
+                vec![Group("Test1"), Group("Test 2")],
             ),
             (
                 Degree((
@@ -450,7 +461,7 @@ impl Catalog {
         let catalog = vec![
             (
                 Group("CNIT CORE"),
-                GroupAND(vec![
+                AND(vec![
                     SimpleClass("CNIT 18000"),
                     SimpleClass("CNIT 15501"),
                     SimpleClass("CNIT 17600"),
@@ -465,15 +476,15 @@ impl Catalog {
             ),
             (
                 Group("CNIT DB PROGRAMMING"),
-                GroupOR(vec![SimpleClass("CNIT 37200"), SimpleClass("CNIT 39200")]),
+                OR(vec![SimpleClass("CNIT 37200"), SimpleClass("CNIT 39200")]),
             ),
             (
                 Group("CNIT SYS/APP DEV"),
-                GroupOR(vec![SimpleClass("CNIT 31500"), SimpleClass("CNIT 32500")]),
+                OR(vec![SimpleClass("CNIT 31500"), SimpleClass("CNIT 32500")]),
             ),
             (
                 Group("GENERAL BUSINESS SELECTIVE"),
-                GroupOR(vec![
+                OR(vec![
                     SimpleClass("IET 10400"),
                     SimpleClass("IT 10400"),
                     SimpleClass("TLI 11100"),
@@ -482,7 +493,7 @@ impl Catalog {
             ),
             (
                 Group("UNIV CORE"),
-                GroupAND(vec![
+                AND(vec![
                     SimpleClass("SCLA 10100"),
                     SimpleClass("SCLA 10200"),
                     SimpleClass("TECH 12000"),
@@ -506,91 +517,88 @@ impl Catalog {
             ),
             (
                 Group("CNIT/SAAD INTERDISC"),
-                GroupAND(vec![SimpleClass("INTERDISC 00000")]),
+                AND(vec![SimpleClass("INTERDISC 00000")]),
             ),
             (
                 SimpleClass("CNIT 27000"),
-                PrereqAND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
+                AND(vec![SimpleClass("CNIT 17600"), SimpleClass("CNIT 15501")]),
             ),
             (
                 SimpleClass("CNIT 28000"),
-                PrereqAND(vec![SimpleClass("CNIT 18000")]),
+                AND(vec![SimpleClass("CNIT 18000")]),
             ),
             (
                 SimpleClass("CNIT 25501"),
-                PrereqAND(vec![SimpleClass("CNIT 15501")]),
+                AND(vec![SimpleClass("CNIT 15501")]),
             ),
             (
                 SimpleClass("CNIT 24200"),
-                PrereqAND(vec![SimpleClass("CNIT 17600")]),
+                AND(vec![SimpleClass("CNIT 17600")]),
             ),
             (
                 Class(("CNIT 34010", 1)),
-                PrereqAND(vec![SimpleClass("CNIT 24200")]),
+                AND(vec![SimpleClass("CNIT 24200")]),
             ),
             (
                 SimpleClass("CNIT 34400"),
-                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
+                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 32000"),
-                PrereqAND(vec![SimpleClass("TECH 12000")]),
+                AND(vec![SimpleClass("TECH 12000")]),
             ),
             (
                 SimpleClass("CNIT 37000"),
-                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
+                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 32200"),
-                PrereqAND(vec![SimpleClass("CNIT 27000")]),
+                AND(vec![SimpleClass("CNIT 27000")]),
             ),
             (
                 SimpleClass("CNIT 31500"),
-                PrereqAND(vec![SimpleClass("CNIT 25501")]),
+                AND(vec![SimpleClass("CNIT 25501")]),
             ),
             (
                 SimpleClass("CNIT 34220"),
-                PrereqOR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
+                OR(vec![SimpleClass("CNIT 34000"), Class(("CNIT 34010", 1))]),
             ),
             (
                 SimpleClass("CNIT 47000"),
-                PrereqAND(vec![SimpleClass("CNIT 32000")]),
+                AND(vec![SimpleClass("CNIT 32000")]),
             ),
             (
                 SimpleClass("CNIT 48000"),
-                PrereqAND(vec![SimpleClass("CNIT 28000")]),
+                AND(vec![SimpleClass("CNIT 28000")]),
             ),
             (
                 SimpleClass("CNIT 47100"),
-                PrereqAND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
+                AND(vec![SimpleClass("CNIT 45500"), SimpleClass("CNIT 37000")]),
             ),
             (
                 SimpleClass("CNIT 34000"),
-                PrereqAND(vec![SimpleClass("CNIT 24200")]),
+                AND(vec![SimpleClass("CNIT 24200")]),
             ),
             (
                 SimpleClass("CNIT 34500"),
-                PrereqAND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 24000")]),
+                AND(vec![SimpleClass("CNIT 24200"), SimpleClass("CNIT 24000")]),
             ),
             (
                 SimpleClass("CNIT 34600"),
-                PrereqAND(vec![SimpleClass("CNIT 24000"), SimpleClass("CNIT 24200")]),
+                AND(vec![SimpleClass("CNIT 24000"), SimpleClass("CNIT 24200")]),
             ),
             (
                 Group("NETWORK ENGR GROUPED 455 PREREQ"),
-                GroupOR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
+                OR(vec![SimpleClass("CNIT 34500"), SimpleClass("CNIT 34400")]),
             ),
             (
                 SimpleClass("CNIT 45500"),
-                PrereqAND(vec![
+                AND(vec![
                     SimpleClass("CNIT 34220"),
                     Group("NETWORK ENGR GROUPED 455 PREREQ"),
                 ]),
             ),
-            (
-                Class(("MA 16020", 5)),
-                PrereqAND(vec![Class(("MA 16010", 5))]),
-            ),
+            (Class(("MA 16020", 5)), AND(vec![Class(("MA 16010", 5))])),
         ];
 
         self.parse_initial_catalog(catalog);
@@ -694,19 +702,14 @@ impl Catalog {
 
             let mut indices: Vec<usize> = Vec::new();
             match &logical_type {
-                GroupAND(components)
-                | GroupOR(components)
-                | PrereqAND(components)
-                | PrereqOR(components) => {
+                AND(components) | OR(components) => {
                     self.instantiations_to_indices(&mut indices, components);
                 }
             }
 
             let parsed_logical_type = match &logical_type {
-                GroupAND(_) => ParsedLogicType::GroupAND(indices),
-                GroupOR(_) => ParsedLogicType::GroupOR(indices),
-                PrereqAND(_) => ParsedLogicType::PrereqAND(indices),
-                PrereqOR(_) => ParsedLogicType::PrereqOR(indices),
+                AND(_) => ParsedLogicType::AND(indices),
+                OR(_) => ParsedLogicType::OR(indices),
             };
 
             parsed_assocs.push((parent_component_indice, parsed_logical_type));

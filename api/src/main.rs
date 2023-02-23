@@ -58,7 +58,13 @@ pub async fn get_schedule(
         }
     };
 
-    let mut schedule = ScheduleMaker::new(pg_pool, &degree_name)?;
+    let mut schedule = match ScheduleMaker::new(pg_pool, &degree_name) {
+        Ok(s) => s,
+        Err(e) => {
+            println!("Error in building schedule: {:?}", &e);
+            return Err(e);
+        }
+    };
 
     match schedule.build_schedule() {
         Ok(res) => {

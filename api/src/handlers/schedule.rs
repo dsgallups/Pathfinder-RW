@@ -688,8 +688,8 @@ impl ScheduleMaker {
                     for child in children {
                         //We should handle the error here. Again, this code has been duplicated like three times so we should isolate this lgoic into its own function. This is the same regardless of whether or not this is a prereq
                         
-                        let cost = self.evaluate_prereq(req_holder, child.0, false, nests + 1);
-                        minimal_cost = if cost < minimal_cost { cost } else { minimal_cost }
+                        //let cost = self.evaluate_prereq(req_holder, child.0, false, nests + 1);
+                        //minimal_cost = if cost < minimal_cost { cost } else { minimal_cost }
                     }
 
                 }
