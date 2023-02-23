@@ -296,7 +296,7 @@ impl ScheduleMaker {
 
         println!("Now analyzing graph....");
 
-        self.satisfy_requirements(req_holder, -1, String::from("Group"), Some(String::from("AND")), true, 0)?;
+        self.satisfy_requirements(req_holder, -1, true, 0)?;
         //since this root component has a logic type of AND, all of its requirements MUST
         //be fulfilled
 
@@ -307,8 +307,6 @@ impl ScheduleMaker {
         &mut self,
         req_holder: &mut ReqHolder,
         req_id: i32,
-        pftype: String,
-        logic_type: Option<String>,
         required: bool,
         nests: usize,
     ) -> Result<i32, ScheduleError> {
@@ -323,95 +321,196 @@ impl ScheduleMaker {
             &spacing,
             &req_holder.get_req(req_id).unwrap()
         );
-        /*
-        
-         Evaluating requirements of: 
-         Req { id: 18, name: "CNIT 45500", pftype: "Class", class: Some(Class { id: 15, name: "CNIT 45500", description: None, credits: Some(3), pftype: "class", subject: None, course_no: None, options: None, component_id: Some(18) }), logic_type: Some("PrereqOR"), children: [(25, Unchecked), (27, Unchecked)], parents: [(16, Selected), (15, Unchecked)], in_analysis: false }
-         Children of requirement (req_id: 18) partially evaluated: 
-         With updated children of:
-         [(25, Unchecked), (27, Unchecked)]
 
-
-         Children of requirement fully evaluated: 
-         Req { id: 18, name: "CNIT 45500", pftype: "Class", class: Some(Class { id: 15, name: "CNIT 45500", description: None, credits: Some(3), pftype: "class", subject: None, course_no: None, options: None, component_id: Some(18) }), logic_type: Some("PrereqOR"), children: [(25, Unchecked), (27, Unchecked)], parents: [(16, Selected), (15, Unchecked)], in_analysis: false }
-        
-         */
-        //borrow checker doesn't like that I'm mutating its memory and also calling it.
-        //The easiest way to fix this is to make a clone of it and then set the requirement to that
-        //clone after manipulation. This will decrease performance but is guaranteed to be safe
-        let mut updated_children = req_holder.get_req(req_id).unwrap().children.clone();
-        req_holder.get_req(req_id).unwrap().in_analysis = true;
-        //There is no real other way to do this, because it gets made that I even try
-
-        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
-        //let mut internal_indice: usize = 0;
-        //TODO: determine what this variable is supposed to do
-        for (internal_indice, child) in updated_children.iter_mut().enumerate() {
-            let child_logic_type = req_holder.get_req(child.0).unwrap().logic_type.clone();
-
-            if let Some(logic_type) = &logic_type {
-                match logic_type.as_str() {
-                    
-                    _ => {}
-                }
-            }
+        //This is necessary because we need to clone the req, and we can't clone a reference.
+        if req_holder.get_req(req_id).unwrap().in_analysis {
+            panic!("{}Already in analysis! {}", &spacing, &req_id);
         }
 
-        //After evaluating all the children
-        println!("{}Children of requirement (req_id: {}) partially evaluated: \n{}With updated children of:\n{}{:?}\n\n", 
-            &spacing,
-            &req_id,
-            &spacing,
-            &spacing,
-            &updated_children
-        );
-        if let Some(logic_type) = logic_type {
-            //println!("Logic type: {}", &logic_type);
-            match logic_type.as_str() {
-                _ => {
-                    panic!(
-                        "This component has an invalid logic_type! {:?}",
-                        req_holder.get_req(req_id).unwrap()
-                    )
+        //this ordering of these two lines is PARTICULAR. Do not mix these around.
+        let mut req = req_holder.get_req(req_id).unwrap().clone();
+        req_holder.get_req(req_id).unwrap().in_analysis = true;
+        
+        //Perform logic based on the req's type and logic type.
+        let logic_type = req.logic_type.clone();
+        if req.pftype.eq("Group") {
+            //if it's a group, we can do a few things.
+            if let Some(logic_type) = logic_type {
+                match logic_type.as_str() {
+                    "AND" => {
+                        for child in &mut req.children {
+                            
+                            match self.satisfy_requirements(req_holder, req_id, required, nests) {
+                                Ok(_) => {
+                                    child.1 = Selected;
+
+                                    //This parent also needs to be selected in this child's parents.
+                                    for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                                        if parent.0 == req_id {
+                                            parent.1 = Selected;
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    match e {
+                                        ScheduleError::PrereqError => {
+                                            //If a single child in this GroupAND has a prereqError, the whole
+                                            //group must be thrown away.
+                                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
+                                            &spacing, req_id, child.0);
+    
+                                            child.1 = Unsuitable;
+                                            carried_result = Err(e);
+                                            break;
+                                        }
+                                        _ => panic!("GroupAND recieved a child with an invalid error!"),
+                                    }
+                                }
+                            }
+                        }
+                    } //End GroupAND logic
+                    "OR" => {
+                        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+
+                        for (internal_indice, child) in req.children.iter_mut().enumerate() {
+                            
+                            match self.satisfy_requirements(req_holder, req_id, required, nests) {
+                                Ok(result) => {
+                                    minimal_cost = if result < minimal_cost.1 {
+                                        (internal_indice, result)
+                                    } else {
+                                        minimal_cost
+                                    };
+    
+                                    child.1 = Checked;
+                                    //also check the parent
+                                    for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                                        if parent.0 == req_id {
+                                            parent.1 = Checked;
+                                            break;
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    //This means that something was wrong with this particular requirement
+                                    //and therefore should be labeled as unsuitable
+    
+                                    match e {
+                                        ScheduleError::PrereqError => {
+                                            //this means that this child is not suitable for use
+                                            //however since this is OR logic, we can keep evaluating children.
+                                            //unlike groupAND.
+                                            child.1 = Unsuitable;
+                                        }
+                                        _ => panic!("GroupOR recieved a child with an invalid error!"),
+                                    }
+                                }
+                            }
+                        }
+                    } //End GroupOR logic
+                    _ => panic!("Invalid logic type for Group {:?}", req)
                 }
+            } else {
+                panic!("This group has no logic type! {:?}", req);
+            }
+
+        } else if req.pftype.eq("Class") {
+            
+            if let Some(logic_type) = logic_type {
+                match logic_type.as_str() {
+                    "AND" => {
+                        for child in &mut req.children {
+                            
+                            match self.satisfy_requirements(req_holder, req_id, required, nests) {
+                                Ok(_) => {
+                                    child.1 = Selected;
+
+                                    //This parent also needs to be selected in this child's parents.
+                                    for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                                        if parent.0 == req_id {
+                                            parent.1 = Selected;
+                                        }
+                                    }
+                                }
+                                Err(e) => {
+                                    match e {
+                                        ScheduleError::PrereqError => {
+                                            //If a single child in this GroupAND has a prereqError, the whole
+                                            //group must be thrown away.
+                                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
+                                            &spacing, req_id, child.0);
+    
+                                            child.1 = Unsuitable;
+                                            carried_result = Err(e);
+                                            break;
+                                        }
+                                        _ => panic!("GroupAND recieved a child with an invalid error!"),
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    "OR" => {
+                        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+
+                        'child: for (internal_indice, child) in req.children.iter_mut().enumerate() {
+                            //We need to check the parent's of this child to see if
+                            //it's part of other requirements and was overlooked.
+                            let childrens_parents = req_holder.get_req(child.0).unwrap().parents.clone();
+
+                            'child_parents: for parent in childrens_parents {
+                                //we must make sure that this child's parent is not the current requirement
+                                //Nor is another class. when that happens, this code will run and will satisfy
+                                //any issues.
+                                if parent.0 == req_id || req_holder.get_req(parent.0).unwrap().pftype.eq("Class") {
+                                    continue 'child_parents;
+                                }
+                                //Now, let's take a simple example. Let's say this child is a class without
+                                //prereqs. If it's selected by another parent/group, its cost will be zero.
+                                if parent.1 == Selected {
+                                    //If even one parent has this child as selected, we can say, alright.
+                                    //break here. It's good enough. This may not necessarily be true, though.
+                                    child.1 = Checked;
+                                    minimal_cost = (internal_indice, 0);
+                                    break 'child;
+                                }
+                            }
+                        }
+
+                        println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
+                        req.children[minimal_cost.0].1 = Selected;
+                        let child_id_in_req_holder =
+                        req_holder.get_req(req_id).unwrap().children[minimal_cost.0].0;
+
+                        //Note that we aren't copying this and setting the value to it. We are
+                        //going straight to the value in self.reqs and changing it.
+
+                        for parent in &mut req_holder.get_req(child_id_in_req_holder).unwrap().parents {
+                            if parent.0 == req_id {
+                                parent.1 = Selected;
+                                break;
+                            }
+                        }
+                    }
+                    _ => panic!("Invalid logic type for Class {:?}", req)
+                }
+            } else {
+                panic!("This Class has no logic type! {:?}", req);
             }
         } else {
-            //No logic type
-            //Check this class's value
-            if !req_holder.get_req(req_id).unwrap().pftype.eq("Class") {
-                panic!(
-                    "{}Requirement is NOT a class and has a logic_type of NONE: {:?}",
-                    &spacing,
-                    &req_holder.get_req(req_id).unwrap()
-                );
-            }
+            panic!("This reqs pftype is currently unsupported! {:?}", req);
         }
 
-        //finally update the req's children
-        let requirement = req_holder.get_req(req_id).unwrap();
-        requirement.children = updated_children;
-        requirement.in_analysis = false;
+        //No need to set in_analysis to false, because our clone never had in_analysis set to true.
+        //req_holder.get_req(req_id).unwrap().in_analysis = false;
+        *req_holder.get_req(req_id).unwrap() = req;
 
-        if requirement.pftype.eq("Class") {
-            carried_result = match carried_result {
-                Ok(_) => Ok(req_holder
-                    .get_req(req_id)
-                    .unwrap()
-                    .class
-                    .as_ref()
-                    .unwrap()
-                    .credits
-                    .unwrap()),
-                Err(_) => carried_result,
-            }
-        }
         println!(
             "{}Children of requirement fully evaluated: \n{}{:?}\n",
             &spacing,
             &spacing,
             &req_holder.get_req(req_id).unwrap()
         );
-
         carried_result
     }
 
