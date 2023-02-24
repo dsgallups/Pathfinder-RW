@@ -628,11 +628,17 @@ impl ScheduleMaker {
                                     }
                                 }
                             };
+                            child.2 = Some(cost);
                             if minimal_cost.1 > cost {
                                 minimal_cost = (internal_indice, cost);
                             };
                             *req_holder.get_req(child.0).unwrap() = child_req;
                         }
+
+                        //Now we return the minimal cost found and set it either to
+                        //desirable or selected. TODO tomorrow.
+                        println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
+                        req.children[minimal_cost.0].1 = Selected;
                     }
                     _ => panic!("eval_prereq(): Invalid logic type for Group {:?}", req),
                 }
@@ -687,21 +693,27 @@ impl ScheduleMaker {
                                 Unsuitable => {
                                     panic!("Unhandled behavior! parent found this req unsuitable!")
                                 }
-
+                                Unchecked => {
+                                    //If this req is unchecked, we can just return unchecked.
+                                    panic!("{}This req (req_id: {}) is unchecked after parent evaluation!", &spacing, req.id);
+                                }
                                 Checked => {
                                     //This means that it was not selected, and we should do something.
                                     //Set this req to desirable.
-                                    self.reconsider_prereq(&mut parent_req, req.id, nests + 1);
-
-                                    return Ok(0);
+                                    for child in parent_req.children.iter_mut() {
+                                        if child.0 == req.id {
+                                            child.1 = Desirable;
+                                        }
+                                    }
                                 }
                                 Desirable => {
-                                    //If this req is desirable, we can just return desirable.
+                                    //TODO
                                     println!(
                                         "{}This req (req_id: {}) is desirable!",
                                         &spacing, req.id
                                     );
-                                    return Ok(1);
+                                    //return the difference between this class's credits and the cost.
+                                    panic!("unimiplemented!");
                                 }
                                 Selected => {
                                     //If this req is selected, we can just return selected.
@@ -709,15 +721,11 @@ impl ScheduleMaker {
                                         "{}This req (req_id: {}) is selected!",
                                         &spacing, req.id
                                     );
-                                    return Ok(2);
-                                }
-                                Unchecked => {
-                                    //If this req is unchecked, we can just return unchecked.
-                                    panic!("{}This req (req_id: {}) is unchecked after parent evaluation!", &spacing, req.id);
                                 }
                             }
 
                             *req_holder.get_req(parent.0).unwrap() = parent_req;
+                            return Ok(req.class.as_ref().unwrap().credits.unwrap() - cost);
                         }
                         Unsuitable => {}
                         Checked => {}
