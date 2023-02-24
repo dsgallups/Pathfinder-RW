@@ -321,7 +321,7 @@ impl ScheduleMaker {
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
-        let mut carried_result: Result<i32, ScheduleError> = Ok(0);
+        let mut carried_result: Result<i32, ScheduleError> = Ok(-1);
         println!(
             "\n{}Evaluating requirements of: \n{}{:?}",
             &spacing, &spacing, &req
@@ -343,114 +343,9 @@ impl ScheduleMaker {
             if let Some(logic_type) = logic_type {
                 match logic_type.as_str() {
                     "AND" => {
-                        for child in &mut req.children {
-                            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
-                            req_holder.get_req(child.0).unwrap().in_analysis = true;
-
-                            match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
-                                Ok(cost) => {
-                                    child.1 = Selected;
-                                    child.2 = Some(cost);
-
-                                    //This parent also needs to be selected in this child's parents.
-                                    for parent in &mut child_req.parents {
-                                        if parent.0 == req.id {
-                                            parent.1 = Selected;
-                                        }
-                                    }
-                                }
-                                Err(e) => {
-                                    match e {
-                                        ScheduleError::PrereqError => {
-                                            //If a single child in this GroupAND has a prereqError, the whole
-                                            //group must be thrown away.
-                                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
-                                            &spacing, req.id, child.0);
-
-                                            child.1 = Unsuitable;
-                                            carried_result = Err(e);
-                                            break;
-                                        }
-                                        _ => panic!(
-                                            "GroupAND recieved a child with an invalid error!"
-                                        ),
-                                    }
-                                }
-                            }
-                            *req_holder.get_req(child.0).unwrap() = child_req;
-                        }
-                    } //End GroupAND logic
-                    "OR" => {
-                        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
-
-                        for (internal_indice, child) in req.children.iter_mut().enumerate() {
-                            //Check to see if the children were already checked.
-                            //If they were checked, we just need to continue
-                            if child.1 != Unchecked {
-                                //Figure out if this child is the minimal cost
-                                if let Some(child_cost) = child.2 {
-                                    minimal_cost = if child_cost < minimal_cost.1 {
-                                        (internal_indice, child_cost)
-                                    } else {
-                                        minimal_cost
-                                    };
-                                }
-                                continue;
-                            }
-
-                            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
-                            req_holder.get_req(child.0).unwrap().in_analysis = true;
-
-                            match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
-                                Ok(result) => {
-                                    child.2 = Some(result);
-                                    minimal_cost = if result < minimal_cost.1 {
-                                        (internal_indice, result)
-                                    } else {
-                                        minimal_cost
-                                    };
-
-                                    child.1 = Checked;
-                                    //also check the parent
-                                    for parent in &mut child_req.parents {
-                                        if parent.0 == req.id {
-                                            parent.1 = Checked;
-                                            break;
-                                        }
-                                    }
-                                }
-                                Err(e) => {
-                                    //This means that something was wrong with this particular requirement
-                                    //and therefore should be labeled as unsuitable
-
-                                    match e {
-                                        ScheduleError::PrereqError => {
-                                            //this means that this child is not suitable for use
-                                            //however since this is OR logic, we can keep evaluating children.
-                                            //unlike groupAND.
-                                            child.1 = Unsuitable;
-                                        }
-                                        _ => panic!(
-                                            "GroupOR recieved a child with an invalid error!"
-                                        ),
-                                    }
-                                }
-                            }
-                            *req_holder.get_req(child.0).unwrap() = child_req;
-                        }
-
-                        //Now we just need to select the minimal cost child.
-                        let selected_child = &mut req.children[minimal_cost.0];
-                        selected_child.1 = Selected;
-                        for parent in &mut req_holder.get_req(selected_child.0).unwrap().parents {
-                            if parent.0 == req.id {
-                                parent.1 = Selected;
-                                break;
-                            }
-                        }
-                        //finally, return the minimal cost
-                        return Ok(minimal_cost.1);
-                    } //End GroupOR logic
+                        self.evaluate_group_AND_req(req_holder, req, &mut carried_result, nests)
+                    }
+                    "OR" => self.evaluate_group_OR_req(req_holder, req, &mut carried_result, nests),
                     _ => panic!("Invalid logic type for Group {:?}", req),
                 }
             } else {
@@ -460,98 +355,11 @@ impl ScheduleMaker {
             if let Some(logic_type) = logic_type {
                 match logic_type.as_str() {
                     "AND" => {
-                        for child in &mut req.children {
-                            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
-                            req_holder.get_req(child.0).unwrap().in_analysis = true;
-                            match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
-                                Ok(cost) => {
-                                    child.2 = Some(cost);
-                                    child.1 = Selected;
-
-                                    //This parent also needs to be selected in this child's parents.
-                                    for parent in &mut req_holder.get_req(child.0).unwrap().parents
-                                    {
-                                        if parent.0 == req.id {
-                                            parent.1 = Selected;
-                                        }
-                                    }
-                                }
-                                Err(e) => {
-                                    match e {
-                                        ScheduleError::PrereqError => {
-                                            //If a single child in this GroupAND has a prereqError, the whole
-                                            //group must be thrown away.
-                                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
-                                            &spacing, req.id, child.0);
-
-                                            child.1 = Unsuitable;
-                                            carried_result = Err(e);
-                                            break;
-                                        }
-                                        _ => panic!(
-                                            "GroupAND recieved a child with an invalid error!"
-                                        ),
-                                    }
-                                }
-                            }
-                            *req_holder.get_req(child.0).unwrap() = child_req;
-                        }
+                        self.evaluate_class_AND_req(req_holder, req, &mut carried_result, nests)
                     }
-                    "OR" => {
-                        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
-                        for (internal_indice, child) in req.children.iter_mut().enumerate() {
-                            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
-                            req_holder.get_req(child.0).unwrap().in_analysis = true;
+                    "OR" => self.evaluate_class_OR_req(req_holder, req, &mut carried_result, nests),
 
-                            let cost = match self.evaluate_prereq(
-                                req_holder,
-                                req.id,
-                                &mut child_req,
-                                nests + 1,
-                            ) {
-                                Ok(cost) => cost,
-                                Err(e) => {
-                                    match e {
-                                        ScheduleError::PrereqError => {
-                                            //this means that this child is not suitable for use
-                                            //however since this is OR logic, we can keep evaluating children.
-                                            //unlike groupAND.
-                                            child.1 = Unsuitable;
-                                            continue;
-                                        }
-                                        _ => panic!(
-                                            "GroupOR recieved a child with an invalid error!"
-                                        ),
-                                    }
-                                }
-                            };
-                            child.2 = Some(cost);
-
-                            if minimal_cost.1 > cost {
-                                minimal_cost = (internal_indice, cost);
-                            };
-                            *req_holder.get_req(child.0).unwrap() = child_req;
-                        }
-
-                        println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
-                        req.children[minimal_cost.0].1 = Selected;
-                        let child_id_in_req_holder = req.children[minimal_cost.0].0;
-
-                        //Note that we aren't copying this and setting the value to it. We are
-                        //going straight to the value in self.reqs and changing it.
-
-                        for parent in
-                            &mut req_holder.get_req(child_id_in_req_holder).unwrap().parents
-                        {
-                            if parent.0 == req.id {
-                                parent.1 = Selected;
-                                break;
-                            }
-                        }
-
-                        //If this has none of the prior conditions have been met, this child
-                    }
                     _ => panic!("Invalid logic type for Class {:?}", req),
                 }
             } else {
@@ -747,6 +555,232 @@ impl ScheduleMaker {
                 child.1 = Desirable;
             }
         }
+    }
+
+    fn evaluate_group_AND_req(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req: &mut Req,
+        carried_result: &mut Result<i32, ScheduleError>,
+        nests: usize,
+    ) {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+        let mut carried_result: Result<i32, ScheduleError> = Ok(0);
+
+        for child in &mut req.children {
+            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+            req_holder.get_req(child.0).unwrap().in_analysis = true;
+
+            match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
+                Ok(cost) => {
+                    child.1 = Selected;
+                    child.2 = Some(cost);
+
+                    //This parent also needs to be selected in this child's parents.
+                    for parent in &mut child_req.parents {
+                        if parent.0 == req.id {
+                            parent.1 = Selected;
+                        }
+                    }
+                }
+                Err(e) => {
+                    match e {
+                        ScheduleError::PrereqError => {
+                            //If a single child in this GroupAND has a prereqError, the whole
+                            //group must be thrown away.
+                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
+                            &spacing, req.id, child.0);
+
+                            child.1 = Unsuitable;
+                            carried_result = Err(e);
+                            break;
+                        }
+                        _ => panic!("GroupAND recieved a child with an invalid error!"),
+                    }
+                }
+            }
+            *req_holder.get_req(child.0).unwrap() = child_req;
+        }
+    }
+
+    fn evaluate_group_OR_req(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req: &mut Req,
+        carried_result: &mut Result<i32, ScheduleError>,
+        nests: usize,
+    ) {
+        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+
+        for (internal_indice, child) in req.children.iter_mut().enumerate() {
+            //Check to see if the children were already checked.
+            //If they were checked, we just need to continue
+            if child.1 != Unchecked {
+                //Figure out if this child is the minimal cost
+                if let Some(child_cost) = child.2 {
+                    minimal_cost = if child_cost < minimal_cost.1 {
+                        (internal_indice, child_cost)
+                    } else {
+                        minimal_cost
+                    };
+                }
+                continue;
+            }
+
+            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+            req_holder.get_req(child.0).unwrap().in_analysis = true;
+
+            match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
+                Ok(result) => {
+                    child.2 = Some(result);
+                    minimal_cost = if result < minimal_cost.1 {
+                        (internal_indice, result)
+                    } else {
+                        minimal_cost
+                    };
+
+                    child.1 = Checked;
+                    //also check the parent
+                    for parent in &mut child_req.parents {
+                        if parent.0 == req.id {
+                            parent.1 = Checked;
+                            break;
+                        }
+                    }
+                }
+                Err(e) => {
+                    //This means that something was wrong with this particular requirement
+                    //and therefore should be labeled as unsuitable
+
+                    match e {
+                        ScheduleError::PrereqError => {
+                            //this means that this child is not suitable for use
+                            //however since this is OR logic, we can keep evaluating children.
+                            //unlike groupAND.
+                            child.1 = Unsuitable;
+                        }
+                        _ => panic!("GroupOR recieved a child with an invalid error!"),
+                    }
+                }
+            }
+            *req_holder.get_req(child.0).unwrap() = child_req;
+        }
+
+        //Now we just need to select the minimal cost child.
+        let selected_child = &mut req.children[minimal_cost.0];
+        selected_child.1 = Selected;
+        for parent in &mut req_holder.get_req(selected_child.0).unwrap().parents {
+            if parent.0 == req.id {
+                parent.1 = Selected;
+                break;
+            }
+        }
+        *carried_result = Ok(minimal_cost.1);
+    }
+
+    fn evaluate_class_AND_req(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req: &mut Req,
+        carried_result: &mut Result<i32, ScheduleError>,
+        nests: usize,
+    ) {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+
+        for child in &mut req.children {
+            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+            req_holder.get_req(child.0).unwrap().in_analysis = true;
+            match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
+                Ok(cost) => {
+                    child.2 = Some(cost);
+                    child.1 = Selected;
+
+                    //This parent also needs to be selected in this child's parents.
+                    for parent in &mut req_holder.get_req(child.0).unwrap().parents {
+                        if parent.0 == req.id {
+                            parent.1 = Selected;
+                        }
+                    }
+                }
+                Err(e) => {
+                    match e {
+                        ScheduleError::PrereqError => {
+                            //If a single child in this GroupAND has a prereqError, the whole
+                            //group must be thrown away.
+                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
+                            &spacing, req.id, child.0);
+
+                            child.1 = Unsuitable;
+                            *carried_result = Err(e);
+                            break;
+                        }
+                        _ => panic!("GroupAND recieved a child with an invalid error!"),
+                    }
+                }
+            }
+            *req_holder.get_req(child.0).unwrap() = child_req;
+        }
+    }
+
+    fn evaluate_class_OR_req(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req: &mut Req,
+        carried_result: &mut Result<i32, ScheduleError>,
+        nests: usize,
+    ) {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+
+        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+
+        for (internal_indice, child) in req.children.iter_mut().enumerate() {
+            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+            req_holder.get_req(child.0).unwrap().in_analysis = true;
+
+            let cost = match self.evaluate_prereq(req_holder, req.id, &mut child_req, nests + 1) {
+                Ok(cost) => cost,
+                Err(e) => {
+                    match e {
+                        ScheduleError::PrereqError => {
+                            //this means that this child is not suitable for use
+                            //however since this is OR logic, we can keep evaluating children.
+                            //unlike groupAND.
+                            child.1 = Unsuitable;
+                            continue;
+                        }
+                        _ => panic!("GroupOR recieved a child with an invalid error!"),
+                    }
+                }
+            };
+            child.2 = Some(cost);
+
+            if minimal_cost.1 > cost {
+                minimal_cost = (internal_indice, cost);
+            };
+            *req_holder.get_req(child.0).unwrap() = child_req;
+        }
+
+        println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
+        req.children[minimal_cost.0].1 = Selected;
+        let child_id_in_req_holder = req.children[minimal_cost.0].0;
+
+        //Note that we aren't copying this and setting the value to it. We are
+        //going straight to the value in self.reqs and changing it.
+
+        for parent in &mut req_holder.get_req(child_id_in_req_holder).unwrap().parents {
+            if parent.0 == req.id {
+                parent.1 = Selected;
+                break;
+            }
+        }
+
+        //If this has none of the prior conditions have been met, this child
     }
 
     fn build_queue(
