@@ -94,7 +94,7 @@ impl ReqHolder {
 
         if let Some(parent_req) = self.get_req(parent_id) {
             println!("{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})");
-            parent_req.children.push((child_id, Unchecked));
+            parent_req.children.push((child_id, Unchecked, None));
         }
 
         Ok(())
@@ -327,13 +327,14 @@ impl ScheduleMaker {
             &spacing, &spacing, &req
         );
 
-        //This is necessary because we need to clone the req, and we can't clone a reference.
+        //The root component will say it is in analysis, but the cloned will not.
+        //This probably won't matter. But might matter in the future.
         if req.in_analysis {
             panic!("{}Already in analysis! {:?}", &spacing, &req);
         }
 
         //this ordering of these two lines is PARTICULAR. Do not mix these around.
-        req.in_analysis = true;
+        //req.in_analysis = true;
 
         //Perform logic based on the req's type and logic type.
         let logic_type = req.logic_type.clone();
@@ -345,9 +346,11 @@ impl ScheduleMaker {
                         for child in &mut req.children {
                             let mut child_req = req_holder.get_req(child.0).unwrap().clone();
                             req_holder.get_req(child.0).unwrap().in_analysis = true;
+
                             match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
-                                Ok(_) => {
+                                Ok(cost) => {
                                     child.1 = Selected;
+                                    child.2 = Some(cost);
 
                                     //This parent also needs to be selected in this child's parents.
                                     for parent in &mut child_req.parents {
@@ -381,10 +384,26 @@ impl ScheduleMaker {
                         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
                         for (internal_indice, child) in req.children.iter_mut().enumerate() {
+                            //Check to see if the children were already checked.
+                            //If they were checked, we just need to continue
+                            if child.1 != Unchecked {
+                                //Figure out if this child is the minimal cost
+                                if let Some(child_cost) = child.2 {
+                                    minimal_cost = if child_cost < minimal_cost.1 {
+                                        (internal_indice, child_cost)
+                                    } else {
+                                        minimal_cost
+                                    };
+                                }
+                                continue;
+                            }
+
                             let mut child_req = req_holder.get_req(child.0).unwrap().clone();
                             req_holder.get_req(child.0).unwrap().in_analysis = true;
+
                             match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
                                 Ok(result) => {
+                                    child.2 = Some(result);
                                     minimal_cost = if result < minimal_cost.1 {
                                         (internal_indice, result)
                                     } else {
@@ -419,6 +438,18 @@ impl ScheduleMaker {
                             }
                             *req_holder.get_req(child.0).unwrap() = child_req;
                         }
+
+                        //Now we just need to select the minimal cost child.
+                        let selected_child = &mut req.children[minimal_cost.0];
+                        selected_child.1 = Selected;
+                        for parent in &mut req_holder.get_req(selected_child.0).unwrap().parents {
+                            if parent.0 == req.id {
+                                parent.1 = Selected;
+                                break;
+                            }
+                        }
+                        //finally, return the minimal cost
+                        return Ok(minimal_cost.1);
                     } //End GroupOR logic
                     _ => panic!("Invalid logic type for Group {:?}", req),
                 }
@@ -433,7 +464,8 @@ impl ScheduleMaker {
                             let mut child_req = req_holder.get_req(child.0).unwrap().clone();
                             req_holder.get_req(child.0).unwrap().in_analysis = true;
                             match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
-                                Ok(_) => {
+                                Ok(cost) => {
+                                    child.2 = Some(cost);
                                     child.1 = Selected;
 
                                     //This parent also needs to be selected in this child's parents.
@@ -468,10 +500,10 @@ impl ScheduleMaker {
                     "OR" => {
                         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
-                        'child: for (internal_indice, child) in req.children.iter_mut().enumerate()
-                        {
+                        for (internal_indice, child) in req.children.iter_mut().enumerate() {
                             let mut child_req = req_holder.get_req(child.0).unwrap().clone();
                             req_holder.get_req(child.0).unwrap().in_analysis = true;
+
                             let cost = match self.evaluate_prereq(
                                 req_holder,
                                 req.id,
@@ -486,7 +518,7 @@ impl ScheduleMaker {
                                             //however since this is OR logic, we can keep evaluating children.
                                             //unlike groupAND.
                                             child.1 = Unsuitable;
-                                            continue 'child;
+                                            continue;
                                         }
                                         _ => panic!(
                                             "GroupOR recieved a child with an invalid error!"
@@ -494,6 +526,7 @@ impl ScheduleMaker {
                                     }
                                 }
                             };
+                            child.2 = Some(cost);
 
                             if minimal_cost.1 > cost {
                                 minimal_cost = (internal_indice, cost);
@@ -557,15 +590,155 @@ impl ScheduleMaker {
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
         println!("{}Evaluating prereq (req_id: {})", &spacing, req.id);
 
+        let logic_type = req.logic_type.clone();
         if req.pftype.eq("Group") {
             //If this is a group, we have to run logic that's different from our evaluate_prereq.
             //let cost = self.satisfy_requirements(req_holder, req_id, nests)?;
+            if let Some(logic_type) = logic_type {
+                match logic_type.as_str() {
+                    "AND" => {}
+                    "OR" => {
+                        //This logic is pretty much identical to a Class's OR logic in evaluate prereq. Optimize in the future?
+                        let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+
+                        for (internal_indice, child) in req.children.iter_mut().enumerate() {
+                            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+                            req_holder.get_req(child.0).unwrap().in_analysis = true;
+                            let cost = match self.evaluate_prereq(
+                                req_holder,
+                                req.id,
+                                &mut child_req,
+                                nests + 1,
+                            ) {
+                                Ok(cost) => cost,
+                                Err(e) => {
+                                    match e {
+                                        ScheduleError::PrereqError => {
+                                            //If a single child in this GroupAND has a prereqError, the whole
+                                            //group must be thrown away.
+                                            println!("{}This Group (req_id: {}) has a child (req_id: {}) with a PrereqError!",
+                                            &spacing, req.id, child.0);
+
+                                            child.1 = Unsuitable;
+                                            return Err(e);
+                                        }
+                                        _ => panic!(
+                                            "GroupAND recieved a child with an invalid error!"
+                                        ),
+                                    }
+                                }
+                            };
+                            if minimal_cost.1 > cost {
+                                minimal_cost = (internal_indice, cost);
+                            };
+                            *req_holder.get_req(child.0).unwrap() = child_req;
+                        }
+                    }
+                    _ => panic!("eval_prereq(): Invalid logic type for Group {:?}", req),
+                }
+            } else {
+                panic!("eval_prereq(): Group has no logic type! {:?}", req);
+            }
         } else if req.pftype.eq("Class") {
+            if let Some(logic_type) = logic_type {
+                //Do something
+            } else {
+                //No logic type, so we need to evaluate this parent.
+
+                for parent in &mut req.parents {
+                    //So we need to NOT evalute classes.
+                    if req_holder.get_req(parent.0).unwrap().pftype.eq("Class") {
+                        continue;
+                    }
+
+                    //check the status.
+                    match parent.1 {
+                        Unchecked => {
+                            //If this is unchecked, this means it's been unevaluated.
+                            //We need to evaluate it.
+                            let mut parent_req = req_holder.get_req(parent.0).unwrap().clone();
+                            req_holder.get_req(parent.0).unwrap().in_analysis = true;
+                            //todo:
+                            let cost = match self.satisfy_requirements(
+                                req_holder,
+                                &mut parent_req,
+                                nests + 1,
+                            ) {
+                                Ok(cost) => cost,
+                                Err(e) => {
+                                    //for now, we just return our error. But I imagine this will be implemented in the future.
+                                    return Err(e);
+                                }
+                            };
+
+                            //So this parent will have mutated this req's status and set it in the req_holder but THIS FUNCTION OWNS it officially. So we'll want to rerun the logic here. The other req doesn't matter, because it's just chillin
+                            //in the req_holder.
+                            //We'll actually wanna get this value from our req_holder
+                            let new_status = (&parent_req
+                                .children
+                                .iter()
+                                .find(|x| x.0 == req.id)
+                                .unwrap()
+                                .1)
+                                .to_owned();
+                            parent.1 = new_status;
+                            //Now that we have a status
+                            match parent.1 {
+                                Unsuitable => {
+                                    panic!("Unhandled behavior! parent found this req unsuitable!")
+                                }
+
+                                Checked => {
+                                    //This means that it was not selected, and we should do something.
+                                    //Set this req to desirable.
+                                    self.reconsider_prereq(&mut parent_req, req.id, nests + 1);
+
+                                    return Ok(0);
+                                }
+                                Desirable => {
+                                    //If this req is desirable, we can just return desirable.
+                                    println!(
+                                        "{}This req (req_id: {}) is desirable!",
+                                        &spacing, req.id
+                                    );
+                                    return Ok(1);
+                                }
+                                Selected => {
+                                    //If this req is selected, we can just return selected.
+                                    println!(
+                                        "{}This req (req_id: {}) is selected!",
+                                        &spacing, req.id
+                                    );
+                                    return Ok(2);
+                                }
+                                Unchecked => {
+                                    //If this req is unchecked, we can just return unchecked.
+                                    panic!("{}This req (req_id: {}) is unchecked after parent evaluation!", &spacing, req.id);
+                                }
+                            }
+
+                            *req_holder.get_req(parent.0).unwrap() = parent_req;
+                        }
+                        Unsuitable => {}
+                        Checked => {}
+                        Desirable => {}
+                        Selected => {}
+                    }
+                }
+            }
         } else {
             panic!("This reqs pftype is currently unsupported! {:?}", req);
         }
         //TODO: this is -1 because it should not reach this point for now.
         Ok(-1)
+    }
+
+    fn reconsider_prereq(&self, req: &mut Req, child_id: i32, nests: usize) {
+        for child in req.children.iter_mut() {
+            if child.0 == child_id {
+                child.1 = Desirable;
+            }
+        }
     }
 
     fn build_queue(

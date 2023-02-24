@@ -77,7 +77,7 @@ pub struct Req {
     pub pftype: String,
     pub class: Option<Class>,
     pub logic_type: Option<String>,
-    pub children: Vec<(i32, Status)>,
+    pub children: Vec<(i32, Status, Option<i32>)>,
     pub parents: Vec<(i32, Status)>,
     pub in_analysis: bool,
 }
