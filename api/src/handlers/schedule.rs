@@ -453,6 +453,8 @@ impl ScheduleMaker {
             } else {
                 panic!("eval_prereq(): Group has no logic type! {:?}", req);
             }
+
+        //--------------------------CLASS--------------------------
         } else if req.pftype.eq("Class") {
             if let Some(logic_type) = logic_type {
                 //Do something
@@ -460,24 +462,21 @@ impl ScheduleMaker {
                 //No logic type, so we need to evaluate this parent.
 
                 for parent in &mut req.parents {
+                    let mut parent_req = req_holder.get_req(parent.0).unwrap().clone();
+                    req_holder.get_req(parent.0).unwrap().in_analysis = true;
+
+                    let mut cost = i32::MAX;
                     //So we need to NOT evalute classes.
                     if req_holder.get_req(parent.0).unwrap().pftype.eq("Class") {
                         continue;
                     }
-
-                    //check the status.
-                    match parent.1 {
-                        Unchecked => {
-                            //If this is unchecked, this means it's been unevaluated.
-                            //We need to evaluate it.
-                            let mut parent_req = req_holder.get_req(parent.0).unwrap().clone();
-                            req_holder.get_req(parent.0).unwrap().in_analysis = true;
-                            //todo:
-                            let cost = match self.satisfy_requirements(
-                                req_holder,
-                                &mut parent_req,
-                                nests + 1,
-                            ) {
+                    if parent.1 == Unchecked {
+                        //If this is unchecked, this means it's been unevaluated.
+                        //We need to evaluate it.
+                        //todo:
+                        cost =
+                            match self.satisfy_requirements(req_holder, &mut parent_req, nests + 1)
+                            {
                                 Ok(cost) => cost,
                                 Err(e) => {
                                     //for now, we just return our error. But I imagine this will be implemented in the future.
@@ -485,61 +484,55 @@ impl ScheduleMaker {
                                 }
                             };
 
-                            //So this parent will have mutated this req's status and set it in the req_holder but THIS FUNCTION OWNS it officially. So we'll want to rerun the logic here. The other req doesn't matter, because it's just chillin
-                            //in the req_holder.
-                            //We'll actually wanna get this value from our req_holder
-                            let new_status = (&parent_req
-                                .children
-                                .iter()
-                                .find(|x| x.0 == req.id)
-                                .unwrap()
-                                .1)
-                                .to_owned();
-                            parent.1 = new_status;
-                            //Now that we have a status
-                            match parent.1 {
-                                Unsuitable => {
-                                    panic!("Unhandled behavior! parent found this req unsuitable!")
-                                }
-                                Unchecked => {
-                                    //If this req is unchecked, we can just return unchecked.
-                                    panic!("{}This req (req_id: {}) is unchecked after parent evaluation!", &spacing, req.id);
-                                }
-                                Checked => {
-                                    //This means that it was not selected, and we should do something.
-                                    //Set this req to desirable.
-                                    for child in parent_req.children.iter_mut() {
-                                        if child.0 == req.id {
-                                            child.1 = Desirable;
-                                        }
-                                    }
-                                }
-                                Desirable => {
-                                    //TODO
-                                    println!(
-                                        "{}This req (req_id: {}) is desirable!",
-                                        &spacing, req.id
-                                    );
-                                    //return the difference between this class's credits and the cost.
-                                    panic!("unimiplemented!");
-                                }
-                                Selected => {
-                                    //If this req is selected, we can just return selected.
-                                    println!(
-                                        "{}This req (req_id: {}) is selected!",
-                                        &spacing, req.id
-                                    );
+                        //So this parent will have mutated this req's status and set it in the req_holder but THIS FUNCTION OWNS it officially. So we'll want to rerun the logic here. The other req doesn't matter, because it's just chillin
+                        //in the req_holder.
+                        //We'll actually wanna get this value from our req_holder
+                        let new_status = (&parent_req
+                            .children
+                            .iter()
+                            .find(|x| x.0 == req.id)
+                            .unwrap()
+                            .1)
+                            .to_owned();
+                        parent.1 = new_status;
+                        //Now that we have a status
+                    }
+
+                    //check the status.
+                    match parent.1 {
+                        Unsuitable => {
+                            panic!("Unhandled behavior! parent found this req unsuitable!")
+                        }
+                        Unchecked => {
+                            //If this req is unchecked, we can just return unchecked.
+                            panic!(
+                                "{}This req (req_id: {}) is unchecked after parent evaluation!",
+                                &spacing, req.id
+                            );
+                        }
+                        Checked => {
+                            //This means that it was not selected, and we should do something.
+                            //Set this req to desirable.
+                            for child in parent_req.children.iter_mut() {
+                                if child.0 == req.id {
+                                    child.1 = Desirable;
                                 }
                             }
-
-                            *req_holder.get_req(parent.0).unwrap() = parent_req;
-                            return Ok(req.class.as_ref().unwrap().credits.unwrap() - cost);
                         }
-                        Unsuitable => {}
-                        Checked => {}
-                        Desirable => {}
-                        Selected => {}
+                        Desirable => {
+                            //TODO
+                            println!("{}This req (req_id: {}) is desirable!", &spacing, req.id);
+                            //return the difference between this class's credits and the cost.
+                            panic!("unimiplemented!");
+                        }
+                        Selected => {
+                            //If this req is selected, we can just return selected.
+                            println!("{}This req (req_id: {}) is selected!", &spacing, req.id);
+                        }
                     }
+
+                    *req_holder.get_req(parent.0).unwrap() = parent_req;
+                    return Ok(req.class.as_ref().unwrap().credits.unwrap() - cost);
                 }
             }
         } else {
