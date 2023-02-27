@@ -119,15 +119,15 @@ impl ReqHolder {
         };
     }
 
-    fn display_graph(&self, id: i32, displayed_reqs: &mut Vec<i32>) {
+    fn display_graph(&mut self, id: i32, displayed_reqs: &mut Vec<i32>) {
         if !displayed_reqs
             .iter_mut()
             .any(|displayed_id| *displayed_id == id)
         {
             displayed_reqs.push(id);
-            let req = self.reqs.get(&id).unwrap();
+            let req = self.get_req(id).unwrap();
             println!("{req:?}");
-            for child in &req.children {
+            for child in &req.borrow().children {
                 self.display_graph(child.0, displayed_reqs);
             }
         }
@@ -181,11 +181,11 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
         //return Ok(Schedule::new());
         //turn the requirements graph into a schedule
-        self.analyze_requirements_graph(&mut req_holder)?;
+        //self.analyze_requirements_graph(&mut req_holder)?;
 
         println!("\n\nanalyze_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        req_holder.display_graph(root_id, &mut Vec::new());
+        //req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
 
         //return Ok(Schedule::new());
@@ -197,7 +197,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
         */
 
-        let queue = self.build_queue(&mut req_holder, root_id, &mut Vec::new(), 0)?;
+        /*let queue = self.build_queue(&mut req_holder, root_id, &mut Vec::new(), 0)?;
         println!("\n\nbuild_queue() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for item in &queue {
@@ -206,7 +206,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
 
         //From the queue, build a schedule
-        let schedule = self.create_schedule_from_queue(&mut req_holder, queue);
+        //let schedule = self.create_schedule_from_queue(&mut req_holder, queue);
         println!(
             "\n\nFor Degree {:?}\ncreate_schedule_from_queue() finished.",
             &self.degree.code
@@ -218,8 +218,8 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
 
         println!("\n------------------------------------------------------------------------------------End build_schedule()------------------------------------------------------------------------------------");
-
-        Ok(schedule)
+        */
+        Ok(Schedule::new())
     }
 
     /**
@@ -304,21 +304,24 @@ impl ScheduleMaker {
         Ok(())
     }
 
-    /**
-     * This function should only be called once the graph is made in build_requirements_graph()
-     */
+    //This function should only be called once the graph is made in build_requirements_graph()
+
+    /*
     fn analyze_requirements_graph(
         &mut self,
         req_holder: &mut ReqHolder,
     ) -> Result<(), ScheduleError> {
         //let schedule = Schedule::new();
+        todo!();
 
         println!("Now analyzing graph....");
 
-        let mut root_req = req_holder.get_req(-1).unwrap();
-        req_holder.get_req(-1).unwrap().in_analysis = true;
-
-        self.satisfy_requirements(req_holder, &mut root_req, 0)?;
+        let mut root_req = req_holder.get_req(-1).unwrap().clone();
+        {
+            root_req.borrow_mut().in_analysis = true;
+        }
+        todo!();
+        //self.satisfy_requirements(req_holder, &mut root_req, 0)?;
         //since this root component has a logic type of AND, all of its requirements MUST
         //be fulfilled
 
@@ -331,6 +334,7 @@ impl ScheduleMaker {
         req: &mut Req,
         nests: usize,
     ) -> Result<i32, ScheduleError> {
+        todo!();
         //println!("called satisfy_requirements");
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
@@ -407,6 +411,7 @@ impl ScheduleMaker {
         req: &mut Req,
         nests: usize,
     ) -> Result<i32, ScheduleError> {
+        todo!();
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
@@ -616,6 +621,8 @@ impl ScheduleMaker {
         carried_result: &mut Result<i32, ScheduleError>,
         nests: usize,
     ) {
+        todo!();
+
         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
         for (internal_indice, child) in req.children.iter_mut().enumerate() {
@@ -838,7 +845,7 @@ impl ScheduleMaker {
                     children_in_parent_queue.append(&mut result);
                 }
             }
-            println!("{}This component (req_id: {}) has returned from evaluating children. The children in parent_queue are:\n{}{:?}\n{}With parent queue as\n{}{:?}", 
+            println!("{}This component (req_id: {}) has returned from evaluating children. The children in parent_queue are:\n{}{:?}\n{}With parent queue as\n{}{:?}",
                 &spacing, &id, &spacing, &children_in_parent_queue, &spacing, &spacing, &parent_queue);
 
             let mut max_queue_no = -1;
@@ -971,4 +978,5 @@ impl ScheduleMaker {
 
         schedule
     }
+    */ */
 }
