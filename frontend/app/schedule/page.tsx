@@ -320,11 +320,10 @@ export default function Home() {
                     }}>
                         <Button
                             variant="contained"
-                            color="green"
+                            color="yellow"
                             disableElevation
                             sx={{
                                 textTransform: "none",
-                                color: "white",
                                 fontWeight: "700",
                                 fontSize: ".8rem",
                                 borderRadius: "25px",
@@ -334,26 +333,86 @@ export default function Home() {
                                 pb: .2,
                                 mr: 2,
                             }}
-                        >Major</Button>
+                        >Minor</Button>
                         <Grid2 container sx={{
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "flex-start",
                         }}>
-                            <Typography sx={{ fontWeight: "700" }}>Cybersecurity</Typography>
-                            <Typography variant="subtitle2" sx={{ color: "unselectedText.main" }}>& Marketing</Typography>
+                            <Typography sx={{ fontWeight: "700" }}>Entreprenership</Typography>
+                            <Typography noWrap variant="subtitle2" sx={{ color: "unselectedText.main" }}>Data Science, Forens...</Typography>
                         </Grid2>
                     </Grid2>
 
-
-
-                    <Grid2 xs>
-
-
+                    <Grid2 xs sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        backgroundColor: "primary.main",
+                        p: 2,
+                    }}>
+                        <Button
+                            variant="outlined"
+                            color="selectedText"
+                            disableElevation
+                            sx={{
+                                textTransform: "none",
+                                fontWeight: "700",
+                                fontSize: ".8rem",
+                                borderRadius: "25px",
+                                alignItems: "center",
+                                mb: 0,
+                                pt: .5,
+                                pb: .2,
+                                mr: 2,
+                            }}
+                        >Credits</Button>
+                        <Grid2 container sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                        }}>
+                            <Typography sx={{ fontWeight: "700" }}>132 | 47</Typography>
+                            <Typography noWrap variant="subtitle2" sx={{ color: "unselectedText.main" }}>126 remaining</Typography>
+                        </Grid2>
                     </Grid2>
-                    <Grid2 xs>
 
+                    <Grid2 xs sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        backgroundColor: "primary.main",
+                        p: 2,
+                    }}>
+                        <Button
+                            variant="outlined"
+                            color="selectedText"
+                            disableElevation
+                            sx={{
+                                textTransform: "none",
+                                fontWeight: "700",
+                                fontSize: ".7rem",
+                                borderRadius: "25px",
+                                alignItems: "center",
+                                mb: 0,
+                                pt: .5,
+                                pb: .2,
+                                mr: 2,
+                            }}
+                        >GPA</Button>
+                        <Grid2 container sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                        }}>
+                            <Typography sx={{ fontWeight: "700" }}>3.62 / 4.00</Typography>
+                            <Typography noWrap variant="subtitle2" sx={{ color: "unselectedText.main" }}>.02 (9/12/20)</Typography>
+                        </Grid2>
                     </Grid2>
+                </Grid2>
+
+                <Grid2 container>
+
                 </Grid2>
                 <Typography variant="h1">This pathfinder</Typography>
                 <Typography variant="h4">Sup</Typography>
