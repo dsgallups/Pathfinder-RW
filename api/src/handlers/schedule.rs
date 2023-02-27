@@ -3,8 +3,6 @@ use diesel::{
     PgConnection,
 };
 
-use std::collections::HashMap;
-
 use crate::handlers::types::{
     Period, Req, Schedule, ScheduleError,
     Status::{self, Checked, Desirable, Selected, Unchecked, Unsuitable},
@@ -15,10 +13,13 @@ use crate::models::{
     component::Component,
     degree::Degree,
 };
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
-    reqs: HashMap<i32, Req>,
+    reqs: HashMap<i32, Rc<RefCell<Req>>>,
 }
 
 impl ReqHolder {
@@ -28,7 +29,7 @@ impl ReqHolder {
         }
     }
     fn add_degree_req(&mut self, degree: Req) {
-        self.reqs.insert(degree.id, degree);
+        self.reqs.insert(degree.id, Rc::new(RefCell::new(degree)));
     }
     fn add_component(
         &mut self,
@@ -48,7 +49,7 @@ impl ReqHolder {
 
         self.reqs.insert(
             component.id,
-            Req {
+            Rc::new(RefCell::new(Req {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
@@ -57,7 +58,7 @@ impl ReqHolder {
                 children: Vec::new(),
                 parents: Vec::new(),
                 in_analysis: false,
-            },
+            })),
         );
         println!(
             "{}Created new requirement (req_id: {})",
