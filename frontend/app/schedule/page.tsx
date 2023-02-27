@@ -1,6 +1,6 @@
 "use client";
 
-import Image from 'next/image'
+import * as React from 'react';
 import { Inter } from 'next/font/google'
 import styles from '../page.module.css'
 import {
@@ -11,8 +11,10 @@ import {
     IconButton,
     Container,
     Box,
+    Menu,
+    MenuItem
 } from '@mui/material';
-import MenuIcon from "@mui/icons-material/Menu";
+
 import { IconPropsColorOverrides } from '@mui/material/Icon';
 import { SvgIconPropsColorOverrides } from '@mui/material';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
@@ -70,7 +72,7 @@ const theme = createTheme({
         }),
         selectedText: palette.augmentColor({
             color: {
-                light: "#000000",
+                light: "#FFFFFF",
                 dark: "#000000",
                 main: "#000000"
             }
@@ -90,66 +92,119 @@ declare module '@mui/material/SvgIcon' {
 declare module '@mui/material/Button' {
     interface ButtonPropsColorOverrides {
         yellow: true;
+        selectedText: true;
+        unselectedText: true;
+        secondary: true;
     }
 }
 
 
-const pages = ["About", "Features"];
+const views = ["Plans", "Grades", "Graphs"];
+
 
 export default function Home() {
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+
     return (
         <ThemeProvider theme={theme}>
             <div className={styles.App}>
-                <Container maxWidth="lg" sx={{ mt: 4 }}>
-                    <Toolbar variant="regular" disableGutters>
-                        {/*First break */}
-                        <AcUnitIcon color="hotPink" sx={{ display: { xs: 'none', md: 'flex', fontSize: 50 }, mr: 1 }} />
-                        <Typography
-                            variant="h3"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                                mt: 1.5,
-                                flexGrow: 1,
-                                display: { xs: 'none', md: 'flex' },
-                                fontWeight: 700,
-                                color: "inherit",
-                                textDecoration: "none",
-                            }}
+                <Container maxWidth="xl">
+                    <Toolbar variant="regular" disableGutters sx={{
+                        flexBasis: "0%"
+                    }}>
+
+
+                        <Box sx={{
+                            display: { xs: "none", md: "flex" },
+                            flex: "1 1 0%"
+                        }}
                         >
-                            Pathfinder
-                        </Typography>
-                        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                            {pages.map((page) => (
+                            {views.map((view) => (
                                 <Button
-                                    key={page}
+                                    key={view}
+                                    variant="contained"
+                                    disableElevation
+                                    color={view === "Plans" ? "selectedText" : "secondary"}
                                     disableRipple
 
                                     sx={{
-                                        mr: 4,
+                                        borderRadius: "10px",
+                                        mr: 2,
                                         textTransform: "none",
                                         my: 0,
-                                        color: "inherit",
                                     }}
-                                >{page}</Button>
+                                >{view}</Button>
                             ))}
                         </Box>
-                        <Box>
-                            <Button
-                                disableRipple
-                                color="yellow"
-                                disableElevation
-                                variant="contained"
-                                sx={{
-                                    borderRadius: "10px",
-                                    my: 0,
-                                    textTransform: "none",
-                                    color: "inherit",
 
+                        <Box sx={{
+                            display: {
+                                xs: "flex",
+                                md: "flex"
+                            },
+                            justifyContent: "center",
+                            flexDirection: "row",
+                            flex: "1 1 0%"
+                        }}>
+                            <AcUnitIcon color="hotPink" fontSize="large" sx={{ mr: 1 }} />
+                            <Typography
+                                variant="h5"
+                                noWrap
+                                component="a"
+                                href="/"
+                                sx={{
+                                    mt: .7,
+                                    fontWeight: 700,
+                                    color: "inherit",
+                                    textDecoration: "none",
                                 }}
-                            >Request Demo</Button>
+                            >
+                                Pathfinder
+                            </Typography>
                         </Box>
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            flex: "1 1 0%"
+                        }}>
+                            <Button
+                                id="basic-button"
+                                variant="contained"
+                                color="secondary"
+                                disableElevation
+                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
+                                sx={{
+                                    textTransform: "none",
+                                }}
+                            >
+                                Daniel Gallups
+                            </Button>
+                            <Menu
+                                id="basic-menu"
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                            </Menu>
+                        </Box>
+
                     </Toolbar>
                 </Container>
 
