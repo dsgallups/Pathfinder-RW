@@ -19,7 +19,7 @@ use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
-    reqs: HashMap<i32, Req>,
+    reqs: HashMap<i32, Rc<RefCell<Req>>>,
 }
 
 impl ReqHolder {
@@ -29,7 +29,7 @@ impl ReqHolder {
         }
     }
     fn add_degree_req(&mut self, degree: Req) {
-        self.reqs.insert(degree.id, degree);
+        self.reqs.insert(degree.id, Rc::new(RefCell::new(degree)));
     }
     fn add_component(
         &mut self,
@@ -49,7 +49,7 @@ impl ReqHolder {
 
         self.reqs.insert(
             component.id,
-            Req {
+            Rc::new(RefCell::new(Req {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
@@ -58,7 +58,7 @@ impl ReqHolder {
                 children: Vec::new(),
                 parents: Vec::new(),
                 in_analysis: false,
-            },
+            })),
         );
         println!(
             "{}Created new requirement (req_id: {})",
@@ -75,13 +75,13 @@ impl ReqHolder {
         //This function SHOULD ONLY BE USED when checking if the child exists.
         //Ideally, the parent will already have existed.
 
-        if self.reqs.get_mut(&parent_id).is_none() {
+        if self.get_req(parent_id).is_none() {
             println!(
                 "{spacing}Error: parent (req_id: {parent_id}) doesn't exist, association failed."
             );
             return Err(ScheduleError::AssociationError);
         }
-        if self.reqs.get_mut(&child_id).is_none() {
+        if self.get_req(child_id).is_none() {
             println!(
                 "{spacing}Error: child (req_id: {child_id}) doesn't exist!, association failed."
             );
@@ -89,20 +89,34 @@ impl ReqHolder {
         }
 
         if let Some(child_req) = self.get_req(child_id) {
+            (*child_req)
+                .borrow_mut()
+                .parents
+                .push((parent_id, Unchecked));
             println!("{spacing}Gave child (req_id: {child_id}) a parent (req_id: {parent_id})");
-            child_req.parents.push((parent_id, Unchecked));
+            println!("child = {:?}", child_req);
+            //child_req.parents.push((parent_id, Unchecked));
         }
 
         if let Some(parent_req) = self.get_req(parent_id) {
+            (*parent_req)
+                .borrow_mut()
+                .children
+                .push((child_id, Unchecked, None));
             println!("{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})");
-            parent_req.children.push((child_id, Unchecked, None));
+            println!("parent = {:?}", parent_req);
         }
 
         Ok(())
     }
 
-    fn get_req(&mut self, id: i32) -> Option<&mut Req> {
-        self.reqs.get_mut(&id)
+    fn get_req(&mut self, id: i32) -> Option<Rc<RefCell<Req>>> {
+        match self.reqs.get_mut(&id) {
+            Some(req) => return Some(req.clone()),
+            None => {
+                return None;
+            }
+        };
     }
 
     fn display_graph(&self, id: i32, displayed_reqs: &mut Vec<i32>) {
@@ -301,13 +315,12 @@ impl ScheduleMaker {
 
         println!("Now analyzing graph....");
 
-        let mut root_req = req_holder.get_req(-1).unwrap().clone();
+        let mut root_req = req_holder.get_req(-1).unwrap();
         req_holder.get_req(-1).unwrap().in_analysis = true;
 
         self.satisfy_requirements(req_holder, &mut root_req, 0)?;
         //since this root component has a logic type of AND, all of its requirements MUST
         //be fulfilled
-        *req_holder.get_req(-1).unwrap() = root_req;
 
         Ok(())
     }
@@ -441,7 +454,6 @@ impl ScheduleMaker {
                             if minimal_cost.1 > cost {
                                 minimal_cost = (internal_indice, cost);
                             };
-                            *req_holder.get_req(child.0).unwrap() = child_req;
                         }
 
                         //Now we return the minimal cost found and set it either to
@@ -532,7 +544,6 @@ impl ScheduleMaker {
                         }
                     }
 
-                    *req_holder.get_req(parent.0).unwrap() = parent_req;
                     return Ok(req.class.as_ref().unwrap().credits.unwrap() - cost);
                 }
             }
@@ -564,8 +575,8 @@ impl ScheduleMaker {
         let mut carried_result: Result<i32, ScheduleError> = Ok(0);
 
         for child in &mut req.children {
-            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
-            req_holder.get_req(child.0).unwrap().in_analysis = true;
+            let mut child_req = req_holder.get_req(child.0).unwrap();
+            child_req.in_analysis = true;
 
             match self.satisfy_requirements(req_holder, &mut child_req, nests + 1) {
                 Ok(cost) => {
@@ -595,7 +606,6 @@ impl ScheduleMaker {
                     }
                 }
             }
-            *req_holder.get_req(child.0).unwrap() = child_req;
         }
     }
 
@@ -659,7 +669,6 @@ impl ScheduleMaker {
                     }
                 }
             }
-            *req_holder.get_req(child.0).unwrap() = child_req;
         }
 
         //Now we just need to select the minimal cost child.
@@ -716,7 +725,6 @@ impl ScheduleMaker {
                     }
                 }
             }
-            *req_holder.get_req(child.0).unwrap() = child_req;
         }
     }
 
@@ -757,7 +765,6 @@ impl ScheduleMaker {
             if minimal_cost.1 > cost {
                 minimal_cost = (internal_indice, cost);
             };
-            *req_holder.get_req(child.0).unwrap() = child_req;
         }
 
         println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
@@ -808,9 +815,9 @@ impl ScheduleMaker {
         }
 
         //Otherwise, we just want classes.
-        let current_req = req_holder.get_req(id).unwrap().clone();
+        let current_req = req_holder.get_req(id).unwrap();
 
-        if let Some(_class) = current_req.class {
+        if let Some(_class) = &current_req.class {
             //See if the class has selected children
             //So what are we doing here
             //If this is a class, we want to get its children.
@@ -824,7 +831,7 @@ impl ScheduleMaker {
             println!("{}This component is a class\n\n", &spacing);
 
             let mut children_in_parent_queue = Vec::new();
-            for child in current_req.children {
+            for child in &mut current_req.children {
                 if child.1 == Selected {
                     let mut result =
                         self.build_queue(req_holder, child.0, parent_queue, nests + 1)?;
