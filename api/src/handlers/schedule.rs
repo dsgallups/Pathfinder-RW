@@ -185,7 +185,7 @@ impl ScheduleMaker {
 
         println!("\n\nanalyze_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        //req_holder.display_graph(root_id, &mut Vec::new());
+        req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
 
         //return Ok(Schedule::new());
@@ -506,7 +506,8 @@ impl ScheduleMaker {
                 //No logic type, so we need to evaluate this parent.
 
                 for parent in &mut req.borrow_mut().parents {
-                    let mut parent_req = req_holder.get_req(parent.0).unwrap();
+                    let parent_req = req_holder.get_req(parent.0).unwrap();
+                    println!("{}borrowed parent (req_id: {})", &spacing, parent.0);
                     parent_req.borrow_mut().in_analysis = true;
 
                     let mut cost = i32::MAX;
@@ -663,6 +664,7 @@ impl ScheduleMaker {
         nests: usize,
     ) {
         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+        let req_id = req.borrow().id;
 
         for (internal_indice, child) in req.borrow_mut().children.iter_mut().enumerate() {
             //Check to see if the children were already checked.
@@ -694,7 +696,7 @@ impl ScheduleMaker {
                     child.1 = Checked;
                     //also check the parent
                     for parent in &mut child_req.borrow_mut().parents {
-                        if parent.0 == req.borrow().id {
+                        if parent.0 == req_id {
                             parent.1 = Checked;
                             break;
                         }
@@ -744,9 +746,10 @@ impl ScheduleMaker {
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
+        let req_id = req.borrow().id;
 
         for child in &mut req.borrow_mut().children {
-            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+            let child_req = req_holder.get_req(child.0).unwrap().clone();
             child_req.borrow_mut().in_analysis = true;
             match self.satisfy_requirements(req_holder, child_req.clone(), nests + 1) {
                 Ok(cost) => {
@@ -755,7 +758,7 @@ impl ScheduleMaker {
 
                     //This parent also needs to be selected in this child's parents.
                     for parent in &mut child_req.borrow_mut().parents {
-                        if parent.0 == req.borrow().id {
+                        if parent.0 == req_id {
                             parent.1 = Selected;
                         }
                     }
@@ -791,9 +794,8 @@ impl ScheduleMaker {
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
 
         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
-
         for (internal_indice, child) in req.borrow_mut().children.iter_mut().enumerate() {
-            let mut child_req = req_holder.get_req(child.0).unwrap().clone();
+            let child_req = req_holder.get_req(child.0).unwrap().clone();
             child_req.borrow_mut().in_analysis = true;
 
             let cost =
@@ -825,14 +827,14 @@ impl ScheduleMaker {
 
         //Note that we aren't copying this and setting the value to it. We are
         //going straight to the value in self.reqs and changing it.
-
+        let req_id = req.borrow().id;
         for parent in &mut req_holder
             .get_req(child_id_in_req_holder)
             .unwrap()
             .borrow_mut()
             .parents
         {
-            if parent.0 == req.borrow().id {
+            if parent.0 == req_id {
                 parent.1 = Selected;
                 break;
             }
