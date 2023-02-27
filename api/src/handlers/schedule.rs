@@ -181,7 +181,7 @@ impl ScheduleMaker {
         println!("------------------------------------------End Reqs------------------------------------------");
         //return Ok(Schedule::new());
         //turn the requirements graph into a schedule
-        //self.analyze_requirements_graph(&mut req_holder)?;
+        self.analyze_requirements_graph(&mut req_holder)?;
 
         println!("\n\nanalyze_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
@@ -306,22 +306,20 @@ impl ScheduleMaker {
 
     //This function should only be called once the graph is made in build_requirements_graph()
 
-    /*
+    
     fn analyze_requirements_graph(
         &mut self,
         req_holder: &mut ReqHolder,
     ) -> Result<(), ScheduleError> {
         //let schedule = Schedule::new();
-        todo!();
 
         println!("Now analyzing graph....");
 
-        let mut root_req = req_holder.get_req(-1).unwrap().clone();
+        let mut root_req = req_holder.get_req(-1).unwrap();
         {
             root_req.borrow_mut().in_analysis = true;
         }
-        todo!();
-        //self.satisfy_requirements(req_holder, &mut root_req, 0)?;
+        self.satisfy_requirements(req_holder, root_req.clone(), 0)?;
         //since this root component has a logic type of AND, all of its requirements MUST
         //be fulfilled
 
@@ -331,10 +329,9 @@ impl ScheduleMaker {
     fn satisfy_requirements(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: &mut Req,
+        req: Rc<RefCell<Req>>,
         nests: usize,
     ) -> Result<i32, ScheduleError> {
-        todo!();
         //println!("called satisfy_requirements");
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
@@ -347,21 +344,24 @@ impl ScheduleMaker {
 
         //The root component will say it is in analysis, but the cloned will not.
         //This probably won't matter. But might matter in the future.
-        if req.in_analysis {
+        /*if req.borrow().in_analysis {
             panic!("{}Already in analysis! {:?}", &spacing, &req);
-        }
+        }*/
 
         //this ordering of these two lines is PARTICULAR. Do not mix these around.
-        //req.in_analysis = true;
+        {
+            req.borrow_mut().in_analysis = true;
+        }
 
         //Perform logic based on the req's type and logic type.
-        let logic_type = req.logic_type.clone();
-        if req.pftype.eq("Group") {
+        let logic_type = req.borrow().logic_type.clone();
+        let pftype = req.borrow().pftype.clone();
+        if pftype.eq("Group") {
             //if it's a group, we can do a few things.
             if let Some(logic_type) = logic_type {
                 match logic_type.as_str() {
                     "AND" => {
-                        self.evaluate_group_AND_req(req_holder, req, &mut carried_result, nests)
+                        self.evaluate_group_AND_req(req_holder, req.clone(), &mut carried_result, nests)
                     }
                     "OR" => self.evaluate_group_OR_req(req_holder, req, &mut carried_result, nests),
                     _ => panic!("Invalid logic type for Group {:?}", req),
@@ -369,14 +369,15 @@ impl ScheduleMaker {
             } else {
                 panic!("This group has no logic type! {:?}", req);
             }
-        } else if req.pftype.eq("Class") {
+
+        } else if pftype.eq("Class") {
             if let Some(logic_type) = logic_type {
                 match logic_type.as_str() {
                     "AND" => {
-                        self.evaluate_class_AND_req(req_holder, req, &mut carried_result, nests)
+                        self.evaluate_class_AND_req(req_holder, req.clone(), &mut carried_result, nests)
                     }
 
-                    "OR" => self.evaluate_class_OR_req(req_holder, req, &mut carried_result, nests),
+                    "OR" => self.evaluate_class_OR_req(req_holder, req.clone(), &mut carried_result, nests),
 
                     _ => panic!("Invalid logic type for Class {:?}", req),
                 }
@@ -384,9 +385,9 @@ impl ScheduleMaker {
                 //Class has no logic type
                 println!(
                     "{}Class (req_id: {}) has no logic type. Returning credits",
-                    &spacing, req.id
+                    &spacing, req.borrow().id
                 );
-                let credits = req.class.as_ref().unwrap().credits.unwrap();
+                let credits = req.borrow().class.as_ref().unwrap().credits.unwrap();
                 return Ok(credits);
             }
         } else {
@@ -408,16 +409,15 @@ impl ScheduleMaker {
         &mut self,
         req_holder: &mut ReqHolder,
         parent_id: i32,
-        req: &mut Req,
+        req: Rc<RefCell<Req>>,
         nests: usize,
     ) -> Result<i32, ScheduleError> {
-        todo!();
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
-        println!("{}Evaluating prereq (req_id: {})", &spacing, req.id);
+        println!("{}Evaluating prereq (req_id: {})", &spacing, req.borrow().id);
 
-        let logic_type = req.logic_type.clone();
+        let logic_type = req.borrow().logic_type.clone();
         if req.pftype.eq("Group") {
             //If this is a group, we have to run logic that's different from our evaluate_prereq.
             //let cost = self.satisfy_requirements(req_holder, req_id, nests)?;
@@ -570,7 +570,7 @@ impl ScheduleMaker {
     fn evaluate_group_AND_req(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: &mut Req,
+        req: Rc<RefCell<Req>>,
         carried_result: &mut Result<i32, ScheduleError>,
         nests: usize,
     ) {
@@ -617,7 +617,7 @@ impl ScheduleMaker {
     fn evaluate_group_OR_req(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: &mut Req,
+        req: Rc<RefCell<Req>>,
         carried_result: &mut Result<i32, ScheduleError>,
         nests: usize,
     ) {
@@ -693,7 +693,7 @@ impl ScheduleMaker {
     fn evaluate_class_AND_req(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: &mut Req,
+        req: Rc<RefCell<Req>>,
         carried_result: &mut Result<i32, ScheduleError>,
         nests: usize,
     ) {
@@ -738,7 +738,7 @@ impl ScheduleMaker {
     fn evaluate_class_OR_req(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: &mut Req,
+        req: Rc<RefCell<Req>>,
         carried_result: &mut Result<i32, ScheduleError>,
         nests: usize,
     ) {
@@ -790,7 +790,7 @@ impl ScheduleMaker {
 
         //If this has none of the prior conditions have been met, this child
     }
-
+    /*
     fn build_queue(
         &mut self,
         req_holder: &mut ReqHolder,
