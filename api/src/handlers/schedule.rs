@@ -618,6 +618,7 @@ impl ScheduleMaker {
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
         let mut carried_result: Result<i32, ScheduleError> = Ok(0);
+        let req_id = req.borrow().id;
 
         for child in &mut req.borrow_mut().children {
             let child_req = req_holder.get_req(child.0).unwrap();
@@ -630,7 +631,7 @@ impl ScheduleMaker {
 
                     //This parent also needs to be selected in this child's parents.
                     for parent in &mut child_req.borrow_mut().parents {
-                        if parent.0 == req.borrow().id {
+                        if parent.0 == req_id {
                             parent.1 = Selected;
                         }
                     }
