@@ -19,7 +19,7 @@ use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
-    reqs: HashMap<i32, Rc<RefCell<Req>>>,
+    reqs: HashMap<i32, Req>,
 }
 
 impl ReqHolder {
@@ -29,7 +29,7 @@ impl ReqHolder {
         }
     }
     fn add_degree_req(&mut self, degree: Req) {
-        self.reqs.insert(degree.id, Rc::new(RefCell::new(degree)));
+        self.reqs.insert(degree.id, degree);
     }
     fn add_component(
         &mut self,
@@ -49,7 +49,7 @@ impl ReqHolder {
 
         self.reqs.insert(
             component.id,
-            Rc::new(RefCell::new(Req {
+            Req {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
@@ -58,7 +58,7 @@ impl ReqHolder {
                 children: Vec::new(),
                 parents: Vec::new(),
                 in_analysis: false,
-            })),
+            },
         );
         println!(
             "{}Created new requirement (req_id: {})",
