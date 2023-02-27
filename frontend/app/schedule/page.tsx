@@ -15,7 +15,8 @@ import {
     MenuItem,
     Avatar,
     Grid,
-    Fab
+    Fab,
+    Chip
 } from '@mui/material';
 
 import { IconPropsColorOverrides } from '@mui/material/Icon';
@@ -25,6 +26,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { deepOrange, red } from '@mui/material/colors';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import ButtonBase from '@mui/material/ButtonBase';
+import Brightness1Icon from '@mui/icons-material/Brightness1';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -90,6 +93,8 @@ const theme = createTheme({
 declare module '@mui/material/SvgIcon' {
     interface SvgIconPropsColorOverrides {
         hotPink: true;
+        green: true;
+        yellow: true;
         //color?: "hotPink" | "green" | "yellow" | "unselectedText" | "selectedText";
     }
 }
@@ -107,6 +112,14 @@ declare module '@mui/material/Fab' {
     interface FabPropsColorOverrides {
         green: true;
         yellow: true;
+    }
+}
+declare module '@mui/material/Chip' {
+    interface ChipPropsColorOverrides {
+        green: true;
+        yellow: true;
+        selectedText: true;
+        unselectedText: true;
     }
 }
 
@@ -284,23 +297,17 @@ export default function Home() {
                         backgroundColor: "primary.main",
                         p: 2,
                     }}>
-                        <Button
-                            variant="contained"
+                        <Chip
+                            label="Major"
                             color="green"
-                            disableElevation
+                            size="small"
                             sx={{
-                                textTransform: "none",
-                                color: "white",
                                 fontWeight: "700",
                                 fontSize: ".8rem",
-                                borderRadius: "25px",
-                                alignItems: "center",
-                                mb: 0,
-                                pt: .5,
-                                pb: .2,
                                 mr: 2,
+                                color: "white",
                             }}
-                        >Major</Button>
+                        />
                         <Grid2 container sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -318,22 +325,16 @@ export default function Home() {
                         backgroundColor: "primary.main",
                         p: 2,
                     }}>
-                        <Button
-                            variant="contained"
+                        <Chip
+                            label="Minor"
                             color="yellow"
-                            disableElevation
+                            size="small"
                             sx={{
-                                textTransform: "none",
                                 fontWeight: "700",
                                 fontSize: ".8rem",
-                                borderRadius: "25px",
-                                alignItems: "center",
-                                mb: 0,
-                                pt: .5,
-                                pb: .2,
                                 mr: 2,
                             }}
-                        >Minor</Button>
+                        />
                         <Grid2 container sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -351,22 +352,17 @@ export default function Home() {
                         backgroundColor: "primary.main",
                         p: 2,
                     }}>
-                        <Button
+                        <Chip
+                            label="Credits"
                             variant="outlined"
                             color="selectedText"
-                            disableElevation
+                            size="small"
                             sx={{
-                                textTransform: "none",
                                 fontWeight: "700",
-                                fontSize: ".8rem",
-                                borderRadius: "25px",
-                                alignItems: "center",
-                                mb: 0,
-                                pt: .5,
-                                pb: .2,
+                                fontSize: ".7rem",
                                 mr: 2,
                             }}
-                        >Credits</Button>
+                        />
                         <Grid2 container sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -384,22 +380,17 @@ export default function Home() {
                         backgroundColor: "primary.main",
                         p: 2,
                     }}>
-                        <Button
+                        <Chip
+                            label="GPA"
                             variant="outlined"
                             color="selectedText"
-                            disableElevation
+                            size="small"
                             sx={{
-                                textTransform: "none",
                                 fontWeight: "700",
                                 fontSize: ".7rem",
-                                borderRadius: "25px",
-                                alignItems: "center",
-                                mb: 0,
-                                pt: .5,
-                                pb: .2,
                                 mr: 2,
                             }}
-                        >GPA</Button>
+                        />
                         <Grid2 container sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -411,8 +402,188 @@ export default function Home() {
                     </Grid2>
                 </Grid2>
 
-                <Grid2 container>
+                <Grid2 container sx={{
+                    backgroundColor: "primary.main",
+                }}>
+                    {/*xs={12} md={6} lg={2} */}
+                    <Grid2 xs={12} md={6} lg={2}>
+                        <Grid2 container sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            maxWidth: "300px"
+                        }}>
+                            <Grid2 sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "flex-end",
+                                justifyContent: "space-between",
+                                m: 2,
+                            }}>
+                                <Typography sx={{ fontWeight: "700", alignSelf: "flex-start" }}>Fall 2020</Typography>
+                                <Grid2 sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "flex-end"
+                                }}>
+                                    {/*variant="outlined"
+                                        color="selectedText"
+                                        disableElevation
+                                        size="small"
+                                        sx={{
+                                            textTransform: "none",
+                                            fontWeight: "700",
+                                            fontSize: ".7rem",
+                                            borderRadius: "25px",
+                                            alignItems: "center",
+                                            mb: 0,
+                                            pt: .5,
+                                            pb: .2,
+                                            pr: 0,
+                                            pl: 0,
+                                        }}*/}
+                                    <Chip
+                                        label="17"
+                                        variant="outlined"
+                                        color="selectedText"
+                                        size="small"
+                                        sx={{
+                                            fontWeight: "700",
+                                            fontSize: ".7rem",
+                                        }}
+                                    />
+                                    <Chip
+                                        label="3.23 GPA"
+                                        variant="outlined"
+                                        color="selectedText"
+                                        size="small"
+                                        sx={{
+                                            fontWeight: "700",
+                                            fontSize: ".7rem",
+                                        }}
+                                    />
 
+                                </Grid2>
+                            </Grid2>
+
+                            <Grid2 container sx={{
+                                backgroundColor: "secondary.main",
+                                borderRadius: "10px",
+                            }}>
+                                <Grid2 container sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    backgroundColor: "#FFF",
+                                    p: 1.5,
+                                    m: 1.5,
+                                    flexGrow: 1,
+                                    borderRadius: "6px",
+                                }}>
+
+                                    <Grid2 container sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}>
+
+                                        <Brightness1Icon
+                                            color="green"
+                                            sx={{
+                                                width: "10px",
+                                                height: "10px",
+                                                mr: 1,
+                                            }}
+                                        />
+                                        <Typography sx={{ fontSize: ".9rem", fontWeight: 500 }}>MA 26100</Typography>
+                                    </Grid2>
+                                    <Grid2 container>
+                                        <Chip
+                                            label="4"
+                                            variant="outlined"
+                                            color="unselectedText"
+                                            size="small"
+                                            sx={{
+                                                fontWeight: "700",
+                                                fontSize: ".7rem",
+                                                color: "selectedText.main",
+                                                mr: 1
+                                            }}
+                                        />
+                                        <Chip
+                                            label="A+"
+                                            variant="outlined"
+                                            color="unselectedText"
+                                            size="small"
+                                            sx={{
+                                                fontWeight: "700",
+                                                fontSize: ".7rem",
+                                                color: "selectedText.main",
+                                            }}
+                                        />
+
+                                    </Grid2>
+
+                                </Grid2>
+
+
+                                <Grid2 container sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    backgroundColor: "#FFF",
+                                    p: 1.5,
+                                    m: 1.5,
+                                    flexGrow: 1,
+                                    borderRadius: "6px",
+                                }}>
+
+                                    <Grid2 container sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}>
+
+                                        <Brightness1Icon
+                                            color="green"
+                                            sx={{
+                                                width: "10px",
+                                                height: "10px",
+                                                mr: 1,
+                                            }}
+                                        />
+                                        <Typography sx={{ fontSize: ".9rem", fontWeight: 500 }}>MA 26100</Typography>
+                                    </Grid2>
+                                    <Grid2 container>
+                                        <Chip
+                                            label="4"
+                                            variant="outlined"
+                                            color="unselectedText"
+                                            size="small"
+                                            sx={{
+                                                fontWeight: "700",
+                                                fontSize: ".7rem",
+                                                color: "selectedText.main",
+                                                mr: 1
+                                            }}
+                                        />
+                                        <Chip
+                                            label="A+"
+                                            variant="outlined"
+                                            color="unselectedText"
+                                            size="small"
+                                            sx={{
+                                                fontWeight: "700",
+                                                fontSize: ".7rem",
+                                                color: "selectedText.main",
+                                            }}
+                                        />
+
+                                    </Grid2>
+
+                                </Grid2>
+
+                            </Grid2>
+
+                        </Grid2>
+                    </Grid2>
                 </Grid2>
                 <Typography variant="h1">This pathfinder</Typography>
                 <Typography variant="h4">Sup</Typography>
