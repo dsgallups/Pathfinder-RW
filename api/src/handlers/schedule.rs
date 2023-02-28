@@ -311,6 +311,9 @@ impl ScheduleMaker {
 
         Ok(())
     }
+
+    //Todo: this function is a mess. Clean it up.
+    //mainly, there is a lot of repeated code here to check.
     #[allow(unreachable_code)]
     fn satisfy_requirements(
         &mut self,
@@ -445,7 +448,7 @@ impl ScheduleMaker {
                         }
 
                         //Now we return the minimal cost found and set it either to
-                        //desirable or selected. TODO tomorrow.
+                        //desirable or selected. TODO
                         println!("{}Minimal Cost: {:?}", &spacing, &minimal_cost);
                         req.children[minimal_cost.0].1 = Selected;
                     }
@@ -474,7 +477,7 @@ impl ScheduleMaker {
                     if parent.1 == Unchecked {
                         //If this is unchecked, this means it's been unevaluated.
                         //We need to evaluate it.
-                        //todo:
+                        //todo:something?
                         cost =
                             match self.satisfy_requirements(req_holder, &mut parent_req, nests + 1)
                             {
