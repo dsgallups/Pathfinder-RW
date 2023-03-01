@@ -369,8 +369,6 @@ impl ScheduleMaker {
             }
         };
 
-        let req_children = self.evaluate_children(req_holder, req_id, nests);
-
         match logic_type.as_str() {
             "AND" => {
                 //After cycling the children, and no error performed, return an Ok to the parent.
@@ -393,7 +391,11 @@ impl ScheduleMaker {
             "OR" => {
                 //After cycling the children, and no error performed, return an Ok to the parent.
                 //For now, we will set the status of our parent as checked, because
+                let req_children = self.evaluate_children(req_holder, req_id, nests);
+
                 let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
+                req.children = req_children;
+
                 let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
                 let mut child_id = i32::MAX;
                 for (internal_indice, child) in req.children.iter().enumerate() {
@@ -403,8 +405,9 @@ impl ScheduleMaker {
                             child_id = child.0;
                         }
                     }
+                    println!("{}Child: {:?}", &spacing, child);
                 }
-
+                println!("{}Minimal cost: {:?}", &spacing, minimal_cost);
                 //Finding the minimal cost means we can select that (until further logic implemented)
                 let status = Status::Selected;
                 req.children[minimal_cost.0].1 = status.clone();
@@ -454,6 +457,17 @@ impl ScheduleMaker {
                 break;
             }
         }
+    }
+
+    fn evaluate_parent_req_from_class(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        class_id: i32,
+        parent_id: i32,
+        nests: usize,
+    ) {
+        //assume it's a group
+        let res = self.satisfy_group(req_holder, Some(class_id), parent_id, nests);
     }
 
     fn evaluate_children(
@@ -537,7 +551,7 @@ impl ScheduleMaker {
             &spacing, req_id, parent_req_id
         );
 
-        let (logic_type, parents) = {
+        let (logic_type, mut parents) = {
             let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
             req.in_analysis = true;
             println!(
@@ -548,15 +562,28 @@ impl ScheduleMaker {
             (req.logic_type.clone(), req.parents.clone())
         };
 
+        for (parent_id, parent_status) in parents {
+            if parent_id == parent_req_id {
+                continue;
+            }
+            //So if not the parent, we need to check out some stuff
+            match parent_status {
+                Unchecked => {
+                    //This function call WILL mutate our req_holder, and therefore, the parent_status that was cloned here has since changed.
+                    let result = self.satisfy_group(req_holder, Some(req_id), parent_id, nests + 1);
+                    parents = req_holder.get_req(req_id).unwrap().borrow().parents.clone();
+                    println!("new parents: {:?}", parents);
+                    continue; //TODO keep working from here
+                              //We need to evaluate this parent given that it's a group
+                }
+                Checked => {}
+                _ => return Err(ScheduleError::UnimiplementedLogicError),
+            }
+        }
+
         //if the logic type is none, it's probably a class.
         if let None = logic_type {
             //We need this class to be evaluated by all of its parents before doing anything
-            for (parent_id, parent_status) in parents {
-                if parent_id == parent_req_id {
-                    continue;
-                }
-                //We need to determine whether this parent's logic should be evaluated as a requirement or in prereq logic.
-            }
 
             let status = Status::Checked;
             self.modify_parent_status(req_holder, status.clone(), parent_req_id, req_id, nests);
