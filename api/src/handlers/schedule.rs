@@ -355,25 +355,34 @@ impl ScheduleMaker {
                 if req_id != -1 {
                     panic!("{}No parent req id! {:?}", &spacing, &req_id);
                 }
-                //Implement recursive solution to the root id
-                return Err(ScheduleError::UnimiplementedLogicError);
-            }
-        };
 
-        let req_children = self.evaluate_children(req_holder, req_id, nests);
-
-        let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
-        req.children = req_children;
-
-        match logic_type.as_str() {
-            "AND" => {
-                //After cycling the children, and no error performed, return an Ok to the parent.
-                //For now, we will set the status of our parent as checked, because
+                let mut req_children = self.evaluate_children(req_holder, req_id, nests);
+                self.select_all_valid_children(req_holder, req_id, &mut req_children, nests);
+                let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
+                req.children = req_children;
                 let cost = req
                     .children
                     .iter()
                     .fold(0, |acc, child| acc + child.2.unwrap_or(0));
 
+                return Ok((Some(cost), Status::Checked));
+            }
+        };
+
+        let req_children = self.evaluate_children(req_holder, req_id, nests);
+
+        match logic_type.as_str() {
+            "AND" => {
+                //After cycling the children, and no error performed, return an Ok to the parent.
+                //For now, we will set the status of our parent as checked, because
+                let mut req_children = self.evaluate_children(req_holder, req_id, nests);
+                self.select_all_valid_children(req_holder, req_id, &mut req_children, nests);
+                let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
+                let cost = req
+                    .children
+                    .iter()
+                    .fold(0, |acc, child| acc + child.2.unwrap_or(0));
+                req.children = req_children;
                 for parent in &mut req.parents {
                     if parent.0 == parent_req_id {
                         parent.1 = Status::Checked;
@@ -384,6 +393,7 @@ impl ScheduleMaker {
             "OR" => {
                 //After cycling the children, and no error performed, return an Ok to the parent.
                 //For now, we will set the status of our parent as checked, because
+                let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
                 let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
                 let mut child_id = i32::MAX;
                 for (internal_indice, child) in req.children.iter().enumerate() {
@@ -496,6 +506,22 @@ impl ScheduleMaker {
             .collect()
     }
 
+    fn select_all_valid_children(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        req_id: i32,
+        children: &mut Vec<(i32, Status, Option<i32>)>,
+        nests: usize,
+    ) {
+        for child in children {
+            if child.1 == Status::Checked {
+                child.1 = Status::Selected;
+                //Select the parent in the child
+                self.modify_parent_status(req_holder, Status::Selected, req_id, child.0, nests);
+            }
+        }
+    }
+
     fn satisfy_class(
         &mut self,
         req_holder: &mut ReqHolder,
@@ -542,36 +568,36 @@ impl ScheduleMaker {
 
         let logic_type = logic_type.unwrap();
 
-        let mut children = self.evaluate_children(req_holder, req_id, nests);
-
+        let mut req_children = self.evaluate_children(req_holder, req_id, nests);
+        let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
+        req.children = req_children;
         match logic_type.as_str() {
             "AND" => {
-                let mut status = Status::Checked;
-                let mut credits = 0;
-                let mut children = self.evaluate_children(req_holder, req_id, nests);
-                for (child_id, child_status, child_cost) in children {
+                /*for (child_id, child_status, child_cost) in children {
                     if child_status == Status::Unchecked {
                         status = Status::Unchecked;
                     }
                     if let Some(child_cost) = child_cost {
                         credits += child_cost;
                     }
-                }
-
+                }*/
+                let credits = req.class.as_ref().unwrap().credits.unwrap();
+                let status = Status::Checked;
+                drop(req);
+                self.modify_parent_status(req_holder, status.clone(), parent_req_id, req_id, nests);
                 return Ok((Some(credits), status));
             }
             "OR" => {
                 let mut status = Status::Unchecked;
                 let mut credits = 0;
-                let mut children = self.evaluate_children(req_holder, req_id, nests);
-                for (child_id, child_status, child_cost) in children {
+                /*for (child_id, child_status, child_cost) in req_children {
                     if child_status == Status::Checked {
                         status = Status::Checked;
                     }
                     if let Some(child_cost) = child_cost {
                         credits += child_cost;
                     }
-                }
+                }*/
 
                 return Ok((Some(credits), status));
             }
