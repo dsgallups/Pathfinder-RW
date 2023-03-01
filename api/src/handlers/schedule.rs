@@ -15,11 +15,10 @@ use crate::models::{
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
-    reqs: HashMap<i32, Req>,
+    reqs: HashMap<i32, RefCell<Req>>,
 }
 
 impl ReqHolder {
@@ -29,7 +28,7 @@ impl ReqHolder {
         }
     }
     fn add_degree_req(&mut self, degree: Req) {
-        self.reqs.insert(degree.id, degree);
+        self.reqs.insert(degree.id, RefCell::new(degree));
     }
     fn add_component(
         &mut self,
@@ -49,7 +48,7 @@ impl ReqHolder {
 
         self.reqs.insert(
             component.id,
-            Req {
+            RefCell::new(Req {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
@@ -58,7 +57,7 @@ impl ReqHolder {
                 children: Vec::new(),
                 parents: Vec::new(),
                 in_analysis: false,
-            },
+            }),
         );
         println!(
             "{}Created new requirement (req_id: {})",
@@ -89,14 +88,17 @@ impl ReqHolder {
         }
 
         if let Some(child_req) = self.get_req(child_id) {
-            child_req.parents.push((parent_id, Unchecked));
+            child_req.borrow_mut().parents.push((parent_id, Unchecked));
             println!("{spacing}Gave child (req_id: {child_id}) a parent (req_id: {parent_id})");
             println!("child = {:?}", child_req);
             //child_req.parents.push((parent_id, Unchecked));
         }
 
         if let Some(parent_req) = self.get_req(parent_id) {
-            parent_req.children.push((child_id, Unchecked, None));
+            parent_req
+                .borrow_mut()
+                .children
+                .push((child_id, Unchecked, None));
             println!("{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})");
             println!("parent = {:?}", parent_req);
         }
@@ -104,8 +106,8 @@ impl ReqHolder {
         Ok(())
     }
 
-    fn get_req(&mut self, id: i32) -> Option<&mut Req> {
-        match self.reqs.get_mut(&id) {
+    fn get_req(&self, id: i32) -> Option<&RefCell<Req>> {
+        match self.reqs.get(&id) {
             Some(req) => return Some(req),
             None => {
                 return None;
@@ -123,7 +125,7 @@ impl ReqHolder {
             let req_children = {
                 let req = self.get_req(id).unwrap();
                 println!("{req:?}");
-                req.children.clone()
+                req.borrow().children.clone()
             };
 
             for child in &req_children {
@@ -336,15 +338,14 @@ impl ScheduleMaker {
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
 
-        let (logic_type) = {
-            let req = req_holder.get_req(req_id).unwrap();
-            req.in_analysis = true;
-            println!(
-                "\n{}Evaluating requirements of: \n{}{:?}",
-                &spacing, &spacing, &req
-            );
-
-            req.logic_type.clone()
+        let logic_type = match req_holder.get_req(req_id).unwrap().borrow().logic_type {
+            Some(ref logic_type) => logic_type.clone(),
+            None => {
+                panic!(
+                    "{}This reqs pftype is currently unsupported! {:?}",
+                    &spacing, req_id
+                );
+            }
         };
 
         let parent_req_id = match parent_req_id {
@@ -359,21 +360,15 @@ impl ScheduleMaker {
             }
         };
 
-        if let None = logic_type {
-            panic!("This reqs pftype is currently unsupported! {:?}", req_id);
-        }
-
-        let logic_type = logic_type.unwrap();
-
         let req_children = self.evaluate_children(req_holder, req_id, nests);
+
+        let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
+        req.children = req_children;
 
         match logic_type.as_str() {
             "AND" => {
                 //After cycling the children, and no error performed, return an Ok to the parent.
                 //For now, we will set the status of our parent as checked, because
-                let mut req = req_holder.get_req(req_id).unwrap();
-                req.children = req_children;
-
                 let cost = req
                     .children
                     .iter()
@@ -389,18 +384,31 @@ impl ScheduleMaker {
             "OR" => {
                 //After cycling the children, and no error performed, return an Ok to the parent.
                 //For now, we will set the status of our parent as checked, because
-                let mut req = req_holder.get_req(req_id).unwrap();
-                req.children = req_children;
+                let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
+                let mut child_id = i32::MAX;
+                for (internal_indice, child) in req.children.iter().enumerate() {
+                    if let Some(cost) = child.2 {
+                        if cost < minimal_cost.1 {
+                            minimal_cost = (internal_indice, cost);
+                            child_id = child.0;
+                        }
+                    }
+                }
 
-                let cost = req
-                    .children
-                    .iter()
-                    .fold(0, |acc, child| acc + child.2.unwrap_or(0));
+                //Finding the minimal cost means we can select that (until further logic implemented)
+                let status = Status::Selected;
+                req.children[minimal_cost.0].1 = status.clone();
+                drop(req);
+
+                //Modify the parent status of the child. MAKE SURE this is correct.
+                self.modify_parent_status(req_holder, status, req_id, child_id, nests);
+
+                let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
 
                 for parent in &mut req.parents {
                     if parent.0 == parent_req_id {
                         parent.1 = Status::Checked;
-                        return Ok((Some(cost), Status::Checked));
+                        return Ok((Some(minimal_cost.1), Status::Checked));
                     }
                 }
             }
@@ -430,7 +438,7 @@ impl ScheduleMaker {
         );
         let req = req_holder.get_req(id).unwrap();
 
-        for parent in &mut req.parents {
+        for parent in &mut req.borrow_mut().parents {
             if parent.0 == parent_id {
                 parent.1 = status;
                 break;
@@ -444,14 +452,22 @@ impl ScheduleMaker {
         req_id: i32,
         nests: usize,
     ) -> Vec<(i32, Status, Option<i32>)> {
-        req_holder
+        let children = req_holder
             .get_req(req_id)
             .unwrap()
+            .borrow()
             .children
-            .clone()
+            .clone();
+
+        children
             .into_iter()
             .map(|(child_id, child_status, child_cost)| {
-                let pftype = req_holder.get_req(child_id).unwrap().pftype.clone();
+                let pftype = req_holder
+                    .get_req(child_id)
+                    .unwrap()
+                    .borrow()
+                    .pftype
+                    .clone();
 
                 let (child_cost, child_status) = if pftype.eq("Group") {
                     match self.satisfy_group(req_holder, Some(req_id), child_id, nests + 1) {
@@ -496,7 +512,7 @@ impl ScheduleMaker {
         );
 
         let (logic_type, parents) = {
-            let req = req_holder.get_req(req_id).unwrap();
+            let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
             req.in_analysis = true;
             println!(
                 "\n{}Evaluating requirements of: \n{}{:?}",
@@ -519,7 +535,7 @@ impl ScheduleMaker {
             let status = Status::Checked;
             self.modify_parent_status(req_holder, status.clone(), parent_req_id, req_id, nests);
 
-            let req = req_holder.get_req(req_id).unwrap();
+            let req = req_holder.get_req(req_id).unwrap().borrow();
             let credits = req.class.as_ref().unwrap().credits.unwrap();
             return Ok((Some(credits), status));
         }
