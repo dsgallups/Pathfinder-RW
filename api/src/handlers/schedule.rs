@@ -513,59 +513,6 @@ impl ScheduleMaker {
         }
     }
 
-    fn satisfy_prereq(
-        &mut self,
-        req_holder: &mut ReqHolder,
-        postreq_id: i32,
-        id: i32,
-        nests: usize,
-    ) -> Result<(Option<i32>, Status), ScheduleError> {
-        let spaces = 4 * nests;
-        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
-        let extra_space = (0..=4).map(|_| " ").collect::<String>();
-        println!(
-            "{}Satisfying prereq (req_id: {}) of parent (req_id: {})",
-            &spacing, id, postreq_id
-        );
-
-        let (logic_type, pftype) = {
-            let req = req_holder.get_req(id).unwrap();
-            req.in_analysis = true;
-            println!(
-                "\n{}Evaluating requirements of: \n{}{:?}",
-                &spacing, &spacing, &req
-            );
-
-            (req.logic_type.clone(), req.pftype.clone())
-        };
-
-        //if the logic type is none, it's probably a class.
-        if let None = logic_type {
-            match pftype.as_str() {
-                "Class" => {
-                    let status = Status::Checked;
-                    self.modify_parent_status(req_holder, status.clone(), postreq_id, id, nests);
-
-                    let req = req_holder.get_req(id).unwrap();
-                    let credits = req.class.as_ref().unwrap().credits.unwrap();
-                    return Ok((Some(credits), status));
-                }
-                _ => {
-                    panic!("This reqs pftype is currently unsupported! {:?}", id);
-                }
-            }
-        }
-
-        let logic_type = logic_type.unwrap();
-        if pftype.eq("Group") {
-        } else if pftype.eq("Class") {
-        } else {
-            panic!("This reqs pftype is currently unsupported! {:?}", id);
-        }
-
-        Err(ScheduleError::UnimiplementedLogicError)
-    }
-
     fn evaluate_children(
         &mut self,
         pftype: &str,
@@ -622,6 +569,59 @@ impl ScheduleMaker {
             }
             _ => panic!("Invalid pftype for evaluate_children"),
         }
+    }
+
+    fn satisfy_prereq(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        postreq_id: i32,
+        id: i32,
+        nests: usize,
+    ) -> Result<(Option<i32>, Status), ScheduleError> {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+        println!(
+            "{}Satisfying prereq (req_id: {}) of parent (req_id: {})",
+            &spacing, id, postreq_id
+        );
+
+        let (logic_type, pftype) = {
+            let req = req_holder.get_req(id).unwrap();
+            req.in_analysis = true;
+            println!(
+                "\n{}Evaluating requirements of: \n{}{:?}",
+                &spacing, &spacing, &req
+            );
+
+            (req.logic_type.clone(), req.pftype.clone())
+        };
+
+        //if the logic type is none, it's probably a class.
+        if let None = logic_type {
+            match pftype.as_str() {
+                "Class" => {
+                    let status = Status::Checked;
+                    self.modify_parent_status(req_holder, status.clone(), postreq_id, id, nests);
+
+                    let req = req_holder.get_req(id).unwrap();
+                    let credits = req.class.as_ref().unwrap().credits.unwrap();
+                    return Ok((Some(credits), status));
+                }
+                _ => {
+                    panic!("This reqs pftype is currently unsupported! {:?}", id);
+                }
+            }
+        }
+
+        let logic_type = logic_type.unwrap();
+        if pftype.eq("Group") {
+        } else if pftype.eq("Class") {
+        } else {
+            panic!("This reqs pftype is currently unsupported! {:?}", id);
+        }
+
+        Err(ScheduleError::UnimiplementedLogicError)
     }
 
     /*
