@@ -112,6 +112,9 @@ pub enum ScheduleError {
 
     #[error("Prereq is invalid for this Degree")]
     PrereqError,
+
+    #[error("This logic is not implemented yet!")]
+    UnimiplementedLogicError,
 }
 impl error::ResponseError for ScheduleError {}
 /*

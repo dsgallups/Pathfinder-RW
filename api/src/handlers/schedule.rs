@@ -19,7 +19,7 @@ use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
-    reqs: HashMap<i32, Rc<RefCell<Req>>>,
+    reqs: HashMap<i32, Req>,
 }
 
 impl ReqHolder {
@@ -29,7 +29,7 @@ impl ReqHolder {
         }
     }
     fn add_degree_req(&mut self, degree: Req) {
-        self.reqs.insert(degree.id, Rc::new(RefCell::new(degree)));
+        self.reqs.insert(degree.id, degree);
     }
     fn add_component(
         &mut self,
@@ -49,7 +49,7 @@ impl ReqHolder {
 
         self.reqs.insert(
             component.id,
-            Rc::new(RefCell::new(Req {
+            Req {
                 id: component.id,
                 name: component.name,
                 pftype: component.pftype,
@@ -58,7 +58,7 @@ impl ReqHolder {
                 children: Vec::new(),
                 parents: Vec::new(),
                 in_analysis: false,
-            })),
+            },
         );
         println!(
             "{}Created new requirement (req_id: {})",
@@ -89,20 +89,14 @@ impl ReqHolder {
         }
 
         if let Some(child_req) = self.get_req(child_id) {
-            (*child_req)
-                .borrow_mut()
-                .parents
-                .push((parent_id, Unchecked));
+            child_req.parents.push((parent_id, Unchecked));
             println!("{spacing}Gave child (req_id: {child_id}) a parent (req_id: {parent_id})");
             println!("child = {:?}", child_req);
             //child_req.parents.push((parent_id, Unchecked));
         }
 
         if let Some(parent_req) = self.get_req(parent_id) {
-            (*parent_req)
-                .borrow_mut()
-                .children
-                .push((child_id, Unchecked, None));
+            parent_req.children.push((child_id, Unchecked, None));
             println!("{spacing}Gave parent (req_id: {parent_id}) a child(req_id: {child_id})");
             println!("parent = {:?}", parent_req);
         }
@@ -110,9 +104,9 @@ impl ReqHolder {
         Ok(())
     }
 
-    fn get_req(&mut self, id: i32) -> Option<Rc<RefCell<Req>>> {
+    fn get_req(&mut self, id: i32) -> Option<&mut Req> {
         match self.reqs.get_mut(&id) {
-            Some(req) => return Some(req.clone()),
+            Some(req) => return Some(req),
             None => {
                 return None;
             }
@@ -127,7 +121,7 @@ impl ReqHolder {
             displayed_reqs.push(id);
             let req = self.get_req(id).unwrap();
             println!("{req:?}");
-            for child in &req.borrow().children {
+            for child in &req.children {
                 self.display_graph(child.0, displayed_reqs);
             }
         }
@@ -313,32 +307,32 @@ impl ScheduleMaker {
         //let schedule = Schedule::new();
 
         println!("Now analyzing graph....");
-
-        let mut root_req = req_holder.get_req(-1).unwrap();
-        {
-            root_req.borrow_mut().in_analysis = true;
-        }
-        self.satisfy_requirements(req_holder, root_req.clone(), 0)?;
+        let root_req_id = -1;
+        self.satisfy_requirements(req_holder, None, root_req_id, 0)?;
         //since this root component has a logic type of AND, all of its requirements MUST
         //be fulfilled
 
         Ok(())
     }
 
-    //Todo: this function is a mess. Clean it up.
-    //mainly, there is a lot of repeated code here to check.
+    /*
+        This function satisfies the requirements of the given req.
+        Note that THIS FUNCTION SHOULD ONLY MUTATE THE REQ, NOT ITS CHILDREN OR PARENTS.
+    */
     #[allow(unreachable_code)]
     fn satisfy_requirements(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: Rc<RefCell<Req>>,
+        parent_req_id: Option<i32>,
+        req_id: i32,
         nests: usize,
-    ) -> Result<i32, ScheduleError> {
+    ) -> Result<(i32, Status), ScheduleError> {
         //println!("called satisfy_requirements");
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
         let mut carried_result: Result<i32, ScheduleError> = Ok(-1);
+        let req = req_holder.get_req(req_id).unwrap();
         println!(
             "\n{}Evaluating requirements of: \n{}{:?}",
             &spacing, &spacing, &req
@@ -349,31 +343,117 @@ impl ScheduleMaker {
         /*if req.borrow().in_analysis {
             panic!("{}Already in analysis! {:?}", &spacing, &req);
         }*/
+        req.in_analysis = true;
 
-        //this ordering of these two lines is PARTICULAR. Do not mix these around.
-        {
-            req.borrow_mut().in_analysis = true;
-        }
+        let parent_req_id = match parent_req_id {
+            Some(id) => id,
+            None => {
+                //This should only occur for the root component.
+                if req.id != -1 {
+                    panic!("{}No parent req id! {:?}", &spacing, &req);
+                }
+                //Implement recursive solution to the root id
+                return Err(ScheduleError::UnimiplementedLogicError);
+            }
+        };
 
         //Perform logic based on the req's type and logic type.
-        let logic_type = req.borrow().logic_type.clone();
-        let pftype = req.borrow().pftype.clone();
+        let logic_type = req.logic_type.clone();
+        let pftype = req.pftype.clone();
+
+        /*
+           There are commonalities among all the situations, which are
+               GROUP AND, GROUP ARE, CLASS AND, CLASS OR, CLASS NONE
+           So we can do some common things first, and then do the specific things
+           - we look at the children of the req. Additionally, we mutate the values of req's children.
+           - we return our cost and status to our parent, which called this function.
+               - Errors are dealt with per recursive call, so the only error passed up the tree
+                 should be one where the req in the call had an error
+
+           - The following operatons
+           for (internal_indice, child) in req.children.iter_mut().enumerate() {
+           }
+
+        */
         if pftype.eq("Group") {
             //if it's a group, we can do a few things.
             if let Some(logic_type) = logic_type {
                 match logic_type.as_str() {
-                    "AND" => self.evaluate_group_AND_req(
-                        req_holder,
-                        req.clone(),
-                        &mut carried_result,
-                        nests,
-                    ),
-                    "OR" => self.evaluate_group_OR_req(
-                        req_holder,
-                        req.clone(),
-                        &mut carried_result,
-                        nests,
-                    ),
+                    "AND" => {
+                        let mut cost = 0;
+                        for child in &mut req.children {
+                            let child_res = match self.satisfy_requirements(
+                                req_holder,
+                                Some(req.id),
+                                child.0,
+                                nests + 1,
+                            ) {
+                                Ok(res) => res,
+                                Err(e) => {
+                                    //This is an error that occurred in a child req
+                                    //We need to pass this error up the tree
+                                    panic!("Error in child req (req_id: {}): {:?}", child.0, e);
+                                }
+                            };
+
+                            //now utilize the response to perform a mutation on this child's status
+                            child.1 = child_res.1;
+                            child.2 = Some(child_res.0);
+                            cost += child_res.0;
+                        }
+
+                        //After cycling the children, and no error performed, return an Ok to the parent.
+                        //For now, we will set the status of our parent as checked, because
+                        for parent in &mut req.parents {
+                            if parent.0 == parent_req_id {
+                                parent.1 = Status::Checked;
+                                return Ok((cost, Status::Checked));
+                            }
+                        }
+                    }
+                    "OR" => {
+                        for child in &mut req.children {
+                            let child_res = match self.satisfy_requirements(
+                                req_holder,
+                                Some(req.id),
+                                child.0,
+                                nests + 1,
+                            ) {
+                                Ok(res) => res,
+                                Err(e) => {
+                                    //This is an error that occurred in a child req
+                                    //We need to pass this error up the tree
+                                    panic!("Error in child req (req_id: {}): {:?}", child.0, e);
+                                }
+                            };
+
+                            //now utilize the response to perform a mutation on this child's status
+                            child.1 = child_res.1;
+                            child.2 = Some(child_res.0);
+                        }
+
+                        //After cycling the children, we check the one with the lowest cost
+
+                        let mut lowest_cost = (usize::MAX, i32::MAX);
+                        for (internal_indice, child) in &mut req.children.iter().enumerate() {
+                            if let Some(cost) = child.2 {
+                                if cost < lowest_cost.1 {
+                                    lowest_cost = (internal_indice, cost);
+                                }
+                            }
+                        }
+
+                        //Now that we have the lowest cost, we say that the child is selected
+                        req.children[lowest_cost.0].1 = Status::Selected;
+                        //Now the child needs to know it needs to change its parent status to selected.
+                        self.modify_parent_status(
+                            req_holder,
+                            Status::Selected,
+                            req.id,
+                            req.children[lowest_cost.0].0,
+                            nests + 1,
+                        );
+                    }
                     _ => panic!("Invalid logic type for Group {:?}", req),
                 }
             } else {
@@ -382,19 +462,83 @@ impl ScheduleMaker {
         } else if pftype.eq("Class") {
             if let Some(logic_type) = logic_type {
                 match logic_type.as_str() {
-                    "AND" => self.evaluate_class_AND_req(
-                        req_holder,
-                        req.clone(),
-                        &mut carried_result,
-                        nests,
-                    ),
+                    "AND" => {
+                        //copy pasted from Group AND logic
+                        let mut cost = 0;
+                        for child in &mut req.children {
+                            let child_res = match self.satisfy_requirements(
+                                req_holder,
+                                Some(req.id),
+                                child.0,
+                                nests + 1,
+                            ) {
+                                Ok(res) => res,
+                                Err(e) => {
+                                    //This is an error that occurred in a child req
+                                    //We need to pass this error up the tree
+                                    panic!("Error in child req (req_id: {}): {:?}", child.0, e);
+                                }
+                            };
 
-                    "OR" => self.evaluate_class_OR_req(
-                        req_holder,
-                        req.clone(),
-                        &mut carried_result,
-                        nests,
-                    ),
+                            //now utilize the response to perform a mutation on this child's status
+                            child.1 = child_res.1;
+                            child.2 = Some(child_res.0);
+                            cost += child_res.0;
+                        }
+
+                        //After cycling the children, and no error performed, return an Ok to the parent.
+                        //For now, we will set the status of our parent as checked, because
+                        for parent in &mut req.parents {
+                            if parent.0 == parent_req_id {
+                                parent.1 = Status::Checked;
+                                return Ok((cost, Status::Checked));
+                            }
+                        }
+                    }
+
+                    "OR" => {
+                        for child in &mut req.children {
+                            let child_res = match self.satisfy_prereq(
+                                req_holder,
+                                Some(req.id),
+                                child.0,
+                                nests + 1,
+                            ) {
+                                Ok(res) => res,
+                                Err(e) => {
+                                    //This is an error that occurred in a child req
+                                    //We need to pass this error up the tree
+                                    panic!("Error in child req (req_id: {}): {:?}", child.0, e);
+                                }
+                            };
+
+                            //now utilize the response to perform a mutation on this child's status
+                            child.1 = child_res.1;
+                            child.2 = Some(child_res.0);
+                        }
+
+                        //After cycling the children, we check the one with the lowest cost
+
+                        let mut lowest_cost = (usize::MAX, i32::MAX);
+                        for (internal_indice, child) in &mut req.children.iter().enumerate() {
+                            if let Some(cost) = child.2 {
+                                if cost < lowest_cost.1 {
+                                    lowest_cost = (internal_indice, cost);
+                                }
+                            }
+                        }
+
+                        //Now that we have the lowest cost, we say that the child is selected
+                        req.children[lowest_cost.0].1 = Status::Selected;
+                        //Now the child needs to know it needs to change its parent status to selected.
+                        self.modify_parent_status(
+                            req_holder,
+                            Status::Selected,
+                            req.id,
+                            req.children[lowest_cost.0].0,
+                            nests + 1,
+                        );
+                    }
 
                     _ => panic!("Invalid logic type for Class {:?}", req),
                 }
@@ -402,10 +546,9 @@ impl ScheduleMaker {
                 //Class has no logic type
                 println!(
                     "{}Class (req_id: {}) has no logic type. Returning credits",
-                    &spacing,
-                    req.borrow().id
+                    &spacing, req.id
                 );
-                let credits = req.borrow().class.as_ref().unwrap().credits.unwrap();
+                let credits = req.class.as_ref().unwrap().credits.unwrap();
                 return Ok(credits);
             }
         } else {
@@ -422,10 +565,35 @@ impl ScheduleMaker {
         );
         carried_result
     }
+    fn select_parent(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        status: Status,
+        parent_id: i32,
+        id: i32,
+        nests: usize,
+    ) {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+        println!(
+            "{}Selecting parent (req_id: {}) of child (req_id: {})",
+            &spacing, parent_id, child_id
+        );
+        let req = req_holder.get_req(child_id).unwrap();
+
+        for parent in &mut req.parents {
+            if parent.0 == parent_id {
+                parent.1 = status;
+                break;
+            }
+        }
+    }
 
     /*
        Note: When the parent inside this function is already mutably borrowed.
     */
+    /*
     fn evaluate_prereq(
         &mut self,
         req_holder: &mut ReqHolder,
@@ -436,11 +604,7 @@ impl ScheduleMaker {
         let spaces = 4 * nests;
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
-        println!(
-            "{}Evaluating prereq (req_id: {})",
-            &spacing,
-            req.borrow().id
-        );
+        println!("{}Evaluating prereq (req_id: {})", &spacing, req.id);
 
         let pftype = req.borrow().pftype.clone();
         let logic_type = req.borrow().logic_type.clone();
@@ -454,16 +618,14 @@ impl ScheduleMaker {
                         //This logic is pretty much identical to a Class's OR logic in evaluate prereq. Optimize in the future?
                         let mut minimal_cost: (usize, i32) = (usize::MAX, i32::MAX);
 
-                        for (internal_indice, child) in
-                            req.borrow_mut().children.iter_mut().enumerate()
-                        {
+                        for (internal_indice, child) in req.children.iter_mut().enumerate() {
                             let mut child_req = req_holder.get_req(child.0).unwrap();
-                            child_req.borrow_mut().in_analysis = true;
+                            child_req.in_analysis = true;
 
                             let cost = match self.evaluate_prereq(
                                 req_holder,
-                                req.clone(),
-                                child_req.clone(),
+                                req,
+                                child_req,
                                 nests + 1,
                             ) {
                                 Ok(cost) => cost,
@@ -602,7 +764,7 @@ impl ScheduleMaker {
         //TODO: this is -1 because it should not reach this point for now.
         Ok(-1)
     }
-
+    */
     fn reconsider_prereq(&self, req: &mut Req, child_id: i32, nests: usize) {
         for child in req.children.iter_mut() {
             if child.0 == child_id {
@@ -611,10 +773,13 @@ impl ScheduleMaker {
         }
     }
 
+    /*
+
     fn evaluate_group_AND_req(
         &mut self,
         req_holder: &mut ReqHolder,
-        req: Rc<RefCell<Req>>,
+
+        req: Req,
         carried_result: &mut Result<i32, ScheduleError>,
         nests: usize,
     ) {
@@ -845,6 +1010,7 @@ impl ScheduleMaker {
 
         //If this has none of the prior conditions have been met, this child
     }
+    */
     /*
     fn build_queue(
         &mut self,
