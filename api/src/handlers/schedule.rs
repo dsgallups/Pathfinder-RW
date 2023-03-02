@@ -338,13 +338,20 @@ impl ScheduleMaker {
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
 
-        let logic_type = match req_holder.get_req(req_id).unwrap().borrow().logic_type {
-            Some(ref logic_type) => logic_type.clone(),
-            None => {
-                panic!(
-                    "{}This reqs pftype is currently unsupported! {:?}",
-                    &spacing, req_id
-                );
+        let logic_type = {
+            let req = req_holder.get_req(req_id).unwrap().borrow();
+            println!("{}Satisfying group: {:?}", &spacing, &req);
+            if !req.pftype.eq("Group") {
+                panic!("{}This req is not a group! {:?}", &spacing, req_id);
+            }
+            match req.logic_type {
+                Some(ref logic_type) => logic_type.clone(),
+                None => {
+                    panic!(
+                        "{}This reqs pftype is currently unsupported! {:?}",
+                        &spacing, req_id
+                    );
+                }
             }
         };
 
@@ -371,6 +378,7 @@ impl ScheduleMaker {
 
         match logic_type.as_str() {
             "AND" => {
+                println!("{}AND", &spacing);
                 //After cycling the children, and no error performed, return an Ok to the parent.
                 //For now, we will set the status of our parent as checked, because
                 let mut req_children = self.evaluate_children(req_holder, req_id, nests);
@@ -389,6 +397,7 @@ impl ScheduleMaker {
                 }
             }
             "OR" => {
+                println!("{}OR", &spacing);
                 //After cycling the children, and no error performed, return an Ok to the parent.
                 //For now, we will set the status of our parent as checked, because
                 let req_children = self.evaluate_children(req_holder, req_id, nests);
@@ -446,7 +455,7 @@ impl ScheduleMaker {
         let spacing = (0..=spaces).map(|_| " ").collect::<String>();
         let extra_space = (0..=4).map(|_| " ").collect::<String>();
         println!(
-            "{}Selecting parent (req_id: {}) of child (req_id: {})",
+            "{}Modifying parent (req_id: {}) of child (req_id: {})",
             &spacing, parent_id, id
         );
         let req = req_holder.get_req(id).unwrap();
@@ -454,6 +463,31 @@ impl ScheduleMaker {
         for parent in &mut req.borrow_mut().parents {
             if parent.0 == parent_id {
                 parent.1 = status;
+                break;
+            }
+        }
+    }
+
+    fn modify_child_status(
+        &mut self,
+        req_holder: &mut ReqHolder,
+        status: Status,
+        parent_id: i32,
+        id: i32,
+        nests: usize,
+    ) {
+        let spaces = 4 * nests;
+        let spacing = (0..=spaces).map(|_| " ").collect::<String>();
+        let extra_space = (0..=4).map(|_| " ").collect::<String>();
+        println!(
+            "{}Modifying child (req_id: {}) of parent (req_id: {})",
+            &spacing, id, parent_id
+        );
+        let req = req_holder.get_req(parent_id).unwrap();
+
+        for child in &mut req.borrow_mut().children {
+            if child.0 == id {
+                child.1 = status;
                 break;
             }
         }
@@ -554,29 +588,81 @@ impl ScheduleMaker {
         let (logic_type, mut parents) = {
             let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
             req.in_analysis = true;
-            println!(
-                "\n{}Evaluating requirements of: \n{}{:?}",
-                &spacing, &spacing, &req
-            );
+            println!("\n{}Evaluating class: \n{}{:?}", &spacing, &spacing, &req);
 
             (req.logic_type.clone(), req.parents.clone())
         };
 
+        //todo, I feel like this is really funky because of the chance that there's multiple parents.
+        let mut additional_cost = 0;
+        let mut additional_status = Unchecked;
         for (parent_id, parent_status) in parents {
             if parent_id == parent_req_id {
                 continue;
             }
+            {
+                let parent_req = req_holder.get_req(parent_id).unwrap().borrow();
+                if !parent_req.pftype.eq("Group") {
+                    continue;
+                }
+            }
             //So if not the parent, we need to check out some stuff
+            println!("parent to evaluate: {:?}", parent_id);
+
+            if parent_status == Unchecked {
+                let result =
+                    match self.satisfy_group(req_holder, Some(req_id), parent_id, nests + 1) {
+                        Ok(res) => res,
+                        Err(e) => {
+                            //This is an error that occurred in a child req
+                            //We need to pass this error up the tree
+                            panic!(
+                                "Error in evaluating parent for child class (req_id: {}): {:?}",
+                                req_id, e
+                            );
+                        }
+                    };
+                if additional_cost < result.0.unwrap() {
+                    additional_cost = result.0.unwrap();
+                }
+            }
+        }
+        //our parents will have been mutated
+        parents = req_holder.get_req(req_id).unwrap().borrow().parents.clone();
+        for (parent_id, parent_status) in parents {
+            if parent_id == parent_req_id {
+                continue;
+            }
+            {
+                let parent_req = req_holder.get_req(parent_id).unwrap().borrow();
+                if !parent_req.pftype.eq("Group") {
+                    continue;
+                }
+            }
             match parent_status {
                 Unchecked => {
-                    //This function call WILL mutate our req_holder, and therefore, the parent_status that was cloned here has since changed.
-                    let result = self.satisfy_group(req_holder, Some(req_id), parent_id, nests + 1);
-                    parents = req_holder.get_req(req_id).unwrap().borrow().parents.clone();
-                    println!("new parents: {:?}", parents);
-                    continue; //TODO keep working from here
-                              //We need to evaluate this parent given that it's a group
+                    panic!("This should never happen!");
                 }
-                Checked => {}
+                Unsuitable => {
+                    panic!("This should never happen! (Unsuitable child)");
+                }
+                Checked => {
+                    //Ask for a reconsideration by setting parent to desirable
+                    self.modify_parent_status(
+                        req_holder,
+                        Status::Desirable,
+                        parent_id,
+                        req_id,
+                        nests,
+                    );
+                    self.modify_child_status(
+                        req_holder,
+                        Status::Desirable,
+                        req_id,
+                        parent_id,
+                        nests,
+                    );
+                }
                 _ => return Err(ScheduleError::UnimiplementedLogicError),
             }
         }
