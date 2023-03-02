@@ -64,7 +64,11 @@ impl Schedule {
         }
     }
 }
-
+impl Default for Schedule {
+    fn default() -> Self {
+        Schedule::new()
+    }
+}
 #[derive(Debug, Serialize)]
 pub struct Period {
     pub year: u32,

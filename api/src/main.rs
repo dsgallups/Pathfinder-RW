@@ -68,11 +68,11 @@ pub async fn get_schedule(
     match schedule.build_schedule() {
         Ok(res) => {
             println!("built schedule");
-            return Ok(web::Json(res));
+            Ok(web::Json(res))
         }
         Err(e) => {
             println!("Error building schedule: {}", e);
-            return Err(e);
+            Err(e)
         }
     }
 }

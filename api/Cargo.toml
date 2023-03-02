@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
+# RUSTFLAGS="-C target-cpu=native" cargo build --release
 [dependencies]
 diesel = { version = "2.0.0", features = ["postgres", "r2d2"] }
 dotenvy = "0.15"
@@ -24,3 +24,5 @@ actix-cors = "0.6.4"
 [profile.release]
 strip = true
 lto = "fat"
+codegen-units = 1
+panic = "abort"

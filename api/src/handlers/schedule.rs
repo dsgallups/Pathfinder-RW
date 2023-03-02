@@ -441,7 +441,7 @@ impl ScheduleMaker {
         //req_holder.get_req(req_id).unwrap().in_analysis = false;
         //*req_holder.get_req(req.id).unwrap() = req;
 
-        return Err(ScheduleError::UnimiplementedLogicError);
+        Err(ScheduleError::UnimiplementedLogicError)
     }
     fn modify_parent_status(
         &mut self,
@@ -668,7 +668,7 @@ impl ScheduleMaker {
         }
 
         //if the logic type is none, it's probably a class.
-        if let None = logic_type {
+        if logic_type.is_none() {
             //We need this class to be evaluated by all of its parents before doing anything
 
             let status = Status::Checked;
