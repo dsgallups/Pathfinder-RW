@@ -16,14 +16,14 @@ use actix_cors::Cors;
 use actix_web::{
     get, post,
     web::{self, Data},
-    App, HttpRequest, HttpResponse, HttpServer, Responder, Result,
+    App, HttpResponse, HttpServer, Responder, Result,
 };
-use serde_json::json;
-use std::process::{Command, Output};
-use std::str;
+
+
+
 
 use crate::handlers::{
-    catalog::Catalog, pg_pool_handler, schedule::ScheduleMaker, types::ScheduleError,
+    pg_pool_handler, schedule::ScheduleMaker, types::ScheduleError,
 };
 use crate::{db_connection::PgPool, handlers::types::Schedule};
 

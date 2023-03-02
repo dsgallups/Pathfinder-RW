@@ -4,8 +4,8 @@ use diesel::{
 };
 
 use crate::handlers::types::{
-    Period, Req, Schedule, ScheduleError,
-    Status::{self, Checked, Desirable, Selected, Unchecked, Unsuitable},
+    Req, Schedule, ScheduleError,
+    Status::{self, Checked, Desirable, Unchecked, Unsuitable},
 };
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
@@ -107,12 +107,7 @@ impl ReqHolder {
     }
 
     fn get_req(&self, id: i32) -> Option<&RefCell<Req>> {
-        match self.reqs.get(&id) {
-            Some(req) => return Some(req),
-            None => {
-                return None;
-            }
-        };
+        self.reqs.get(&id)
     }
 
     fn display_graph(&mut self, id: i32, displayed_reqs: &mut Vec<i32>) {
@@ -595,7 +590,7 @@ impl ScheduleMaker {
 
         //todo, I feel like this is really funky because of the chance that there's multiple parents.
         let mut additional_cost = 0;
-        let mut additional_status = Unchecked;
+        let additional_status = Unchecked;
         for (parent_id, parent_status) in parents {
             if parent_id == parent_req_id {
                 continue;
@@ -681,7 +676,7 @@ impl ScheduleMaker {
 
         let logic_type = logic_type.unwrap();
 
-        let mut req_children = self.evaluate_children(req_holder, req_id, nests);
+        let req_children = self.evaluate_children(req_holder, req_id, nests);
         let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
         req.children = req_children;
         match logic_type.as_str() {
@@ -701,8 +696,8 @@ impl ScheduleMaker {
                 return Ok((Some(credits), status));
             }
             "OR" => {
-                let mut status = Status::Unchecked;
-                let mut credits = 0;
+                let status = Status::Unchecked;
+                let credits = 0;
                 /*for (child_id, child_status, child_cost) in req_children {
                     if child_status == Status::Checked {
                         status = Status::Checked;
@@ -717,7 +712,7 @@ impl ScheduleMaker {
             _ => panic!("Invalid logic type for Class {:?}", req_id),
         }
 
-        Err(ScheduleError::UnimiplementedLogicError)
+        //Err(ScheduleError::UnimiplementedLogicError)
     }
 
     /*

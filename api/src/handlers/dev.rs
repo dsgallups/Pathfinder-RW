@@ -1,4 +1,4 @@
-use actix_web::{web, HttpRequest, HttpResponse, Responder, Result};
+use actix_web::{web, HttpRequest, HttpResponse, Result};
 use serde_json::json;
 use std::process::{Command, Output};
 use std::str;
@@ -43,7 +43,7 @@ pub async fn get_schedule(
         ScheduleMaker::new(pg_pool, &degree_name).expect("Schedule failed to build!");
 
     match schedule.build_schedule() {
-        Ok(res) => return Ok(web::Json(res)),
+        Ok(res) => Ok(web::Json(res)),
         Err(e) => return Err(web::Json(format!("Error: {}", e))),
     }
 }
