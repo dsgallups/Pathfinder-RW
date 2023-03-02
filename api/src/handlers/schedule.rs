@@ -13,8 +13,8 @@ use crate::models::{
     component::Component,
     degree::Degree,
 };
+use rustc_hash::FxHashMap as HashMap;
 use std::cell::RefCell;
-use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 struct ReqHolder {
@@ -24,7 +24,7 @@ struct ReqHolder {
 impl ReqHolder {
     fn new() -> ReqHolder {
         ReqHolder {
-            reqs: HashMap::new(),
+            reqs: HashMap::default(),
         }
     }
     fn add_degree_req(&mut self, degree: Req) {
@@ -106,6 +106,7 @@ impl ReqHolder {
         Ok(())
     }
 
+    #[inline(always)]
     fn get_req(&self, id: i32) -> Option<&RefCell<Req>> {
         self.reqs.get(&id)
     }
@@ -693,7 +694,7 @@ impl ScheduleMaker {
                 let status = Status::Checked;
                 drop(req);
                 self.modify_parent_status(req_holder, status.clone(), parent_req_id, req_id, nests);
-                return Ok((Some(credits), status));
+                Ok((Some(credits), status))
             }
             "OR" => {
                 let status = Status::Unchecked;
@@ -707,7 +708,7 @@ impl ScheduleMaker {
                     }
                 }*/
 
-                return Ok((Some(credits), status));
+                Ok((Some(credits), status))
             }
             _ => panic!("Invalid logic type for Class {:?}", req_id),
         }

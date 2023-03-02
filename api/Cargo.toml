@@ -20,9 +20,12 @@ strum = "0.24"
 strum_macros = "0.24"
 derive_more = "0.99.17"
 actix-cors = "0.6.4"
+rustc-hash = "1.1.0"
+smallvec = "1.10.0"
 
 [profile.release]
 strip = true
 lto = "fat"
 codegen-units = 1
 panic = "abort"
+debug = 1

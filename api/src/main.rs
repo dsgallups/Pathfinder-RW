@@ -1,4 +1,5 @@
 #![allow(dead_code, unused_variables)]
+#![warn(clippy::disallowed_types)]
 pub mod db_connection;
 pub mod handlers;
 pub mod models;
@@ -19,12 +20,7 @@ use actix_web::{
     App, HttpResponse, HttpServer, Responder, Result,
 };
 
-
-
-
-use crate::handlers::{
-    pg_pool_handler, schedule::ScheduleMaker, types::ScheduleError,
-};
+use crate::handlers::{pg_pool_handler, schedule::ScheduleMaker, types::ScheduleError};
 use crate::{db_connection::PgPool, handlers::types::Schedule};
 
 use db_connection::establish_connection;
