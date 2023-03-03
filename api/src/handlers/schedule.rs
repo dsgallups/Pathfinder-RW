@@ -5,7 +5,7 @@ use diesel::{
 
 use crate::handlers::types::{
     Req, Schedule, ScheduleError,
-    Status::{self, Checked, Desirable, Unchecked, Unsuitable},
+    Status::{self, Checked, Desirable, Selected, Unchecked, Unsuitable},
 };
 use crate::models::{
     associations::{ComponentToComponent, DegreeToComponent},
@@ -131,6 +131,7 @@ impl ReqHolder {
     }
 }
 
+//This is unused for now...
 struct Cost<'a> {
     index: usize,
     //An array that follows a path of components to satisfy and cost
@@ -173,7 +174,6 @@ impl ScheduleMaker {
 
         println!("\n\nbuild_requirements_graph() finished.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
-        //TODO, show requirements graph based on degree
         req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
         //return Ok(Schedule::new());
@@ -185,7 +185,7 @@ impl ScheduleMaker {
         req_holder.display_graph(root_id, &mut Vec::new());
         println!("------------------------------------------End Reqs------------------------------------------");
 
-        //return Ok(Schedule::new());
+        Ok(Schedule::new())
         /*println!("\n\nLong print.");
         println!("------------------------------------------Begin Reqs------------------------------------------");
         for (pos, req) in self.reqs.iter().enumerate() {
@@ -216,7 +216,6 @@ impl ScheduleMaker {
 
         println!("\n------------------------------------------------------------------------------------End build_schedule()------------------------------------------------------------------------------------");
         */
-        Ok(Schedule::new())
     }
 
     /**
@@ -247,9 +246,9 @@ impl ScheduleMaker {
         req_holder.add_degree_req(degree_req);
 
         //TODO, FIX: 0: Req { component: Component { id: -1, name: "TEST MAJOR", pftype: "Degree", logic_type: Some("AND") }, class: None, children: [(0, Unchecked), (0, Unchecked)], parents: [] }
-        println!("Root component: {:?}", &req_holder.get_req(-1));
+        println!("Root component: {:?}", &req_holder.get_req(root_id));
 
-        self.associate_components(req_holder, -1, root_components, 0)?;
+        self.associate_components(req_holder, root_id, root_components, 0)?;
 
         Ok(root_id)
     }
@@ -368,7 +367,7 @@ impl ScheduleMaker {
                     .iter()
                     .fold(0, |acc, child| acc + child.2.unwrap_or(0));
 
-                return Ok((Some(cost), Status::Checked));
+                return Ok((Some(cost), Checked));
             }
         };
 
@@ -387,8 +386,8 @@ impl ScheduleMaker {
                 req.children = req_children;
                 for parent in &mut req.parents {
                     if parent.0 == parent_req_id {
-                        parent.1 = Status::Checked;
-                        return Ok((Some(cost), Status::Checked));
+                        parent.1 = Checked;
+                        return Ok((Some(cost), Checked));
                     }
                 }
             }
@@ -414,7 +413,7 @@ impl ScheduleMaker {
                 }
                 println!("{}Minimal cost: {:?}", &spacing, minimal_cost);
                 //Finding the minimal cost means we can select that (until further logic implemented)
-                let status = Status::Selected;
+                let status = Selected;
                 req.children[minimal_cost.0].1 = status.clone();
                 drop(req);
 
@@ -425,8 +424,8 @@ impl ScheduleMaker {
 
                 for parent in &mut req.parents {
                     if parent.0 == parent_req_id {
-                        parent.1 = Status::Checked;
-                        return Ok((Some(minimal_cost.1), Status::Checked));
+                        parent.1 = Checked;
+                        return Ok((Some(minimal_cost.1), Checked));
                     }
                 }
             }
@@ -558,10 +557,10 @@ impl ScheduleMaker {
         nests: usize,
     ) {
         for child in children {
-            if child.1 == Status::Checked {
-                child.1 = Status::Selected;
+            if child.1 == Checked {
+                child.1 = Selected;
                 //Select the parent in the child
-                self.modify_parent_status(req_holder, Status::Selected, req_id, child.0, nests);
+                self.modify_parent_status(req_holder, Selected, req_id, child.0, nests);
             }
         }
     }
@@ -644,20 +643,8 @@ impl ScheduleMaker {
                 }
                 Checked => {
                     //Ask for a reconsideration by setting parent to desirable
-                    self.modify_parent_status(
-                        req_holder,
-                        Status::Desirable,
-                        parent_id,
-                        req_id,
-                        nests,
-                    );
-                    self.modify_child_status(
-                        req_holder,
-                        Status::Desirable,
-                        req_id,
-                        parent_id,
-                        nests,
-                    );
+                    self.modify_parent_status(req_holder, Desirable, parent_id, req_id, nests);
+                    self.modify_child_status(req_holder, Desirable, req_id, parent_id, nests);
                 }
                 _ => return Err(ScheduleError::UnimiplementedLogicError),
             }
@@ -667,7 +654,7 @@ impl ScheduleMaker {
         if logic_type.is_none() {
             //We need this class to be evaluated by all of its parents before doing anything
 
-            let status = Status::Checked;
+            let status = Checked;
             self.modify_parent_status(req_holder, status.clone(), parent_req_id, req_id, nests);
 
             let req = req_holder.get_req(req_id).unwrap().borrow();
@@ -691,13 +678,13 @@ impl ScheduleMaker {
                     }
                 }*/
                 let credits = req.class.as_ref().unwrap().credits.unwrap();
-                let status = Status::Checked;
+                let status = Checked;
                 drop(req);
                 self.modify_parent_status(req_holder, status.clone(), parent_req_id, req_id, nests);
                 Ok((Some(credits), status))
             }
             "OR" => {
-                let status = Status::Unchecked;
+                let status = Unchecked;
                 let credits = 0;
                 /*for (child_id, child_status, child_cost) in req_children {
                     if child_status == Status::Checked {
