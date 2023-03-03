@@ -372,7 +372,7 @@ impl Catalog {
             ),
             (
                 Group("class 1 specialization"),
-                OR(vec![SimpleClass("class 4.2"), SimpleClass("class 1.4")]),
+                OR(vec![SimpleClass("class 4.2"), Class(("class 1.4", 2))]),
             ),
             (
                 SimpleClass("class 5.1"),
