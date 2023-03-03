@@ -15,6 +15,15 @@ You will need to download and install postgres and create a `.env` file in the A
 
 ## Where's the good stuff?
 
+### Schemas n all
+
+The postgres table creations are located in `/api/migrations.`
+The diesel schemas are in `/api/schema.rs` with relevant handlers in `/api/handlers.` and models in `/api/models/`
+
+### Internally used structs
+
+Most of these can be found in `/api/handlers/types.rs`, with some internally used structs in `/api/handlers/schedule.rs`.
+
 ### Recursion problems
 
 Located in `/api/handlers/schedule.rs`
