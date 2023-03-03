@@ -358,9 +358,41 @@ impl Catalog {
                 SimpleClass("2class.2"),
                 OR(vec![SimpleClass("dont pick me"), Group("2class.2 prereqs")]),
             ),
+            (
+                Group("Requirement 1"),
+                OR(vec![SimpleClass("class 4.1"), Class(("class 4.2", 5))]),
+            ),
+            (
+                Group("CORE"),
+                AND(vec![SimpleClass("class 1.1"), Group("Requirement 1")]),
+            ),
+            (
+                Group("Required Selectives"),
+                AND(vec![SimpleClass("class 5.1")]),
+            ),
+            (
+                Group("class 1 specialization"),
+                OR(vec![SimpleClass("class 4.2"), SimpleClass("class 1.4")]),
+            ),
+            (
+                SimpleClass("class 5.1"),
+                OR(vec![
+                    SimpleClass("class 4.1"),
+                    Group("class 1 specialization"),
+                ]),
+            ),
         ];
 
         let degree_requirements = vec![
+            (
+                Degree((
+                    "FIGTEST",
+                    "FIGMA TEST DEGREE",
+                    "Major",
+                    "Tests example in Figma",
+                )),
+                vec![Group("CORE"), Group("Required Selectives")],
+            ),
             (
                 Degree((
                     "TEST1",
