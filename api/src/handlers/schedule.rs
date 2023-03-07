@@ -325,7 +325,7 @@ impl ScheduleMaker {
     fn satisfy_group(
         &mut self,
         req_holder: &mut ReqHolder,
-        parent_req_id: Option<i32>,
+        caller_req_id: Option<i32>,
         req_id: i32,
         nests: usize,
     ) -> Result<(Option<i32>, Status), ScheduleError> {
@@ -350,12 +350,12 @@ impl ScheduleMaker {
             }
         };
 
-        let parent_req_id = match parent_req_id {
+        let caller_req_id = match caller_req_id {
             Some(id) => id,
             None => {
                 //This should only occur for the root component.
                 if req_id != -1 {
-                    panic!("{}No parent req id! {:?}", &spacing, &req_id);
+                    panic!("{}No caller req id! {:?}", &spacing, &req_id);
                 }
 
                 let mut req_children = self.evaluate_children(req_holder, req_id, nests);
@@ -385,7 +385,7 @@ impl ScheduleMaker {
                     .fold(0, |acc, child| acc + child.2.unwrap_or(0));
                 req.children = req_children;
                 for parent in &mut req.parents {
-                    if parent.0 == parent_req_id {
+                    if parent.0 == caller_req_id {
                         parent.1 = Checked;
                         return Ok((Some(cost), Checked));
                     }
@@ -423,7 +423,7 @@ impl ScheduleMaker {
                 let mut req = req_holder.get_req(req_id).unwrap().borrow_mut();
 
                 for parent in &mut req.parents {
-                    if parent.0 == parent_req_id {
+                    if parent.0 == caller_req_id {
                         parent.1 = Checked;
                         return Ok((Some(minimal_cost.1), Checked));
                     }

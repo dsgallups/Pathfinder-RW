@@ -1,8 +1,7 @@
 use crate::models::class::Class;
-use actix_web::{error};
+use actix_web::error;
 
 use serde::Serialize;
-
 
 use std::fmt;
 use thiserror::Error;
